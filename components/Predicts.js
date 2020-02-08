@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import * as Permissions from 'expo-permissions'
@@ -13,46 +13,44 @@ const app = new Clarifai.App({
  apiKey: '6e326e5cab504a7bb99b3e622c9d9c8e'
 });
 
-class Predict extends React.Component {
-	state = {
-    image: '',
-		resultImage: ''
-  };
+const Predicts = () => {
+	const [image, setImage] = useState('')
+	const [resultImage, setResultImage] = useState('')
 
-	selectPicture = async () => {
+	const selectPicture = async () => {
     await Permissions.askAsync(Permissions.CAMERA_ROLL);
     const { cancelled, uri } = await ImagePicker.launchImageLibraryAsync({
       aspect: 1,
       allowsEditing: true,
     });
-    if (!cancelled) this.setState({ image: uri });
+    if (!cancelled) setImage(uri);
   };
 
-  takePicture = async () => {
+  const takePicture = async () => {
     await Permissions.askAsync(Permissions.CAMERA);
     const { cancelled, uri, base64 } = await ImagePicker.launchCameraAsync({
       allowsEditing: false,
 			base64: true
     });
 		// here we set the image to base64 data of the image that we took with the camera
-    this.setState({ image: base64 });
+    setImage(base64);
   };
 
-	showState = () => {
-		console.log('................',this.state.resultImage)
+	const showState = () => {
+		console.log('................',resultImage)
 	}
 
 
-		predict()	{
+		const predict = () =>	{
 			// here we send the image encoded as base 64 to the clarifai API to determine what kind of food it is
-			app.models.predict("bd367be194cf45149e75f01d59f77ba7", {base64: this.state.image}).then(
+			app.models.predict("bd367be194cf45149e75f01d59f77ba7", {base64:image}).then(
 			    function(response){
 						let tag = response.rawData.outputs[0].data.concepts[0].name;
 						alert(`this is a ${tag}`)
 						axios.get(`https://api.wolframalpha.com/v1/simple?i=${tag}&appid=9PWATX-P68ELU4YPV`)
 							.then(res => {
 								console.log('*********************',res.config.url);
-								this.state.resultImage = res.config.url
+								setResultImage(res.config.url)
 							}).catch(err => {
 								console.log(err);
 							})
@@ -63,28 +61,23 @@ class Predict extends React.Component {
 			)
 		}
 
-
-render(){
 	return(
 		<View style={styles.container}>
-			<Image style={styles.image} source={{ uri: this.state.image }} />
+			<Image style={styles.image} source={{ uri: image }} />
 			<View style={styles.row}>
-				<Button onPress={this.selectPicture}>Gallery</Button>
-				<Button onPress={this.takePicture}>Camera</Button>
-				<Button onPress={this.predict.bind(this)} >Submit</Button>
-				<Button onPress={this.showState}>State</Button>
+				<Button onPress={selectPicture}>Gallery</Button>
+				<Button onPress={takePicture}>Camera</Button>
+				<Button onPress={predict.bind(this)} >Submit</Button>
+				<Button onPress={showState}>State</Button>
 			</View>
 			<Image
 	          style={{ width: 300, height: 500 }}
-	          source={{ uri: this.state.resultImage }}
+	          source={{ uri: resultImage }}
 	        />
 
 
 		</View>
 	)
-}
-
-
 }
 
 const Button = ({ onPress, children }) => (
@@ -113,4 +106,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default Predict
+export default Predicts

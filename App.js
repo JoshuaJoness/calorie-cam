@@ -11,14 +11,14 @@ import Search from './components/Search'
 import Login from './components/Login'
 import Stats from './components/Stats'
 import Predict from './components/Predict'
-import Load from './components/Load'
+import Predicts from './components/Predicts'
 
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 
 const MainNavigator = createStackNavigator({
 	Welcome: {screen: Welcome},
-	Search: {screen: Predict},
+	Search: {screen: Predicts},
   Signup: {screen: Signup},
 	Login: {screen: Login},
 	Results: {screen: Results},
