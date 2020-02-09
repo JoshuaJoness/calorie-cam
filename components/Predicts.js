@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, TouchableHighlight, Modal } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import * as Permissions from 'expo-permissions'
 import axios from 'axios'
@@ -16,6 +16,7 @@ const app = new Clarifai.App({
 const Predicts = () => {
 	const [image, setImage] = useState('')
 	const [resultImage, setResultImage] = useState('')
+	const [modalVisible, setModalVisible] = useState(false);
 
 	const selectPicture = async () => {
     await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -49,7 +50,9 @@ const Predicts = () => {
 						alert(`this is a ${tag}`)
 						axios.get(`https://api.wolframalpha.com/v1/simple?i=${tag}&appid=9PWATX-P68ELU4YPV`)
 							.then(res => {
+								console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',res);
 								console.log('*********************',res.config.url);
+								setModalVisible(true);
 								setResultImage(res.config.url)
 							}).catch(err => {
 								console.log(err);
@@ -63,6 +66,7 @@ const Predicts = () => {
 
 	return(
 		<View style={styles.container}>
+
 			<Image style={styles.image} source={{ uri: image }} />
 			<View style={styles.row}>
 				<Button onPress={selectPicture}>Gallery</Button>
@@ -70,11 +74,35 @@ const Predicts = () => {
 				<Button onPress={predict.bind(this)} >Submit</Button>
 				<Button onPress={showState}>State</Button>
 			</View>
-			<Image
-	          style={{ width: 300, height: 500 }}
-	          source={{ uri: resultImage }}
-	        />
 
+				<Image
+		          style={{ width: 300, height: 500 }}
+		          source={{ uri: resultImage }}
+		        />
+
+						<Modal
+								animationType="slide"
+								transparent={false}
+								visible={modalVisible}
+								onRequestClose={() => {
+									Alert.alert('Modal has been closed.');
+								}}>
+								<View style={{ marginTop: 22 }}>
+          <View style={{ width: '100%', height: '100%', flex:1 }}>
+					<Image
+								style={{ width: 400, height: 700 }}
+								source={{ uri: resultImage }}
+							/>
+
+            <TouchableHighlight
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}>
+              <Text style={{color:'black'}}>Hide Modal</Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+      </Modal>
 
 		</View>
 	)

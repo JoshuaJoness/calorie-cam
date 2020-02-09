@@ -6,9 +6,7 @@ import * as Font from 'expo-font';
 import Welcome from './components/Welcome'
 import Scanner from './components/Scanner'
 import Results from './components/Results'
-import Signup from './components/Signup'
 import Search from './components/Search'
-import Login from './components/Login'
 import Stats from './components/Stats'
 import Predict from './components/Predict'
 import Predicts from './components/Predicts'
@@ -19,8 +17,6 @@ import {createStackNavigator} from 'react-navigation-stack';
 const MainNavigator = createStackNavigator({
 	Welcome: {screen: Welcome},
 	Search: {screen: Predicts},
-  Signup: {screen: Signup},
-	Login: {screen: Login},
 	Results: {screen: Results},
 	Scanner: {screen: Scanner},
 	Stats: {screen: Stats},
@@ -29,6 +25,8 @@ const MainNavigator = createStackNavigator({
 const App = createAppContainer(MainNavigator)
 
 export default App;
+
+// Old structure, prior to Navigator
 
 // const App = () => {
 //   return (
