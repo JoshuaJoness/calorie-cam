@@ -10,6 +10,8 @@ import Search from './components/Search'
 import Stats from './components/Stats'
 import Predict from './components/Predict'
 import Predicts from './components/Predicts'
+import Log from './components/Log'
+
 
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
@@ -20,6 +22,7 @@ const MainNavigator = createStackNavigator({
 	Results: {screen: Results},
 	Scanner: {screen: Scanner},
 	Stats: {screen: Stats},
+	Log: {screen: Log},
 });
 
 const App = createAppContainer(MainNavigator)
