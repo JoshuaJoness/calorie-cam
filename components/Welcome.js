@@ -48,7 +48,7 @@ render() {
 	if (!this.state.isReady) {
 		 return <AppLoading />;
 	 }
-	return(
+	return(	
 		<View style={styles.container}>
 			<StatusBar barStyle='dark-content'/>
 			<Text style={{fontFamily:'Pacifico', fontSize:60, marginTop:200, marginLeft:'auto', marginRight:'auto',marginBottom:40, color:"#FF7FAA"}}>Food Tracker</Text>

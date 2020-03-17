@@ -1,56 +1,77 @@
 import React, { useState, useEffect } from 'react'
 import { ScrollView, View, Text, AsyncStorage, Button } from 'react-native'
-{/* Uninstall this package below*/}
-import { Col, Row, Grid } from "react-native-easy-grid";
 import {Card} from 'native-base'
 
 const Log = (props) => {
   const [loggedFoods, setLoggedFoods] = useState([])
+  let total = 0
+  let total1 = 0
+  let total2 = 0
+  let total3 = 0
+  const [totalCalories, setTotalCalories] = useState(0)
+  const [totalCarbs, setTotalCarbs] = useState(0)
+  const [totalProtein, setTotalProtein] = useState(0)
+  const [totalFat, setTotalFat] = useState(0)
+
 
   {/* Need to call getAsync on componentWillMount, then set variable to array OR access AsyncStorage directly */}
   useEffect(() => {
     console.log(props.navigation.state.params.loggedFoods);
     setLoggedFoods(props.navigation.state.params.loggedFoods)
+    {/* Here I am setting the totals for each nutritional property */}
+    for (let i = 0; i < loggedFoods.length; i++) {
+      total = total + loggedFoods[i].calories
+    }
+    setTotalCalories(total)
+
+    for (let i = 0; i < loggedFoods.length; i++) {
+      total1 = total1 + loggedFoods[i].carbs
+    }
+    setTotalCarbs(total1)
+
+    for (let i = 0; i < loggedFoods.length; i++) {
+      total2 = total2 + loggedFoods[i].protein
+    }
+    setTotalProtein(total2)
+
+    for (let i = 0; i < loggedFoods.length; i++) {
+      total3 = total3 + loggedFoods[i].fat
+    }
+    setTotalFat(total3)
   },[])
-
-  const clear = () => {
-    AsyncStorage.clear()
-  }
-
-  const showState = () => console.log(props);
 
     return(
       <ScrollView>
         {/*The X icon to clear the log*/}
         <Card>
-        <Button title="Click here to clear log" />
+        <Button title="Click here to clear log" onPress={() => clear()}/>
 
         <View style={{display:'flex', flexDirection:'row', padding:10, borderWidth: '1px', borderColor:'black'}}>
           <Text style={{width:90, fontWeight:'bold'}}>Food</Text>
-          <Text style={{width:60, fontWeight:'bold'}}>Calories</Text>
-          <Text style={{width:50, fontWeight:'bold'}}>Carbs</Text>
-          <Text style={{width:50, fontWeight:'bold'}}>Protein</Text>
-          <Text style={{width:50, fontWeight:'bold'}}>Fat</Text>
-          <Text style={{width:100, fontWeight:'bold'}}>Date</Text>
+          <Text style={{width:70, fontWeight:'bold'}}>Calories</Text>
+          <Text style={{width:70, fontWeight:'bold'}}>Carbs</Text>
+          <Text style={{width:70, fontWeight:'bold'}}>Protein</Text>
+          <Text style={{width:70, fontWeight:'bold'}}>Fat</Text>
+
         </View>
 
         {/* Here I need to decide what UI element to use to display each logged food, then display totals at bottom, perhaps include datetimestamp... */}
         {loggedFoods.map((food,i) => <View style={{display:'flex', flexDirection:'row', padding:10}} key={i}>
           <Text style={{width:90}}>{food.label}</Text>
-          <Text style={{width:60}}>{Math.round(food.calories)}</Text>
-          <Text style={{width:50}}>{Math.round(food.carbs)}</Text>
-          <Text style={{width:50}}>{Math.round(food.protein)}</Text>
-          <Text style={{width:50}}>{Math.round(food.fat)}</Text>
-          <Text style={{width:100}}>{food.date}</Text>
+          <Text style={{width:70}}>{Math.round(food.calories)}</Text>
+          <Text style={{width:70}}>{Math.round(food.carbs)}</Text>
+          <Text style={{width:70}}>{Math.round(food.protein)}</Text>
+          <Text style={{width:70}}>{Math.round(food.fat)}</Text>
+
           </View>)}
 
           <View style={{display:'flex', flexDirection:'row', padding:10, borderWidth: '1px', borderColor:'black'}}>
             <Text style={{width:90, fontWeight:'bold'}}>Totals:</Text>
-            <Text style={{width:60, fontWeight:'bold'}}>yo</Text>
-            <Text style={{width:50, fontWeight:'bold'}}>Carbs</Text>
-            <Text style={{width:50, fontWeight:'bold'}}>Protein</Text>
-            <Text style={{width:50, fontWeight:'bold'}}>Fat</Text>
-            <Text style={{width:100, fontWeight:'bold'}}>Date</Text>
+            <Text style={{width:70, fontWeight:'bold'}}>{Math.round(totalCalories)}</Text>
+            <Text style={{width:70, fontWeight:'bold'}}>{Math.round(totalCarbs)} g</Text>
+            <Text style={{width:70, fontWeight:'bold'}}>{Math.round(totalProtein)} g</Text>
+            <Text style={{width:70, fontWeight:'bold'}}>{Math.round(totalFat)} g</Text>
+
           </View>
           </Card>
       </ScrollView>

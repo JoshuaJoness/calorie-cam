@@ -12,22 +12,33 @@ import Predict from './components/Predict'
 import Predicts from './components/Predicts'
 import Log from './components/Log'
 
+import { ApplicationProvider } from '@ui-kitten/components';
+import { mapping, light as lightTheme } from '@eva-design/eva';
+
 
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 
-const MainNavigator = createStackNavigator({
+const RoutedApp = createAppContainer(createStackNavigator({
 	Welcome: {screen: Welcome},
 	Search: {screen: Predicts},
 	Results: {screen: Results},
 	Scanner: {screen: Scanner},
 	Stats: {screen: Stats},
 	Log: {screen: Log},
-});
+}));
 
-const App = createAppContainer(MainNavigator)
+export default class App extends React.Component {
+	render() {
+		return(
+			<ApplicationProvider mapping={mapping} theme={lightTheme}>
+		    <RoutedApp/>
+		  </ApplicationProvider>
+		)
+	}
+}
 
-export default App;
+
 
 // Old structure, prior to Navigator
 

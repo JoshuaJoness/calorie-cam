@@ -5,12 +5,12 @@ import * as Permissions from 'expo-permissions'
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import axios from 'axios'
 import moment from 'moment'
-// Require the client
+import { Card } from 'native-base'
+import { Input } from '@ui-kitten/components';
 
+{/* Clarifai Import to recognize images */}
 const Clarifai = require('clarifai');
-
 // initialize with your api key. This will also work in your browser via http://browserify.org/
-
 const app = new Clarifai.App({
  apiKey: '6e326e5cab504a7bb99b3e622c9d9c8e'
 });
@@ -27,12 +27,13 @@ const Predicts = (props) => {
 	const [protein, setProtein] = useState(0)
 	const [fat, setFat] = useState(0)
   const [grams, setGrams] = useState('100')
-  let arr = []
   const [loggedFoods, setLoggedFoods] = useState([])
   const [date, setDate] = useState(moment(Date.now()).format("dddd, MMMM Do YYYY, h:mm:ss a"))
-
+  const [show, setShow] = useState(false)
   const [object, setObject] = useState({label:'',calories:0,carbs:0,protein:0,fat:0})
+  let arr = []
 
+  {/* This is the function to select a picture from the camera roll, NOT ACTIVE */}
 	// const selectPicture = async () => {
   //   await Permissions.askAsync(Permissions.CAMERA_ROLL);
   //   const { cancelled, uri } = await ImagePicker.launchImageLibraryAsync({
@@ -41,7 +42,6 @@ const Predicts = (props) => {
   //   });
   //   if (!cancelled) setImage(uri);
   // };
-
 
   {/*This function launches the camera*/}
   const takePicture = async () => {
@@ -63,12 +63,13 @@ const Predicts = (props) => {
     })
   }
 
+  {/* This is the function to change the nutrient amounts based on the grams selected by the user*/}
   const onChangeText = (amount) => {
     setGrams(amount)
     setObject({label:label, calories:calories*amount, carbs:carbs*amount, protein:protein*amount, fat:fat*amount})
   }
 
-
+  {/*This is function to recognize the image and retrieve the nutritional information*/}
 	const predict = () =>	{
 		{/*here we send the image encoded as base 64 to the clarifai API to determine what kind of food it is*/}
 		app.models.predict("bd367be194cf45149e75f01d59f77ba7", {base64:image}).then(
@@ -91,7 +92,7 @@ const Predicts = (props) => {
               setObject({label:res.data.hints[0].food.label,
                 calories:res.data.hints[0].food.nutrients.ENERC_KCAL/100*grams,
                 carbs:res.data.hints[0].food.nutrients.CHOCDF/100*grams,
-                protein:res.data.hints[0].food.nutrients.PROCNT/100*grams, 
+                protein:res.data.hints[0].food.nutrients.PROCNT/100*grams,
                 fat:res.data.hints[0].food.nutrients.FAT/100*grams,
                 date:date
               })
@@ -105,54 +106,46 @@ const Predicts = (props) => {
 				)
 			}
 
-
-
-    const showState = () => {
-      console.log('*********',date.split(',').splice(1,1));
-    }
-
-
-    const setAsync = async () => {
-      try {
-        let obj = object
-
+  {/*This function pushes the food object to the loggedFoods array and then stores it in AsyncStorage.
+  getAsync() is then called, which checks AsyncStorage for a value, parses this values, and finally
+  assigns it to a local variable, loggedFoods*/}
+  const setAsync = async () => {
+    try {
+      let obj = object
       let foods = await AsyncStorage.getItem('foods') || '[]'
       foods = JSON.parse(foods)
       foods.push(obj)
-      AsyncStorage.setItem('foods', JSON.stringify(foods)).then(() => {
+      await AsyncStorage.setItem('foods', JSON.stringify(foods)).then(() => {
         console.log('foods updated')
-        {/* I call getAsync here so that it sets the components state at the same time that the AsyncStorage is being updated */}
-        getAsync()
-      }) }
-
+        {/* I call getAsync here so that it sets the component's state at
+          the same time that the AsyncStorage is being updated */}
+          getAsync()
+        })
+      }
       catch(error) {
         alert(error)
       }
     }
 
-    {/* I need to have getAsync called automatically (really i need async to be called and parsed automatically, perhaps on logging food? */}
+  {/* Everytime that I call goToLog(), the Log component does not render the props...BUG FIX */}
 
-    const getAsync = async () => {
-      try {
-        const value = await AsyncStorage.getItem('foods');
-        if (value !== null) {
-          // We have data!!
-          let parsed = JSON.parse(value)
-          setLoggedFoods(parsed)
-        }
-      } catch (error) {
-        console.log('Error')
+  const getAsync = async () => {
+    try {
+      const value = await AsyncStorage.getItem('foods');
+      if (value !== null) {
+        // We have data!!
+        let parsed = JSON.parse(value)
+        await setLoggedFoods(parsed)
       }
-    };
+    } catch (error) {
+      console.log('Error')
+    }
+  };
 
-const clear = () => {
-  AsyncStorage.clear()
-}
-
-const goToLog = () => {
-  props.navigation.navigate('Log', {loggedFoods:loggedFoods})
-}
-
+  {/* This function navigates to the Log component and passes it the loggedFoods array */}
+  const goToLog = () => {
+    props.navigation.navigate('Log', {loggedFoods:loggedFoods})
+  }
 
 	return(
 		<View style={styles.container}>
@@ -160,8 +153,11 @@ const goToLog = () => {
 			<Image style={styles.image} source={{ uri: imageToDisplay }} />
 			<View style={styles.row}>
 				<Button onPress={takePicture}>Camera</Button>
+        {/* Here is where I can add the upload button */}
 				<Button onPress={predict.bind(this)}>Submit</Button>
 			</View>
+      {/* Here I am checking if the label variable exists (label is derived from the retrieving the nutritional information,
+      so if it exists, the nutritional information has been received). We conditionally render the following: */}
 			{
 				!label ?
 				<View style={{marginTop:35}}>
@@ -169,7 +165,8 @@ const goToLog = () => {
 					<Text style={{fontWeight:'bold', fontSize:15, marginTop:5}}>2. Press 'Submit' to retrieve nutritional information!</Text>
 				</View>
 				:
-				<ScrollView style={{marginTop:35}}>
+        <Card style={styles.card}>
+          {/* X button */}
 					<TouchableHighlight
 						onPress={() => {
 							setImage()
@@ -184,14 +181,26 @@ const goToLog = () => {
 						<Ionicons name="md-close" size={26} />
 					</TouchableHighlight>
 
-          <Text>We've identified this as a(n) {label}</Text>
-          <Text>It contains the following macronutrients per</Text>
-            <TextInput
-               style={{ height: 40, width:100,borderColor: 'gray', borderWidth: 1 }}
-               onChangeText={text => onChangeText(text)}
-               value={grams}
-             />
-           <Text>Grams</Text>
+          <Text>We've identified this as a(n) <Text style={{fontWeight:'bold'}}>{label}</Text></Text>
+
+          <View style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
+            <Text>Per </Text>
+              <TextInput
+                 style={{ height: 40, width:100,borderColor: 'gray', borderWidth: 1 }}
+                 onChangeText={text => onChangeText(text)}
+                 value={grams}
+                 inlineImageLeft="search_icon"
+               />
+             <Text> grams</Text>
+               <Input
+                placeholder='Place your Text'
+
+                value={grams}
+                onChangeText={text => onChangeText(text)}
+              />
+          </View>
+
+
 					<Text style={{fontSize:18, marginTop:10}}><Text style={{fontWeight:'bold', fontSize:18}}>Calories: </Text>{calories*grams} per {grams} grams</Text>
 					<Text style={{fontSize:18, marginTop:10}}><Text style={{fontWeight:'bold', fontSize:18}}>Protein:</Text> {Math.round(protein)*grams}</Text>
 					<Text style={{fontSize:18, marginTop:10}}><Text style={{fontWeight:'bold', fontSize:18}}>Carbs:</Text> {carbs == 'NaN' ? N/A : Math.round(carbs)*grams}</Text>
@@ -199,12 +208,12 @@ const goToLog = () => {
           <Text>Is this correct? If so you can log this food by pressing the button below!</Text>
           <Button onPress={setAsync}>Click here to log this item</Button>
 
-          {loggedFoods.map((food,i) => <Text>{food.label}</Text>)}
-        <Button onPress={getAsync}>Click here to log this item</Button>
-        <Button onPress={showState}>Click here to log this item</Button>
+          {show == true ? <View>
+            <Text>Food logged successfully</Text>
+            <Text>Food logged successfully</Text>
+          </View> : null}
 
-      <Button onPress={goToLog}>Click here to log this item</Button>
-				</ScrollView>
+        </Card>
 			}
 		</View>
 	)
@@ -222,6 +231,7 @@ const styles = StyleSheet.create({
   image: { width: 300, height: 300, backgroundColor: 'gray' },
   button: { padding: 13, margin: 15, backgroundColor: '#dddddd', borderRadius:4 },
   container: { flex: 1, backgroundColor: '#F3FFC6', alignItems: 'center', 		   justifyContent: 'center'},
+  card: { height: 400}
 });
 
 
