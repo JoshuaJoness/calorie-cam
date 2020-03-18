@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Animated, TextInput, StyleSheet, StatusBar } from 'react-native'
-import { Container, Header, Content, Icon, Picker, Form, Button, Text  } from "native-base";
+import { View, Image, Animated, TextInput, StyleSheet, StatusBar, Text } from 'react-native'
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
+import { Button } from '@ui-kitten/components';
 
 class Welcome extends React.Component {
 	static navigationOptions = {
@@ -48,7 +48,7 @@ render() {
 	if (!this.state.isReady) {
 		 return <AppLoading />;
 	 }
-	return(	
+	return(
 		<View style={styles.container}>
 			<StatusBar barStyle='dark-content'/>
 			<Text style={{fontFamily:'Pacifico', fontSize:60, marginTop:200, marginLeft:'auto', marginRight:'auto',marginBottom:40, color:"#FF7FAA"}}>Food Tracker</Text>
@@ -57,10 +57,10 @@ render() {
 					source={require('../assets/beet.png')}
 				/>
 			<Button
-				style={{backgroundColor:'#FF7FAA', width:200, marginLeft:'auto', marginRight:'auto', marginTop: 50}}
+				style={{backgroundColor:'#FF7FAA', borderColor: '#FF7FAA', width:200, marginLeft:'auto', marginRight:'auto', marginTop: 50}}
 				onPress={this.goToSearch}
 				>
-				<Text style={{color:'#FFF', fontWeight:'bold'}}>Log your first meal!</Text>
+				Log your first meal!
 			</Button>
 		</View>
 	)}
@@ -70,7 +70,7 @@ export default Welcome
 
 const styles = StyleSheet.create ({
 	container:{
-		backgroundColor:"#F3FFC6",
+
 		height:900
 	},
 	image: {

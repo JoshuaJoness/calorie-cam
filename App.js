@@ -8,11 +8,12 @@ import Scanner from './components/Scanner'
 import Results from './components/Results'
 import Search from './components/Search'
 import Stats from './components/Stats'
-import Predict from './components/Predict'
 import Predicts from './components/Predicts'
 import Log from './components/Log'
+import { BottomNav } from './components/BottomNav'
 
-import { ApplicationProvider } from '@ui-kitten/components';
+import { ApplicationProvider, BottomNavigation,
+  BottomNavigationTab, Icon } from '@ui-kitten/components';
 import { mapping, light as lightTheme } from '@eva-design/eva';
 
 
@@ -33,10 +34,12 @@ export default class App extends React.Component {
 		return(
 			<ApplicationProvider mapping={mapping} theme={lightTheme}>
 		    <RoutedApp/>
+				<BottomNav />
 		  </ApplicationProvider>
 		)
 	}
 }
+
 
 
 

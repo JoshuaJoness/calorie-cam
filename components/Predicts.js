@@ -5,8 +5,7 @@ import * as Permissions from 'expo-permissions'
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import axios from 'axios'
 import moment from 'moment'
-import { Card } from 'native-base'
-import { Input } from '@ui-kitten/components';
+import { Input, Card, Modal, Button } from '@ui-kitten/components';
 
 {/* Clarifai Import to recognize images */}
 const Clarifai = require('clarifai');
@@ -30,6 +29,7 @@ const Predicts = (props) => {
   const [loggedFoods, setLoggedFoods] = useState([])
   const [date, setDate] = useState(moment(Date.now()).format("dddd, MMMM Do YYYY, h:mm:ss a"))
   const [show, setShow] = useState(false)
+  const [showResults, setShowResults] = useState(false)
   const [object, setObject] = useState({label:'',calories:0,carbs:0,protein:0,fat:0})
   let arr = []
 
@@ -96,6 +96,7 @@ const Predicts = (props) => {
                 fat:res.data.hints[0].food.nutrients.FAT/100*grams,
                 date:date
               })
+              setShowResults(true)
 						})
 						.catch(err => {
 							console.log(err)})
@@ -127,8 +128,6 @@ const Predicts = (props) => {
       }
     }
 
-  {/* Everytime that I call goToLog(), the Log component does not render the props...BUG FIX */}
-
   const getAsync = async () => {
     try {
       const value = await AsyncStorage.getItem('foods');
@@ -136,6 +135,7 @@ const Predicts = (props) => {
         // We have data!!
         let parsed = JSON.parse(value)
         await setLoggedFoods(parsed)
+        setShow(true)
       }
     } catch (error) {
       console.log('Error')
@@ -145,17 +145,30 @@ const Predicts = (props) => {
   {/* This function navigates to the Log component and passes it the loggedFoods array */}
   const goToLog = () => {
     props.navigation.navigate('Log', {loggedFoods:loggedFoods})
+    setImage()
+    setImageToDisplay()
+    setLabel('')
+    setCarbs(0)
+    setProtein(0)
+    setFat(0)
+    setCalories(0)
+    setGrams('100')
+    setObject({label:'',calories:0,carbs:0,protein:0,fat:0})
+    setShow(false)
+    setShowResults(false)
   }
 
 	return(
 		<View style={styles.container}>
-			<StatusBar barStyle='dark-content'/>
-			<Image style={styles.image} source={{ uri: imageToDisplay }} />
-			<View style={styles.row}>
-				<Button onPress={takePicture}>Camera</Button>
-        {/* Here is where I can add the upload button */}
-				<Button onPress={predict.bind(this)}>Submit</Button>
-			</View>
+      <Card>
+			  <StatusBar barStyle='dark-content'/>
+			  <Image style={styles.image} source={{ uri: imageToDisplay }} />
+			  <View style={styles.row}>
+				  <Button onPress={takePicture} style={styles.buttons}>Camera</Button>
+          {/* Here is where I can add the upload button */}
+				  <Button onPress={predict.bind(this)} style={styles.buttons}>Submit</Button>
+			  </View>
+      </Card>
       {/* Here I am checking if the label variable exists (label is derived from the retrieving the nutritional information,
       so if it exists, the nutritional information has been received). We conditionally render the following: */}
 			{
@@ -165,78 +178,75 @@ const Predicts = (props) => {
 					<Text style={{fontWeight:'bold', fontSize:15, marginTop:5}}>2. Press 'Submit' to retrieve nutritional information!</Text>
 				</View>
 				:
-        <Card style={styles.card}>
-          {/* X button */}
-					<TouchableHighlight
-						onPress={() => {
-							setImage()
-							setImageToDisplay()
-							setLabel('')
-							setCarbs(0)
-							setProtein(0)
-							setFat(0)
-							setCalories(0)
-						}}
-						style={{marginTop:10, marginLeft: 'auto'}}>
-						<Ionicons name="md-close" size={26} />
-					</TouchableHighlight>
+        <Modal visible={showResults} >
+          <Card style={styles.card}>
+            {/* X button */}
+					  <TouchableHighlight
+						   onPress={() => {
+							   setImage()
+							   setImageToDisplay()
+							   setLabel('')
+							   setCarbs(0)
+							   setProtein(0)
+							   setFat(0)
+							   setCalories(0)
+                 setGrams('100')
+                 setObject({label:'',calories:0,carbs:0,protein:0,fat:0})
+						         }}
+						   style={{marginTop:10, marginLeft: 'auto'}}>
+						   <Ionicons name="md-close" size={26} />
+					  </TouchableHighlight>
 
-          <Text>We've identified this as a(n) <Text style={{fontWeight:'bold'}}>{label}</Text></Text>
+            <Image source={require('../assets/eating.png')} style={{width:300, height: 170, marginBottom:30}}></Image>
 
-          <View style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
-            <Text>Per </Text>
-              <TextInput
-                 style={{ height: 40, width:100,borderColor: 'gray', borderWidth: 1 }}
-                 onChangeText={text => onChangeText(text)}
-                 value={grams}
-                 inlineImageLeft="search_icon"
-               />
-             <Text> grams</Text>
-               <Input
+            <Text style={{marginBottom:30}}>We've identified this as a(n) <Text style={{fontWeight:'bold'}}>{label}</Text></Text>
+
+            <View style={{display:'flex', flexDirection:'row', alignItems:'center', marginBottom:30}}>
+              <Text>Per </Text>
+              <Input
                 placeholder='Place your Text'
-
+                caption="Change me!"
                 value={grams}
                 onChangeText={text => onChangeText(text)}
-              />
-          </View>
+                />
+              <Text> grams it contains:</Text>
+            </View>
 
+            <View style={{display:'flex', flexDirection:'row'}}>
+              <Text style={{fontWeight:'bold', width:70}}>Calories</Text>
+              <Text style={{fontWeight:'bold', width:70}}>Protein</Text>
+              <Text style={{fontWeight:'bold', width:70}}>Carbs</Text>
+              <Text style={{fontWeight:'bold', width:70}}>Fat</Text>
+            </View>
 
-					<Text style={{fontSize:18, marginTop:10}}><Text style={{fontWeight:'bold', fontSize:18}}>Calories: </Text>{calories*grams} per {grams} grams</Text>
-					<Text style={{fontSize:18, marginTop:10}}><Text style={{fontWeight:'bold', fontSize:18}}>Protein:</Text> {Math.round(protein)*grams}</Text>
-					<Text style={{fontSize:18, marginTop:10}}><Text style={{fontWeight:'bold', fontSize:18}}>Carbs:</Text> {carbs == 'NaN' ? N/A : Math.round(carbs)*grams}</Text>
-					<Text style={{fontSize:18, marginTop:10}}><Text style={{fontWeight:'bold', fontSize:18}}>Fat:</Text> {fat == NaN ? 'N/A' : Math.round(fat)*grams}</Text>
-          <Text>Is this correct? If so you can log this food by pressing the button below!</Text>
-          <Button onPress={setAsync}>Click here to log this item</Button>
+            <View style={{display:'flex', flexDirection:'row'}}>
+              <Text style={{width:70}}>{Math.round(calories*grams)}</Text>
+              <Text style={{width:70}}>{isNaN(protein) ? 'n/a' : Math.round(protein)*grams}</Text>
+              <Text style={{width:70}}>{isNaN(carbs) ? 'n/a' : Math.round(carbs)*grams}</Text>
+              <Text style={{width:70}}>{isNaN(fat) ? 'n/a' : Math.round(fat)*grams}</Text>
+            </View>
 
-          {show == true ? <View>
-            <Text>Food logged successfully</Text>
-            <Text>Food logged successfully</Text>
-          </View> : null}
+            <Button onPress={setAsync} style={{marginTop:50, width:300, marginLeft:12}}>Click here to log this item</Button>
 
-        </Card>
+            {show == true ? <View>
+              <Text style={{marginTop:20, marginBottom:10, textAlign:'center', fontWeight:'bold'}}>Food logged successfully</Text>
+              <Button style={{width:300, marginLeft:12}} onPress={goToLog}>Click here to view log</Button>
+            </View> : null}
+          </Card>
+        </Modal>
 			}
 		</View>
 	)
 }
 
-const Button = ({ onPress, children }) => (
-  <TouchableOpacity style={styles.button} onPress={onPress}>
-    <Text style={styles.text}>{children}</Text>
-  </TouchableOpacity>
-);
-
 const styles = StyleSheet.create({
   text: { fontSize: 21 },
-  row: { flexDirection: 'row' },
-  image: { width: 300, height: 300, backgroundColor: 'gray' },
-  button: { padding: 13, margin: 15, backgroundColor: '#dddddd', borderRadius:4 },
-  container: { flex: 1, backgroundColor: '#F3FFC6', alignItems: 'center', 		   justifyContent: 'center'},
-  card: { height: 400}
+  row: { display:'flex', flexDirection:'row', marginTop:20, marginLeft:10 },
+  buttons: { margin:20},
+  image: { width: 300, height: 300, backgroundColor: 'gray', borderBottomLeftRadius: 5, borderBottomRightRadius: 5, borderTopLeftRadius: 5, borderTopRightRadius: 5 },
+  container: { flex: 1, alignItems: 'center', 		   justifyContent: 'center'},
+  card: { height: 640}
 });
 
 
 export default Predicts
-
-// INCLUDE AMOUNT IN QUERY
-
-// <Button onPress={selectPicture}>Gallery</Button>
