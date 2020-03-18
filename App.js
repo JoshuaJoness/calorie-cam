@@ -18,7 +18,9 @@ const BottomNav = createAppContainer(createBottomTabNavigator({
 		Welcome: {screen: Welcome},
 		Search: {screen: Predicts},
 		Log: {screen: Log},
-	}))
+	},
+	{initialRouteName: 'Welcome'}
+))
 
 const RoutedApp = createAppContainer(createStackNavigator({
 	Welcome: {screen: Welcome},
