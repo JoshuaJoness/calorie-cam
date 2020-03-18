@@ -1,31 +1,28 @@
 import React, { useState, useEffect} from 'react';
 import { StyleSheet, Button, TextInput, Text, View, Image, ScrollView } from 'react-native';
 import axios from 'axios'
-import Card from './components/Card'
 import * as Font from 'expo-font';
 import Welcome from './components/Welcome'
-import Scanner from './components/Scanner'
-import Results from './components/Results'
-import Search from './components/Search'
-import Stats from './components/Stats'
 import Predicts from './components/Predicts'
 import Log from './components/Log'
-import { BottomNav } from './components/BottomNav'
 
-import { ApplicationProvider, BottomNavigation,
-  BottomNavigationTab, Icon } from '@ui-kitten/components';
+import { ApplicationProvider } from '@ui-kitten/components';
 import { mapping, light as lightTheme } from '@eva-design/eva';
-
 
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 
+import { createBottomTabNavigator } from 'react-navigation-tabs'
+
+const BottomNav = createAppContainer(createBottomTabNavigator({
+		Welcome: {screen: Welcome},
+		Search: {screen: Predicts},
+		Log: {screen: Log},
+	}))
+
 const RoutedApp = createAppContainer(createStackNavigator({
 	Welcome: {screen: Welcome},
 	Search: {screen: Predicts},
-	Results: {screen: Results},
-	Scanner: {screen: Scanner},
-	Stats: {screen: Stats},
 	Log: {screen: Log},
 }));
 
@@ -33,8 +30,7 @@ export default class App extends React.Component {
 	render() {
 		return(
 			<ApplicationProvider mapping={mapping} theme={lightTheme}>
-		    <RoutedApp/>
-				<BottomNav />
+		    <BottomNav/>
 		  </ApplicationProvider>
 		)
 	}

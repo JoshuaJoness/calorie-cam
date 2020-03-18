@@ -14,7 +14,8 @@ const Log = (props) => {
   let total3 = 0
 
   {/* Need to call getAsync on componentWillMount, then set variable to array OR access AsyncStorage directly */}
-  useEffect(() => {
+  useEffect(async () => {
+    await getAsync()
     console.log(props.navigation.state.params.loggedFoods);
     setLoggedFoods(props.navigation.state.params.loggedFoods)
     {/* Here I am setting the totals for each nutritional property */}
@@ -39,6 +40,19 @@ const Log = (props) => {
     setTotalFat(total3)
   },[])
 
+  const getAsync = async () => {
+    try {
+      const value = await AsyncStorage.getItem('foods');
+      if (value !== null) {
+        // We have data!!
+        let parsed = JSON.parse(value)
+        await setLoggedFoods(parsed)
+      }
+    } catch (error) {
+      console.log('Error')
+    }
+  };
+
   const clear = () => {
     {/* NEed to read up on this, may not be the best method to reset AsyncStorage */}
       AsyncStorage.clear()
@@ -52,7 +66,7 @@ const Log = (props) => {
   return(
     <ScrollView>
       {/*The X icon to clear the log*/}
-      <Card style={{height:800}}>
+      <Card style={{marginTop:100, borderBottom:0}}>
         <View style={{display:'flex', flexDirection:'row', padding:10, borderWidth: '1px', borderColor:'black'}}>
           <Text style={{width:90, fontWeight:'bold'}}>Food</Text>
           <Text style={{width:70, fontWeight:'bold'}}>Calories</Text>
