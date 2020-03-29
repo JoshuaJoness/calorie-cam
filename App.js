@@ -15,12 +15,26 @@ import {createStackNavigator} from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 
 const BottomNav = createAppContainer(createBottomTabNavigator({
-		Welcome: {screen: Welcome},
+		Welcome: {screen: Welcome,
+			navigationOptions: ({ navigation }) => ({
+	          title: 'Welcome'
+	        })},
 		Search: {screen: Predicts},
 		Log: {screen: Log},
 	},
-	{initialRouteName: 'Welcome'}
-))
+	{
+        initialRouteName: 'Welcome',
+        tabBarOptions: {
+          style: {
+           height: 55,
+           backgroundColor: '#232F34',
+				 },
+					activeTintColor: '#F9AA33'
+        }
+			}
+		))
+
+
 
 const RoutedApp = createAppContainer(createStackNavigator({
 	Welcome: {screen: Welcome},

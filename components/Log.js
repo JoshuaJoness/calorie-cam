@@ -15,33 +15,39 @@ const Log = (props) => {
 
   {/* Need to call getAsync on componentWillMount, then set variable to array OR access AsyncStorage directly */}
   useEffect(() => {
-    setTotals()
     getAsync()
-  },[props.navigation.state.params.loggedFood])
+    setTotals()
+
+  },[loggedFoods])
 
   const setTotals = () => {
-    console.log(props.navigation.state.params.loggedFoods);
-    setLoggedFoods(props.navigation.state.params.loggedFoods)
-    {/* Here I am setting the totals for each nutritional property */}
-    for (let i = 0; i < props.navigation.state.params.loggedFoods.length; i++) {
-      total = total + props.navigation.state.params.loggedFoods[i].calories
-    }
-    setTotalCalories(total)
+    console.log(loggedFoods);
 
-    for (let i = 0; i < props.navigation.state.params.loggedFoods.length; i++) {
-      total1 = total1 + props.navigation.state.params.loggedFoods[i].carbs
-    }
-    setTotalCarbs(total1)
+    if (loggedFoods !== []) {
+      {/* Here I am setting the totals for each nutritional property */}
+      for (let i = 0; i < loggedFoods.length; i++) {
+        total = total + loggedFoods[i].calories
+      }
+      setTotalCalories(total)
 
-    for (let i = 0; i < props.navigation.state.params.loggedFoods.length; i++) {
-      total2 = total2 + props.navigation.state.params.loggedFoods[i].protein
-    }
-    setTotalProtein(total2)
+      for (let i = 0; i < loggedFoods.length; i++) {
+        total1 = total1 + loggedFoods[i].carbs
+      }
+      setTotalCarbs(total1)
 
-    for (let i = 0; i < props.navigation.state.params.loggedFoods.length; i++) {
-      total3 = total3 + props.navigation.state.params.loggedFoods[i].fat
+      for (let i = 0; i < loggedFoods.length; i++) {
+        total2 = total2 + loggedFoods[i].protein
+      }
+      setTotalProtein(total2)
+
+      for (let i = 0; i < loggedFoods.length; i++) {
+        total3 = total3 + loggedFoods[i].fat
+      }
+      setTotalFat(total3)
     }
-    setTotalFat(total3)
+      else {
+        getAsync()
+      }
   }
 
   const getAsync = async () => {

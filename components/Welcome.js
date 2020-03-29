@@ -51,13 +51,13 @@ render() {
 	return(
 		<View style={styles.container}>
 			<StatusBar barStyle='dark-content'/>
-			<Text style={{fontFamily:'Pacifico', fontSize:60, marginTop:200, marginLeft:'auto', marginRight:'auto',marginBottom:40, color:"#FF7FAA"}}>Food Tracker</Text>
+			<Text style={{fontFamily:'Pacifico', fontSize:60, marginTop:200, marginLeft:'auto', marginRight:'auto',marginBottom:40, color:"#344955"}}>Food Tracker</Text>
 				<Image
 					style={styles.image}
 					source={require('../assets/beet.png')}
 				/>
 			<Button
-				style={{backgroundColor:'#FF7FAA', borderColor: '#FF7FAA', width:200, marginLeft:'auto', marginRight:'auto', marginTop: 50}}
+				style={{backgroundColor:'#344955', borderColor: '#344955', width:200, marginLeft:'auto', marginRight:'auto', marginTop: 50}}
 				onPress={this.goToSearch}
 				>
 				Log your first meal!
@@ -70,7 +70,7 @@ export default Welcome
 
 const styles = StyleSheet.create ({
 	container:{
-
+		backgroundColor: '#E6EED6',
 		height:900
 	},
 	image: {

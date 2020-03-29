@@ -55,21 +55,13 @@ const Predicts = (props) => {
 		setImageToDisplay(uri)
   };
 
-  {/*This function utilizes the Clarifai import to predict the food item in the picture*/}
-  const predicts = () => {
-    app.models.predict("bd367be194cf45149e75f01d59f77ba7", {base64:image})
-    .then(function(response){
-      console.log('***',response.outputs[0].data.concepts.map(e => e.name));
-    })
-  }
-
   {/* This is the function to change the nutrient amounts based on the grams selected by the user*/}
   const onChangeText = (amount) => {
     setGrams(amount)
     setObject({label:label, calories:calories*amount, carbs:carbs*amount, protein:protein*amount, fat:fat*amount})
   }
 
-  {/*This is function to recognize the image and retrieve the nutritional information*/}
+  {/*This is the function to recognize the image and retrieve the nutritional information*/}
 	const predict = () =>	{
 		{/*here we send the image encoded as base 64 to the clarifai API to determine what kind of food it is*/}
 		app.models.predict("bd367be194cf45149e75f01d59f77ba7", {base64:image}).then(
