@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Image, Animated, TextInput, StyleSheet, StatusBar, Text } from 'react-native'
+import React from 'react';
+import { View, ImageBackground, Animated, TextInput, StyleSheet, StatusBar, Text } from 'react-native'
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,7 +13,8 @@ class Welcome extends React.Component {
 
 	state={
 		isReady:null,
-		time:0
+		time:0,
+		pressed: false
 	}
 
 	async componentDidMount(){
@@ -40,6 +41,7 @@ class Welcome extends React.Component {
 	}
 
 	goToSearch = () => {
+		this.setState({pressed:true})
 		this.props.navigation.navigate('Search')
 	}
 
@@ -51,7 +53,18 @@ render() {
 	return(
 		<View style={styles.container}>
 			<StatusBar barStyle='dark-content'/>
-			<Text style={{fontFamily:'Pacifico', fontSize:60, marginTop:200, marginLeft:'auto', marginRight:'auto',marginBottom:40, color:"#344955"}}>Food Tracker</Text>
+				<View style={{marginTop:150}}>
+					<Text style={{fontFamily:'Pacifico', fontSize:60, marginLeft:'auto', marginRight:'auto',marginBottom:40, color:"#356859"}}>Calorie Cam</Text>
+					<ImageBackground tintColor="black" source={require("../assets/eating.png")} style={{height:300, marginTop:0, zIndex:-1000}}/>
+						<Button
+							style={{backgroundColor:'#FD5523', borderColor: '#FD5523', width:200, marginLeft:'auto', marginRight:'auto', marginTop : 50}}
+							onPress={this.goToSearch}
+							>
+							Log your first meal!
+						</Button>
+				</View>
+
+			{/*<Text style={{fontFamily:'Pacifico', fontSize:60, marginTop:200, marginLeft:'auto', marginRight:'auto',marginBottom:40, color:"#344955"}}>Food Tracker</Text>
 				<Image
 					style={styles.image}
 					source={require('../assets/beet.png')}
@@ -61,7 +74,7 @@ render() {
 				onPress={this.goToSearch}
 				>
 				Log your first meal!
-			</Button>
+			</Button>*/}
 		</View>
 	)}
 }
@@ -70,7 +83,7 @@ export default Welcome
 
 const styles = StyleSheet.create ({
 	container:{
-		backgroundColor: '#E6EED6',
+		backgroundColor: '#FFF',
 		height:900
 	},
 	image: {

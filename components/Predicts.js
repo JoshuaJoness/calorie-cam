@@ -152,7 +152,7 @@ const Predicts = (props) => {
 
 	return(
 		<View style={styles.container}>
-      <Card>
+      <Card style={{backgroundColor:'#FFFBE6'}}>
 			  <StatusBar barStyle='dark-content'/>
 			  <Image style={styles.image} source={{ uri: imageToDisplay }} />
 			  <View style={styles.row}>
@@ -218,11 +218,11 @@ const Predicts = (props) => {
               <Text style={{width:70}}>{isNaN(fat) ? 'n/a' : Math.round(fat)*grams}</Text>
             </View>
 
-            <Button onPress={setAsync} style={{marginTop:50, width:300, marginLeft:12}}>Click here to log this item</Button>
+            <Button onPress={setAsync} style={styles.buttons}>Click here to log this item</Button>
 
             {show == true ? <View>
               <Text style={{marginTop:20, marginBottom:10, textAlign:'center', fontWeight:'bold'}}>Food logged successfully</Text>
-              <Button style={{width:300, marginLeft:12}} onPress={goToLog}>Click here to view log</Button>
+              <Button style={styles.buttons} onPress={goToLog}>Click here to view log</Button>
             </View> : null}
           </Card>
         </Modal>
@@ -234,10 +234,10 @@ const Predicts = (props) => {
 const styles = StyleSheet.create({
   text: { fontSize: 21 },
   row: { display:'flex', flexDirection:'row', marginTop:20, marginLeft:10 },
-  buttons: { margin:20},
-  image: { width: 300, height: 300, backgroundColor: 'gray', borderBottomLeftRadius: 5, borderBottomRightRadius: 5, borderTopLeftRadius: 5, borderTopRightRadius: 5 },
-  container: { flex: 1, alignItems: 'center', 		   justifyContent: 'center'},
-  card: { height: 640}
+  buttons: { margin:20, backgroundColor:'#FD5523', borderColor:'#FD5523'},
+  image: { width: 300, height: 300, backgroundColor: '#ECECEC', borderBottomLeftRadius: 5, borderBottomRightRadius: 5, borderTopLeftRadius: 5, borderTopRightRadius: 5 },
+  container: { flex: 1, alignItems: 'center', justifyContent: 'center'},
+  card: { height: 640, backgroundColor:'#FFFBE6' }
 });
 
 

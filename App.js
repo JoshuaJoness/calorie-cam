@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react';
-import { StyleSheet, Button, TextInput, Text, View, Image, ScrollView } from 'react-native';
+import { StyleSheet, Button, TextInput, Text, View, ImageBackground, ScrollView } from 'react-native';
 import axios from 'axios'
 import * as Font from 'expo-font';
 import Welcome from './components/Welcome'
@@ -14,27 +14,41 @@ import {createStackNavigator} from 'react-navigation-stack';
 
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 
+import { Ionicons } from '@expo/vector-icons';
+
 const BottomNav = createAppContainer(createBottomTabNavigator({
-		Welcome: {screen: Welcome,
-			navigationOptions: ({ navigation }) => ({
-	          title: 'Welcome'
-	        })},
-		Search: {screen: Predicts},
-		Log: {screen: Log},
+	Welcome: {screen: Welcome,
+		navigationOptions: ({ navigation }) => ({
+			title: 'Welcome'
+		})
 	},
+
+	Search: {screen: Predicts,
+		navigationOptions: ({ navigation }) => ({
+			title: '',
+			tabBarIcon: ({ tintColor }) => (
+				<Ionicons name="md-camera" size={72} color={tintColor} style={{position:'absolute', marginBottom:10}} />
+			)
+		})
+	},
+
+	Log: {screen: Log},
+
+	},
+
 	{
-        initialRouteName: 'Welcome',
-        tabBarOptions: {
-          style: {
-           height: 55,
-           backgroundColor: '#232F34',
-				 },
-					activeTintColor: '#F9AA33'
-        }
-			}
-		))
-
-
+  	initialRouteName: 'Welcome',
+    tabBarOptions: {
+			showIcon: true,
+      style: {
+        height: 55,
+        backgroundColor: '#356859',
+			},
+			inactiveTintColor: '#FD5523',
+			activeTintColor: '#B9E4C9'
+      }
+		}
+	))
 
 const RoutedApp = createAppContainer(createStackNavigator({
 	Welcome: {screen: Welcome},
@@ -44,34 +58,23 @@ const RoutedApp = createAppContainer(createStackNavigator({
 
 export default class App extends React.Component {
 	render() {
+		state = {
+			active: false
+		}
+		
 		return(
 			<ApplicationProvider mapping={mapping} theme={lightTheme}>
-		    <BottomNav/>
+		    <BottomNav style={{zIndex:1000}}/>
 		  </ApplicationProvider>
 		)
 	}
 }
 
-
-
-
-// Old structure, prior to Navigator
-
-// const App = () => {
-//   return (
-// 	  <View style={styles.container}>
-// 			<Welcome />
-// 	  </View>
-//   )
-// }
-//
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#D3F09C',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-// });
-//
-// export default App
+// Code for TabBarLabel (i.e. to change tab bar navigation font size)
+{/*
+	Welcome: {screen: Welcome,
+		navigationOptions: ({ navigation }) => ({
+			tabBarLabel: <Text style={{ fontSize: 18, fontWeight: 'bold' }}> Welcome </Text>
+		})
+	},
+*/}

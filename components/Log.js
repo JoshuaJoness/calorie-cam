@@ -80,31 +80,34 @@ const Log = (props) => {
   return(
     <ScrollView>
       {/*The X icon to clear the log*/}
-      <Card style={{marginTop:100, borderBottom:0}}>
-        <View style={{display:'flex', flexDirection:'row', padding:10, borderWidth: '1px', borderColor:'black'}}>
-          <Text style={{width:90, fontWeight:'bold'}}>Food</Text>
-          <Text style={{width:70, fontWeight:'bold'}}>Calories</Text>
-          <Text style={{width:70, fontWeight:'bold'}}>Carbs</Text>
-          <Text style={{width:70, fontWeight:'bold'}}>Protein</Text>
-          <Text style={{width:70, fontWeight:'bold'}}>Fat</Text>
+      <Card style={{marginTop:100, borderBottom:0, backgroundColor:'#FFFBE6', width: '95%', marginLeft:'auto', marginRight:'auto'}}>
+        <View style={{display:'flex', flexDirection:'row', padding:10, borderBottomWidth: '1px', borderColor:'black'}}>
+          <Text style={{width:90, fontWeight:'bold', color:'#37966F'}}>Food</Text>
+          <Text style={{width:70, fontWeight:'bold', color:'#FD5523'}}>Calories</Text>
+          <Text style={{width:70, fontWeight:'bold', color:'#FD5523'}}>Carbs</Text>
+          <Text style={{width:70, fontWeight:'bold', color:'#FD5523'}}>Protein</Text>
+          <Text style={{width:70, fontWeight:'bold', color:'#FD5523'}}>Fat</Text>
         </View>
 
-        {loggedFoods.map((food,i) => <View style={{display:'flex', flexDirection:'row', padding:10}} key={i}>
+        {loggedFoods ?
+loggedFoods.map((food,i) => <View style={{display:'flex', flexDirection:'row', padding:10, color:'white'}} key={i}>
             <Text style={{width:110}}>{food.label}</Text>
             <Text style={{width:70}}>{Math.round(food.calories)}</Text>
             <Text style={{width:70}}>{Math.round(food.carbs)}</Text>
             <Text style={{width:70}}>{Math.round(food.protein)}</Text>
             <Text style={{width:70}}>{Math.round(food.fat)}</Text>
-          </View>)}
+          </View>)
+: null
+}
 
-          <View style={{display:'flex', flexDirection:'row', padding:10, borderWidth: '1px', borderColor:'black'}}>
+          <View style={{display:'flex', flexDirection:'row', padding:10, borderTopWidth: '1px', borderColor:'black'}}>
             <Text style={{width:110, fontWeight:'bold'}}>Totals:</Text>
             <Text style={{width:70, fontWeight:'bold'}}>{Math.round(totalCalories)}</Text>
             <Text style={{width:70, fontWeight:'bold'}}>{Math.round(totalCarbs)} g</Text>
             <Text style={{width:70, fontWeight:'bold'}}>{Math.round(totalProtein)} g</Text>
             <Text style={{width:70, fontWeight:'bold'}}>{Math.round(totalFat)} g</Text>
           </View>
-          <Button onPress={clear} style={{width:200, marginLeft:'auto', marginRight:'auto', marginTop:30}}>Click here to clear log</Button>
+          <Button onPress={clear} style={{width:200, marginLeft:'auto', marginRight:'auto', marginTop:30, backgroundColor:'#FD5523', borderColor:'#FD5523'}}>Click here to clear log</Button>
         </Card>
       </ScrollView>
     )
