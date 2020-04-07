@@ -178,10 +178,14 @@ setLabel('')
       so if it exists, the nutritional information has been received). We conditionally render the following: */}
 			{
 				!label ?
-				<View style={{marginTop:35}}>
-					<Text style={{fontWeight:'bold', fontSize:15}}>1. Press 'Camera' to take a picture of your food!</Text>
-					<Text style={{fontWeight:'bold', fontSize:15, marginTop:5}}>2. Press 'Submit' to retrieve nutritional information!</Text>
-				</View>
+        <View>
+  				<View style={{marginTop:35, padding: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5, borderBottomLeftRadius: 5, borderBottomRightRadius: 5, backgroundColor: '#B9E4C9'}}>
+  					<Text style={{fontWeight:'bold', fontSize:15, color: '#FD5523'}}>1. Press 'Camera' to take a picture of your food!</Text>
+          </View>
+          <View style={{marginTop:35, padding: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5, borderBottomLeftRadius: 5, borderBottomRightRadius: 5, backgroundColor: '#B9E4C9'}}>
+  					<Text style={{fontWeight:'bold', fontSize:15, marginTop:5, color: '#FD5523'}}>2. Press 'Submit' to retrieve nutritional information!</Text>
+  				</View>
+        </View>
 				:
         <Modal visible={showResults} >
           <Card style={styles.card}>
