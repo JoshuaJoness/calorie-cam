@@ -18,7 +18,7 @@ const Log = (props) => {
     getAsync()
     setTotals()
 
-  },[loggedFoods])
+  },[props])
 
   const setTotals = () => {
     console.log(loggedFoods);
@@ -89,16 +89,13 @@ const Log = (props) => {
           <Text style={{width:70, fontWeight:'bold', color:'#FD5523'}}>Fat</Text>
         </View>
 
-        {loggedFoods !== [] ?
-loggedFoods.map((food,i) => <View style={{display:'flex', flexDirection:'row', padding:10, color:'white'}} key={i}>
+        {loggedFoods.map((food,i) => <View style={{display:'flex', flexDirection:'row', padding:10, color:'white'}} key={i}>
             <Text style={{width:110}}>{food.label}</Text>
             <Text style={{width:70}}>{Math.round(food.calories)}</Text>
             <Text style={{width:70}}>{Math.round(food.carbs)}</Text>
             <Text style={{width:70}}>{Math.round(food.protein)}</Text>
             <Text style={{width:70}}>{Math.round(food.fat)}</Text>
-          </View>)
-: null
-}
+          </View>)}
 
           <View style={{display:'flex', flexDirection:'row', padding:10, borderTopWidth: '1px', borderColor:'black'}}>
             <Text style={{width:110, fontWeight:'bold'}}>Totals:</Text>

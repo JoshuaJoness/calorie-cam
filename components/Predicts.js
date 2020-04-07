@@ -68,7 +68,6 @@ const Predicts = (props) => {
 			function(response){
         {/*Once retrieving the predicted item, we set this as our 'tag' and send it to edamam API to retrieve the nutritional information*/}
 				let tag = response.rawData.outputs[0].data.concepts[0].name;
-					alert(`this is a ${tag}`)
 					axios.get(`https://api.edamam.com/api/food-database/parser?app_id=7ff1ee7e&app_key=aa4824adda205d7ff601301c08816573&ingr=${tag}`)
 						.then(res => {
 							console.log('Response data',res.data.hints[0].food.label,res.data.hints[0].food.nutrients.ENERC_KCAL, res.data.hints[0].food.nutrients.CHOCDF,res.data.hints[0].food.nutrients.PROCNT,res.data.hints[0].food.nutrients.FAT)
@@ -97,7 +96,23 @@ const Predicts = (props) => {
 			      console.log(err)
 			    }
 				)
+      {/* THIS RIGHT HERE was the key to saving my app :) */}
+      clear()
 			}
+
+const clear = () => {
+  setImage()
+  setImageToDisplay()
+  setLabel('')
+  setCarbs(0)
+  setProtein(0)
+  setFat(0)
+  setCalories(0)
+  setGrams('100')
+  setObject({label:'',calories:0,carbs:0,protein:0,fat:0})
+  setShow(false)
+  setShowResults(false)
+}
 
   {/*This function pushes the food object to the loggedFoods array and then stores it in AsyncStorage.
   getAsync() is then called, which checks AsyncStorage for a value, parses this values, and finally
@@ -111,8 +126,13 @@ const Predicts = (props) => {
       await AsyncStorage.setItem('foods', JSON.stringify(foods)).then(() => {
         console.log('foods updated')
         {/* I call getAsync here so that it sets the component's state at
-          the same time that the AsyncStorage is being updated */}
-          getAsync()
+          the same time that the AsyncStorage is being updated : 
+          Here I am trying to achieve setShow(true), playing around to get rid of error message 
+
+getAsync()
+*/}
+          
+         goToLog()
         })
       }
       catch(error) {
@@ -137,17 +157,10 @@ const Predicts = (props) => {
   {/* This function navigates to the Log component and passes it the loggedFoods array */}
   const goToLog = () => {
     props.navigation.navigate('Log', {loggedFoods:loggedFoods})
-    setImage()
-    setImageToDisplay()
-    setLabel('')
-    setCarbs(0)
-    setProtein(0)
-    setFat(0)
-    setCalories(0)
-    setGrams('100')
-    setObject({label:'',calories:0,carbs:0,protein:0,fat:0})
-    setShow(false)
-    setShowResults(false)
+setLabel('')
+
+{/* THIS IS THE PROBLEM RIGHT HERE! CAN I MOVE THIS SOMEWHERE ELSE? ON A COMPONENT WILL UPDATE? WILL MOUNT? */}
+
   }
 
 	return(
@@ -220,10 +233,10 @@ const Predicts = (props) => {
 
             <Button onPress={setAsync} style={styles.buttons}>Click here to log this item</Button>
 
-            {show == true ? <View>
+            {/* show == true ? <View>
               <Text style={{marginTop:20, marginBottom:10, textAlign:'center', fontWeight:'bold'}}>Food logged successfully</Text>
               <Button style={styles.buttons} onPress={goToLog}>Click here to view log</Button>
-            </View> : null}
+            </View> : null */}
           </Card>
         </Modal>
 			}
