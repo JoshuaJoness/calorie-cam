@@ -89,7 +89,7 @@ const Log = (props) => {
           <Text style={{width:70, fontWeight:'bold', color:'#FD5523'}}>Fat</Text>
         </View>
 
-        {loggedFoods ?
+        {loggedFoods !== [] ?
 loggedFoods.map((food,i) => <View style={{display:'flex', flexDirection:'row', padding:10, color:'white'}} key={i}>
             <Text style={{width:110}}>{food.label}</Text>
             <Text style={{width:70}}>{Math.round(food.calories)}</Text>
