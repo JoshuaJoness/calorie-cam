@@ -1,9 +1,19 @@
 {
   "expo": {
-    "name": "CalorieLog",
-    "slug": "calorie-log",
+    "name": "Calorie Cam",
+    "slug": "calorie-cam",
     "privacy": "public",
     "sdkVersion": "36.0.0",
+    "ios": {
+      "bundleIdentifier": "com.heroku.caloriecam",
+      "buildNumber": "1.0.0",
+      "supportsTablet": false
+    },
+    "android": {
+      "package": "com.joshjones.caloriecam",
+      "versionCode": 1,
+      "permissions": ["CAMERA"]
+    },
     "platforms": [
       "ios",
       "android",
@@ -11,7 +21,7 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icn.png",
     "splash": {
       "image": "./assets/eating.png",
       "resizeMode": "contain",
@@ -23,8 +33,7 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true
-    }
+    "description": "Count you calories by taking a picture of your food.",
+    "githubUrl": "https://github.com/JoshuaJoness/calorie-cam"
   }
 }
