@@ -1,59 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import { View, ImageBackground, Animated, TextInput, StyleSheet, StatusBar, Text } from 'react-native'
-import { AppLoading } from 'expo-app-loading';
-import * as Font from 'expo-font';
-import { Ionicons } from '@expo/vector-icons';
-import { Button } from '@ui-kitten/components';
-import { Audio } from 'expo-av';
+import { AppLoading } from 'expo-app-loading'
+import * as Font from 'expo-font'
+import { Ionicons } from '@expo/vector-icons'
+import { Button } from '@ui-kitten/components'
+import { Audio } from 'expo-av'
+import EatingImage from './animatedEating'
 
 const Welcome = () => {
-
-	const [fadeAnim, setFadeAnim] = useState(new Animated.Value(0.1));
-	const [fadeAnimTwo] = useState(new Animated.Value(0));
+	const [fadeAnim, setFadeAnim] = useState(new Animated.Value(0.1))
+	const [fadeAnimTwo] = useState(new Animated.Value(0))
 	
 	React.useEffect(() => {
 		Animated.timing(fadeAnim, {
 		  toValue: 1,
 		  duration: 3000,
-		}).start();
+		}).start()
 
 		setTimeout(() => {
 			setFadeAnim(1)
 		}, 3000)
-	  }, []);
+	  }, [])
 
 	  useEffect(() => {
 		if (fadeAnim === 1) {
 			Animated.timing(fadeAnimTwo, {
 				toValue: 1,
 				duration: 3000,
-			}).start();
+			}).start()
 		};
 	  }, [fadeAnim])
 
 	const navigationOptions = {
-		title: "iRecomp",
+		title: 'iRecomp',
 		headerShown: false
 	}
-	const [isReady, setIsReady] = useState(null);
-	const [time, setTime] = useState(0);
-	const [pressed, setPressed] = useState(false);
+	const [isReady, setIsReady] = useState(null)
+	const [time, setTime] = useState(0)
+	const [pressed, setPressed] = useState(false)
 
-	const [sound, setSound] = React.useState();
+	const [sound, setSound] = React.useState()
 
 	const playSound = async () => {
-		const { sound } = await Audio.Sound.createAsync(require('../assets/sounds/mns.m4a'));
-		setSound(sound);
-		await sound.playAsync(); 
-	};
+		const { sound } = await Audio.Sound.createAsync(require('../assets/sounds/mns.m4a'))
+		setSound(sound)
+		await sound.playAsync() 
+	}
 
 	useEffect(() => {
 		const initSound = async () => {
-			await playSound();
-		};
-		initSound();
-		return sound ? () => sound.unloadAsync() : undefined;
-	}, []);
+			await playSound()
+		}
+		initSound()
+		return sound ? () => sound.unloadAsync() : undefined
+	}, [])
 
 
 	
@@ -114,7 +114,7 @@ const Welcome = () => {
 
 
 	if (isReady) {
-		 return <AppLoading />;
+		 return <AppLoading />
 	 }
 	return(
 		<View style={styles.container}>
@@ -138,8 +138,9 @@ const Welcome = () => {
 					}}>
 					Welcome to Calorie Cam :)
 				</Animated.Text>
-					<Text style={{fontFamily:'Pacifico', fontSize:60, marginLeft:'auto', marginRight:'auto',marginBottom:40, color:"#356859"}}>Calorie Cam</Text>
-					<ImageBackground tintColor="black" source={require("../assets/images/customEating.svg")} style={{height:300, marginTop:0, zIndex:-1000}}/>
+				<EatingImage />
+					<Text style={{fontFamily:'Pacifico', fontSize:60, marginLeft:'auto', marginRight:'auto',marginBottom:40, color:'#356859'}}>Calorie Cam</Text>
+					<ImageBackground tintColor="black" source={require('../assets/images/customEating.svg')} style={{height:300, marginTop:0, zIndex:-1000}}/>
 						<Button
 							style={{backgroundColor:'#FD5523', borderColor: '#FD5523', width:200, marginLeft:'auto', marginRight:'auto', marginTop : 50}}
 							onPress={goToSearch}
