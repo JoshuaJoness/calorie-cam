@@ -1,64 +1,148 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, ImageBackground, Animated, TextInput, StyleSheet, StatusBar, Text } from 'react-native'
-import { AppLoading } from 'expo';
+import { AppLoading } from 'expo-app-loading';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from '@ui-kitten/components';
+import { Audio } from 'expo-av';
 
-class Welcome extends React.Component {
-	static navigationOptions = {
+const Welcome = () => {
+
+	const [fadeAnim, setFadeAnim] = useState(new Animated.Value(0.1));
+	const [fadeAnimTwo] = useState(new Animated.Value(0));
+	
+	React.useEffect(() => {
+		Animated.timing(fadeAnim, {
+		  toValue: 1,
+		  duration: 3000,
+		}).start();
+
+		setTimeout(() => {
+			setFadeAnim(1)
+		}, 3000)
+	  }, []);
+
+	  useEffect(() => {
+		if (fadeAnim === 1) {
+			Animated.timing(fadeAnimTwo, {
+				toValue: 1,
+				duration: 3000,
+			}).start();
+		};
+	  }, [fadeAnim])
+
+	const navigationOptions = {
 		title: "iRecomp",
 		headerShown: false
 	}
+	const [isReady, setIsReady] = useState(null);
+	const [time, setTime] = useState(0);
+	const [pressed, setPressed] = useState(false);
 
-	state={
-		isReady:null,
-		time:0,
-		pressed: false
-	}
+	const [sound, setSound] = React.useState();
 
-	async componentDidMount(){
-		await Font.loadAsync({
-			Roboto: require('native-base/Fonts/Roboto.ttf'),
-			Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
-			Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
-			...Ionicons.font,
-		});
-		this.setState({ isReady: true });
+	const playSound = async () => {
+		const { sound } = await Audio.Sound.createAsync(require('../assets/sounds/mns.m4a'));
+		setSound(sound);
+		await sound.playAsync(); 
+	};
 
-		let time = this.state.time
-		setTimeout(function(){
-			time = 1
-      this.setState({time:1});
-		}.bind(this),1000);
-
-		setTimeout(function(){
-			time = 2
-		  this.setState({time:2});
-		}.bind(this),1000);
+	useEffect(() => {
+		const initSound = async () => {
+			await playSound();
+		};
+		initSound();
+		return sound ? () => sound.unloadAsync() : undefined;
+	}, []);
 
 
-	}
+	
+
+
+	// useEffect(() => {
+	// 	const loadFonts = async () => {
+	// 		await Font.loadAsync({
+	// 			Roboto: require('native-base/Fonts/Roboto.ttf'),
+	// 			Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
+	// 			Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
+	// 			...Ionicons.font,
+	// 		});
+
+	// 		setIsReady({ isReady: true });
+	
+	// 		let time = time
+	// 		setTimeout(function(){
+	// 			time = 1
+	// 			setTime({time:1});
+	// 		}, 1000);
+	
+	// 		setTimeout(function(){
+	// 			time = 2
+	// 			setTime({time:2});
+	// 		}, 1000);
+	// 	}
+	// 	loadFonts()
+	// }, [])
+
+	// async componentDidMount(){
+	// 	await Font.loadAsync({
+	// 		Roboto: require('native-base/Fonts/Roboto.ttf'),
+	// 		Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
+	// 		Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
+	// 		...Ionicons.font,
+	// 	});
+	// 	this.setState({ isReady: true });
+
+	// 	let time = this.state.time
+	// 	setTimeout(function(){
+	// 		time = 1
+    //   this.setState({time:1});
+	// 	}.bind(this),1000);
+
+	// 	setTimeout(function(){
+	// 		time = 2
+	// 	  this.setState({time:2});
+	// 	}.bind(this),1000);
+
+
+	// }
 
 	goToSearch = () => {
-		this.setState({pressed:true})
+		setPressed({pressed:true})
 		this.props.navigation.navigate('Search')
 	}
 
 
-render() {
-	if (!this.state.isReady) {
+	if (isReady) {
 		 return <AppLoading />;
 	 }
 	return(
 		<View style={styles.container}>
 			<StatusBar barStyle='dark-content'/>
 				<View style={{marginTop:150}}>
+				<Animated.Text 
+					style={{
+						fontSize: 40,
+						marginLeft: 'auto',
+						marginRight: 'auto',
+						opacity: fadeAnim, // Bind opacity to animated value
+					}}>
+					Hello...
+				</Animated.Text>
+				<Animated.Text 
+					style={{
+						fontSize: 40,
+						marginLeft: 'auto',
+						marginRight: 'auto',
+						opacity: fadeAnimTwo, // Bind opacity to animated value
+					}}>
+					Welcome to Calorie Cam :)
+				</Animated.Text>
 					<Text style={{fontFamily:'Pacifico', fontSize:60, marginLeft:'auto', marginRight:'auto',marginBottom:40, color:"#356859"}}>Calorie Cam</Text>
-					<ImageBackground tintColor="black" source={require("../assets/eating.png")} style={{height:300, marginTop:0, zIndex:-1000}}/>
+					<ImageBackground tintColor="black" source={require("../assets/images/customEating.svg")} style={{height:300, marginTop:0, zIndex:-1000}}/>
 						<Button
 							style={{backgroundColor:'#FD5523', borderColor: '#FD5523', width:200, marginLeft:'auto', marginRight:'auto', marginTop : 50}}
-							onPress={this.goToSearch}
+							onPress={goToSearch}
 							>
 							Log your first meal!
 						</Button>
@@ -76,7 +160,7 @@ render() {
 				Log your first meal!
 			</Button>*/}
 		</View>
-	)}
+	)
 }
 
 export default Welcome
@@ -97,3 +181,4 @@ const styles = StyleSheet.create ({
 		fontSize:18, marginLeft:'auto', marginRight:'auto', marginTop:'10%'
 	}
 })
+
