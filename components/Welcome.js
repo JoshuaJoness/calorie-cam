@@ -12,7 +12,9 @@ import { useFonts } from 'expo-font'
 const Welcome = () => {
 	const [loaded] = useFonts({
 		Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
-		MontserratLight: require('../assets/fonts/Montserrat-Light.ttf')
+		MontserratLight: require('../assets/fonts/Montserrat-Light.ttf'),
+		MontserratMedium: require('../assets/fonts/Montserrat-Medium.ttf'),
+		MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf')
 	  })
 
 	//   ../assets/images/bg.png

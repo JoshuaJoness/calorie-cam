@@ -5,6 +5,7 @@ import * as Font from 'expo-font'
 import Welcome from './components/Welcome'
 import Predicts from './components/Predicts'
 import Log from './components/Log'
+import GetStarted from './components/getStarted'
 
 import { ApplicationProvider } from '@ui-kitten/components'
 import { mapping, light as lightTheme } from '@eva-design/eva'
@@ -17,7 +18,7 @@ import { createBottomTabNavigator } from 'react-navigation-tabs'
 import { Ionicons } from '@expo/vector-icons'
 
 const BottomNav = createAppContainer(createBottomTabNavigator({
-	Welcome: {screen: Welcome,
+	Welcome: {screen: GetStarted, // TODO change back to Welcome
 		navigationOptions: ({ navigation }) => ({
 			title: 'Welcome'
 		})
@@ -51,7 +52,7 @@ const BottomNav = createAppContainer(createBottomTabNavigator({
 	))
 
 const RoutedApp = createAppContainer(createStackNavigator({
-	Welcome: {screen: Welcome},
+	Welcome: {screen: GetStarted},
 	Search: {screen: Predicts},
 	Log: {screen: Log},
 }))
