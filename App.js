@@ -1,20 +1,20 @@
-import React, { useState, useEffect} from 'react';
-import { StyleSheet, Button, TextInput, Text, View, ImageBackground, ScrollView } from 'react-native';
+import React, { useState, useEffect} from 'react'
+import { StyleSheet, Button, TextInput, Text, View, ImageBackground, ScrollView } from 'react-native'
 import axios from 'axios'
-import * as Font from 'expo-font';
+import * as Font from 'expo-font'
 import Welcome from './components/Welcome'
 import Predicts from './components/Predicts'
 import Log from './components/Log'
 
-import { ApplicationProvider } from '@ui-kitten/components';
-import { mapping, light as lightTheme } from '@eva-design/eva';
+import { ApplicationProvider } from '@ui-kitten/components'
+import { mapping, light as lightTheme } from '@eva-design/eva'
 
-import {createAppContainer} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
+import {createAppContainer} from 'react-navigation'
+import {createStackNavigator} from 'react-navigation-stack'
 
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'
 
 const BottomNav = createAppContainer(createBottomTabNavigator({
 	Welcome: {screen: Welcome,
@@ -42,10 +42,10 @@ const BottomNav = createAppContainer(createBottomTabNavigator({
 			showIcon: true,
       style: {
         height: 55,
-        backgroundColor: '#356859',
+        backgroundColor: '#ffe8d6',
 			},
-			inactiveTintColor: '#FD5523',
-			activeTintColor: '#B9E4C9'
+			inactiveTintColor: 'transparent',
+			activeTintColor: 'transparent'
       }
 		}
 	))
@@ -54,7 +54,7 @@ const RoutedApp = createAppContainer(createStackNavigator({
 	Welcome: {screen: Welcome},
 	Search: {screen: Predicts},
 	Log: {screen: Log},
-}));
+}))
 
 export default class App extends React.Component {
 	render() {

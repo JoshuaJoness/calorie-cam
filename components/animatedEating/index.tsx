@@ -1,16 +1,30 @@
-import * as React from 'react'
+import React, { useEffect, useState } from 'react'
 import Svg, { Path, G, LinearGradient, Stop, Rect, Defs, ClipPath } from 'react-native-svg'
-import './animatedEating.css'
+import { Animated, Text, View, StyleSheet, Button } from 'react-native'
 
 const EatingImage = (props) => {
+  const [fadeAnim, setFadeAnim] = useState(new Animated.Value(0.1))
+
+  useEffect(() => {
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 3000,
+      }).start()
+	  }, [])
+
   return (
     <Svg width="300vw" height="300vh" viewBox="0 0 904 658" fill="none" xmlns="http://www.w3.org/2000/svg">
         <G id="customEating" clip-path="url(#clip0)">
           {/* <Path id="background" d="M532.89 18.43C464.41 44.88 390.18 46.11 321.23 21.21C223.51 -14.07 95.89 -23.1 48.6 138.57C-32.11 414.78 133.01 513.37 133.01 513.37C133.01 513.37 248.29 539.21 312.12 585.9C402.79 652.22 513.83 674.39 618.43 643.29C685.32 623.4 742.65 590.77 759.04 537.38C804.88 388.06 775.78 298.31 858.74 258.94C941.7 219.57 895.54 73.72 836.54 70.41C777.54 67.1 638.54 100.93 595.54 33.64C580.21 9.75002 556.76 9.20001 532.89 18.43Z" fill="url(#paint0_linear)"/> */}
-          <G id="chopsticks-girl">
+          {/* <Animated.View
+            style={{
+                opacity: fadeAnim, // Bind opacity to animated value
+              }}> */}
+        <G id="chopsticksGirl" rotation="-1" origin="1, 1">
           <Path id="Vector" d="M379.15 299.79L323.42 292.57C321.16 292.28 319.42 291.42 319.48 290.67C319.58 289.92 321.48 289.57 323.79 289.9L379.4 297.95C380.93 298.17 382.09 298.75 382.02 299.26C381.95 299.74 380.67 299.99 379.15 299.79Z" fill="#FFE8D6"/>
           <Path id="Vector_2" d="M379.5 300.74L323.6 294.96C321.33 294.73 319.4 295.15 319.33 295.9C319.26 296.65 321.07 297.44 323.33 297.64L379.33 302.64C380.87 302.78 382.13 302.48 382.18 301.97C382.22 301.43 381.03 300.9 379.5 300.74Z" fill="#FFE8D6"/>
         </G>
+        {/* </Animated.View> */}
         <G id="chopstick-guy">
           <Path id="Vector_3" d="M463.36 342.79L519.08 335.57C521.34 335.28 523.08 334.42 523.02 333.67C522.92 332.92 521.02 332.57 518.71 332.9L463.1 340.95C461.57 341.17 460.41 341.75 460.48 342.26C460.55 342.74 461.83 342.99 463.36 342.79Z" fill="#FFE8D6"/>
           <Path id="Vector_4" d="M463 343.74L518.9 337.96C521.17 337.73 523.1 338.15 523.17 338.9C523.24 339.65 521.43 340.44 519.17 340.64L463.17 345.64C461.63 345.78 460.37 345.48 460.32 344.97C460.28 344.43 461.47 343.9 463 343.74Z" fill="#FFE8D6"/>

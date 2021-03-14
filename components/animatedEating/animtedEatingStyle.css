@@ -1,0 +1,12 @@
+#chopsticks-girl {
+    animation: wheel 1s ease;
+}
+
+@keyframes hand{
+    from {
+        transform: rotateZ(0deg);
+    }
+    to {
+        transform: rotateZ(360deg);
+    }
+}

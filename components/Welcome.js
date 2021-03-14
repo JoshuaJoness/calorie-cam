@@ -6,30 +6,40 @@ import { Ionicons } from '@expo/vector-icons'
 import { Button } from '@ui-kitten/components'
 import { Audio } from 'expo-av'
 import EatingImage from './animatedEating'
+import { useFonts } from 'expo-font'
+
 
 const Welcome = () => {
-	const [fadeAnim, setFadeAnim] = useState(new Animated.Value(0.1))
-	const [fadeAnimTwo] = useState(new Animated.Value(0))
+	const [loaded] = useFonts({
+		Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
+		MontserratLight: require('../assets/fonts/Montserrat-Light.ttf')
+	  })
+
+	//   ../assets/images/bg.png
+
+
+	// const [fadeAnim, setFadeAnim] = useState(new Animated.Value(0.1))
+	// const [fadeAnimTwo] = useState(new Animated.Value(0))
 	
-	React.useEffect(() => {
-		Animated.timing(fadeAnim, {
-		  toValue: 1,
-		  duration: 3000,
-		}).start()
+	// React.useEffect(() => {
+	// 	Animated.timing(fadeAnim, {
+	// 	  toValue: 1,
+	// 	  duration: 3000,
+	// 	}).start()
 
-		setTimeout(() => {
-			setFadeAnim(1)
-		}, 3000)
-	  }, [])
+	// 	setTimeout(() => {
+	// 		setFadeAnim(1)
+	// 	}, 3000)
+	//   }, [])
 
-	  useEffect(() => {
-		if (fadeAnim === 1) {
-			Animated.timing(fadeAnimTwo, {
-				toValue: 1,
-				duration: 3000,
-			}).start()
-		};
-	  }, [fadeAnim])
+	//   useEffect(() => {
+	// 	if (fadeAnim === 1) {
+	// 		Animated.timing(fadeAnimTwo, {
+	// 			toValue: 1,
+	// 			duration: 3000,
+	// 		}).start()
+	// 	};
+	//   }, [fadeAnim])
 
 	const navigationOptions = {
 		title: 'iRecomp',
@@ -112,16 +122,28 @@ const Welcome = () => {
 		this.props.navigation.navigate('Search')
 	}
 
+	if (!loaded) {
+		return null
+	  }
 
 	if (isReady) {
 		 return <AppLoading />
 	 }
+
 	return(
 		<View style={styles.container}>
 			<StatusBar barStyle='dark-content'/>
-				<View style={{marginTop:150}}>
-				<Animated.Text 
+			<Text style={styles.title}>
+				Calorie Cam
+			</Text>
+			<Text style={styles.text}>
+				Helping you reach your caloric goals!
+			</Text>
+			{/* <ImageBackground source={require('../assets/images/bg.png')} style={{width: '100%', height: '100%', resizeMode: 'cover',}}> */}
+				{/* <View style={{marginTop:150}}> */}
+				{/* <Animated.Text 
 					style={{
+						fontFamily: 'Pacifico-Regular',
 						fontSize: 40,
 						marginLeft: 'auto',
 						marginRight: 'auto',
@@ -131,35 +153,16 @@ const Welcome = () => {
 				</Animated.Text>
 				<Animated.Text 
 					style={{
+						fontFamily: 'Pacifico',
 						fontSize: 40,
 						marginLeft: 'auto',
 						marginRight: 'auto',
 						opacity: fadeAnimTwo, // Bind opacity to animated value
 					}}>
 					Welcome to Calorie Cam :)
-				</Animated.Text>
+				</Animated.Text> */}
 				<EatingImage />
-					<Text style={{fontFamily:'Pacifico', fontSize:60, marginLeft:'auto', marginRight:'auto',marginBottom:40, color:'#356859'}}>Calorie Cam</Text>
-					<ImageBackground tintColor="black" source={require('../assets/images/customEating.svg')} style={{height:300, marginTop:0, zIndex:-1000}}/>
-						<Button
-							style={{backgroundColor:'#FD5523', borderColor: '#FD5523', width:200, marginLeft:'auto', marginRight:'auto', marginTop : 50}}
-							onPress={goToSearch}
-							>
-							Log your first meal!
-						</Button>
-				</View>
 
-			{/*<Text style={{fontFamily:'Pacifico', fontSize:60, marginTop:200, marginLeft:'auto', marginRight:'auto',marginBottom:40, color:"#344955"}}>Food Tracker</Text>
-				<Image
-					style={styles.image}
-					source={require('../assets/beet.png')}
-				/>
-			<Button
-				style={{backgroundColor:'#344955', borderColor: '#344955', width:200, marginLeft:'auto', marginRight:'auto', marginTop: 50}}
-				onPress={this.goToSearch}
-				>
-				Log your first meal!
-			</Button>*/}
 		</View>
 	)
 }
@@ -168,8 +171,9 @@ export default Welcome
 
 const styles = StyleSheet.create ({
 	container:{
-		backgroundColor: '#FFF',
-		height:900
+		backgroundColor: '#ffe8d6',
+		height: '100%',
+		paddingTop: '20%'
 	},
 	image: {
 		height:150,
@@ -178,8 +182,20 @@ const styles = StyleSheet.create ({
 		marginRight:'auto',
 
 	},
+	title: {
+		fontFamily: 'Pacifico',
+		color: '#6b705c',
+		fontSize: 70,
+		marginLeft: 'auto',
+		marginRight: 'auto',
+	},
 	text: {
-		fontSize:18, marginLeft:'auto', marginRight:'auto', marginTop:'10%'
-	}
+		fontFamily: 'MontserratLight',
+		color: '#6b705c',
+		fontSize: 35,
+		paddingLeft: '10%',
+		paddingRight: '10%',
+		textAlign: 'center',
+	},
 })
 
