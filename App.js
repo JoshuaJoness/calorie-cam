@@ -6,6 +6,7 @@ import Welcome from './components/Welcome'
 import Predicts from './components/Predicts'
 import Log from './components/Log'
 import GetStarted from './components/getStarted'
+import Form from './components/form'
 
 import { ApplicationProvider } from '@ui-kitten/components'
 import { mapping, light as lightTheme } from '@eva-design/eva'
