@@ -4,13 +4,15 @@ import { useFonts } from 'expo-font'
 import EatingImage from './animatedEating'
 import CustomButton from './button'
 
-const GetStarted = () => {
+const GetStarted = ({ navigation }) => {
     const [loaded] = useFonts({
 		Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
 		MontserratLight: require('../assets/fonts/Montserrat-Light.ttf'),
 		MontserratMedium: require('../assets/fonts/Montserrat-Medium.ttf'),
 		MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf')
 	  })
+
+	const goToLog = () => navigation.navigate('Log')
 
     if (!loaded)
       return null
@@ -22,7 +24,7 @@ const GetStarted = () => {
             <Text style={styles.subText}>
                 To begin, we just need to ask you a few questions which well help us tailor your weight loss journey.
             </Text>
-            <CustomButton text='Get Started' />
+            <CustomButton text='Get Started' onPress={goToLog} />
         </View>
     )
 }
