@@ -9,8 +9,7 @@ const Form = ({ navigation }) => {
 	const [age, setAge] = React.useState(null);
 	const [fadeAnim, setFadeAnim] = React.useState(new Animated.Value(0.1))
 	const [fadeAnimTwo] = React.useState(new Animated.Value(0))
-
-
+	const [fadeAnimThree] = React.useState(new Animated.Value(0))
 
     const [loaded] = useFonts({
 		Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
@@ -39,36 +38,40 @@ const Form = ({ navigation }) => {
 		};
 	  }, [fadeAnim])
 
+	React.useEffect(() => {
+		if (age) {
+			Animated.timing(fadeAnimThree, {
+				toValue: 1,
+				duration: 1000
+			}).start();
+		}
+	}, [age])
+
     if (!loaded)
       return null
 
-	if (!age) {
-		return (
-			<View style={styles.container}>
-				  <View style={{marginLeft:'auto', marginRight:'auto'}}>
-					<Birthday />
-				</View >
-				<Animated.Text style={{...styles.subText, opacity: fadeAnim}}>Great! Let's start with your 
-					<Text style={styles.boldText}> age </Text>
-				</Animated.Text>
-				<Animated.View style={{marginTop:'10%', marginRight:'auto', alignItems: 'left', width: '100%', opacity: fadeAnimTwo}}>
-					<TextInput 
-						style={styles.input} 
-						value={age} 
-						onSubmitEditing={(age) => setAge(age)}
-						  placeholder={'24'}
-					/>
-				</Animated.View>
-	
-				{/* <CustomButton text='Continue' onPress={() => navigation.navigate('FormTwo')} /> */}
-			</View>
-		)
-	} else {
-		return (
-			<FormTwo />
-		)
-	}
+	return (
+		<View style={styles.container}>
+				<View style={{marginLeft:'auto', marginRight:'auto'}}>
+				<Birthday />
+			</View >
+			<Animated.Text style={{ ...styles.subText, opacity: fadeAnim }}>Great! Let's start with your 
+				<Text style={styles.boldText}> age </Text>
+			</Animated.Text>
+			<Animated.View style={{marginTop:'10%', marginRight:'auto', alignItems: 'left', width: '100%', opacity: fadeAnimTwo}}>
+				<TextInput 
+					style={styles.input} 
+					value={age} 
+					onSubmitEditing={(age) => setAge(age)}
+						placeholder={'24'}
+				/>
+			</Animated.View>
 
+			<Animated.View style={{ marginTop: '5%', opacity: fadeAnimThree }}>
+				<CustomButton text='Continue' onPress={() => console.log(age, '****')} />
+			</Animated.View> 
+		</View>
+	)
 }
 
 export default Form

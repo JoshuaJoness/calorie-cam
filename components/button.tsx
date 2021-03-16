@@ -16,11 +16,14 @@ const CutomButton = ({ text, onPress }) => {
 	}
 
     return (
-        <TouchableHighlight style={styles.button} onPress={() => {
-            Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Heavy);
-            playSound();
-            onPress();
-        }}>
+        <TouchableHighlight 
+            style={styles.button} 
+            onPress={() => {
+                Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Heavy);
+                playSound();
+                onPress();
+            }}
+        >
             <Text style={styles.text}>{text}</Text>
         </TouchableHighlight> 
     )
