@@ -3,7 +3,7 @@ import Svg, { Path, G, LinearGradient, Stop, Rect, Defs, ClipPath } from 'react-
 import { Animated, Text, View, StyleSheet, Button } from 'react-native'
 
 
-const StatsImaGe = () => {
+const Stats = () => {
     return (
 <Svg width="250" height="250" viewBox="0 0 696 625" fill="none" xmlns="http://www.w3.orG/2000/SvG">
 <G id="undraw_Private_data_re_4eab 1" clip-Path="url(#clip0)">
@@ -51,4 +51,4 @@ const StatsImaGe = () => {
     )
 }
 
-export default StatsImaGe
+export default Stats;

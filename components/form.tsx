@@ -1,10 +1,17 @@
 import React from 'react'
-import { View, Text, Image, StyleSheet, TextInput } from 'react-native'
+import { View, Text, Image, StyleSheet, TextInput, Animated } from 'react-native'
 import { useFonts } from 'expo-font'
-import StatsImage from './stats'
+import Birthday from './birthday'
 import CustomButton from './button'
+import FormTwo from './formTwo'
 
-const Form = () => {
+const Form = ({ navigation }) => {
+	const [age, setAge] = React.useState(null);
+	const [fadeAnim, setFadeAnim] = React.useState(new Animated.Value(0.1))
+	const [fadeAnimTwo] = React.useState(new Animated.Value(0))
+
+
+
     const [loaded] = useFonts({
 		Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
 		MontserratLight: require('../assets/fonts/Montserrat-Light.ttf'),
@@ -12,28 +19,56 @@ const Form = () => {
 		MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf')
 	  })
 
+	React.useEffect(() => {
+		Animated.timing(fadeAnim, {
+		  toValue: 1,
+		  duration: 1500,
+		}).start()
+
+		setTimeout(() => {
+			setFadeAnim(1)
+		}, 1000)
+	  }, [])
+
+	React.useEffect(() => {
+		if (fadeAnim === 1) {
+			Animated.timing(fadeAnimTwo, {
+				toValue: 1,
+				duration: 1000,
+			}).start()
+		};
+	  }, [fadeAnim])
+
     if (!loaded)
       return null
 
-    return (
-        <View style={styles.container}>
-            <View style={{marginLeft:'auto', marginRight:'auto'}}>
-                <StatsImage />
-            </View >
-            <Text style={styles.subText}>First, please enter your 
-                <Text style={styles.boldText}> age, </Text>
-                <Text style={styles.boldText}> weight, </Text>
-                and 
-                <Text style={styles.boldText}> gender.</Text>
-            </Text>
-            <View style={{marginTop:'10%', marginRight:'auto', alignItems: 'left'}}>
-                <TextInput style={styles.boldText}>Age: </TextInput>
-                <TextInput style={styles.boldText}>Gender: </TextInput>
-                <TextInput style={styles.boldText}>Weight: </TextInput>
-            </View>
-			<CustomButton text='Continue' />
-        </View>
-    )
+	if (!age) {
+		return (
+			<View style={styles.container}>
+				  <View style={{marginLeft:'auto', marginRight:'auto'}}>
+					<Birthday />
+				</View >
+				<Animated.Text style={{...styles.subText, opacity: fadeAnim}}>Great! Let's start with your 
+					<Text style={styles.boldText}> age </Text>
+				</Animated.Text>
+				<Animated.View style={{marginTop:'10%', marginRight:'auto', alignItems: 'left', width: '100%', opacity: fadeAnimTwo}}>
+					<TextInput 
+						style={styles.input} 
+						value={age} 
+						onSubmitEditing={(age) => setAge(age)}
+						  placeholder={'24'}
+					/>
+				</Animated.View>
+	
+				{/* <CustomButton text='Continue' onPress={() => navigation.navigate('FormTwo')} /> */}
+			</View>
+		)
+	} else {
+		return (
+			<FormTwo />
+		)
+	}
+
 }
 
 export default Form
@@ -76,5 +111,18 @@ const styles = StyleSheet.create ({
         paddingLeft: '10%',
 		paddingRight: '10%',
 		textAlign: 'center',
-    }
+    },
+	input: {
+		backgroundColor: '#ffe8d6',
+		opacity: 1,
+		borderBottomColor: '#6B705C',
+		borderBottomWidth: 2,
+		borderRadius: 4,
+        height: 45,
+        width: 200,
+        marginTop: '5%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+		textAlign: 'center'
+	  },
 })

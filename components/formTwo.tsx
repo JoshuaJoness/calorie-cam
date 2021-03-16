@@ -1,9 +1,9 @@
 import React from 'react'
 import { View, Text, Image, StyleSheet, TextInput } from 'react-native'
 import { useFonts } from 'expo-font'
-import StatsImage from './stats'
+import Stats from './stats'
 
-const Form = () => {
+const FormTwo = () => {
     const [loaded] = useFonts({
 		Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
 		MontserratLight: require('../assets/fonts/Montserrat-Light.ttf'),
@@ -17,7 +17,7 @@ const Form = () => {
     return (
         <View style={styles.container}>
             <View style={{marginLeft:'auto', marginRight:'auto'}}>
-                <StatsImage />
+                <Stats />
             </View >
             <Text style={styles.subText}>First, please enter your 
                 <Text style={styles.boldText}> age, </Text>
@@ -34,7 +34,7 @@ const Form = () => {
     )
 }
 
-export default Form
+export default FormTwo
 
 const styles = StyleSheet.create ({
 	container:{

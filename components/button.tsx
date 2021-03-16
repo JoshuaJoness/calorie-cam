@@ -17,7 +17,7 @@ const CutomButton = ({ text, onPress }) => {
 
     return (
         <TouchableHighlight style={styles.button} onPress={() => {
-            Haptic.impact(Haptic.ImpactFeedbackStyle.Heavy);
+            Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Heavy);
             playSound();
             onPress();
         }}>

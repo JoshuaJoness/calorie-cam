@@ -12,8 +12,6 @@ const GetStarted = ({ navigation }) => {
 		MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf')
 	  })
 
-	const goToForm = () => navigation.navigate('Form')
-
     if (!loaded)
       return null
 
@@ -24,7 +22,7 @@ const GetStarted = ({ navigation }) => {
             <Text style={styles.subText}>
                 To begin, we just need to ask you a few questions which well help us tailor your weight loss journey.
             </Text>
-            <CustomButton text='Get Started' onPress={goToForm} />
+            <CustomButton text='Get Started' onPress={() => navigation.navigate('Form')} />
         </View>
     )
 }
@@ -42,7 +40,6 @@ const styles = StyleSheet.create ({
 		width:150,
 		marginLeft:'auto',
 		marginRight:'auto',
-
 	},
 	text: {
 		fontFamily: 'Pacifico',
