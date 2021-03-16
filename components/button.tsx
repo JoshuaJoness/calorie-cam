@@ -1,13 +1,28 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity, Text } from 'react-native'
+import * as Haptic from 'expo-haptics';
+import { Audio } from 'expo-av'
 import { Button } from '@ui-kitten/components'
+import { TouchableHighlight, TouchableNativeFeedback, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+
 
 const CutomButton = ({ text, onPress }) => {
-    const test = 'testing...'
+    const [sound, setSound] = useState()
+
+	const playSound = async () => {
+		const { sound } = await Audio.Sound.createAsync(require('../assets/sounds/click1.wav'))
+		// setSound(sound)
+		await sound.playAsync() 
+	}
+
     return (
-        <TouchableOpacity style={styles.button} onPress={() => onPress()}>
+        <TouchableHighlight style={styles.button} onPress={() => {
+            Haptic.impact(Haptic.ImpactFeedbackStyle.Heavy);
+            playSound();
+            onPress();
+        }}>
             <Text style={styles.text}>{text}</Text>
-        </TouchableOpacity> 
+        </TouchableHighlight> 
     )
 }
 

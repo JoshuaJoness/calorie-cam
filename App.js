@@ -19,11 +19,15 @@ import { createBottomTabNavigator } from 'react-navigation-tabs'
 import { Ionicons } from '@expo/vector-icons'
 
 const BottomNav = createAppContainer(createBottomTabNavigator({
-	Welcome: {screen: GetStarted, // TODO change back to Welcome
+	Welcome: {screen: Welcome, // TODO change back to Welcome
 		navigationOptions: ({ navigation }) => ({
 			title: 'Welcome'
 		})
 	},
+
+	GetStarted: {screen: GetStarted},
+
+	Form: {screen: Form},
 
 	Search: {screen: Predicts,
 		navigationOptions: ({ navigation }) => ({
@@ -53,9 +57,11 @@ const BottomNav = createAppContainer(createBottomTabNavigator({
 	))
 
 const RoutedApp = createAppContainer(createStackNavigator({
-	Welcome: {screen: GetStarted},
-	Search: {screen: Predicts},
-	Log: {screen: Log},
+	Welcome: {screen: Welcome},
+	// Search: {screen: Predicts},
+	// Log: {screen: Log},
+	GetStarted: {screen: GetStarted},
+	Form: {screen: Form},
 }))
 
 export default class App extends React.Component {
@@ -66,8 +72,8 @@ export default class App extends React.Component {
 		
 		return(
 			<ApplicationProvider mapping={mapping} theme={lightTheme}>
-		    <BottomNav style={{zIndex:1000}}/>
-		  </ApplicationProvider>
+		    	<BottomNav style={{zIndex:1000}}/>
+		  	</ApplicationProvider>
 		)
 	}
 }

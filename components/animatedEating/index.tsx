@@ -9,6 +9,7 @@ const EatingImage = (props) => {
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 3000,
+        useNativeDriver: true, // TODO ?
       }).start()
 	  }, [])
 

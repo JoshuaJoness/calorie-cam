@@ -2,7 +2,6 @@ import React from 'react'
 import { View, Text, Image, StyleSheet, TextInput } from 'react-native'
 import { useFonts } from 'expo-font'
 import StatsImage from './stats'
-import CustomButton from './button'
 
 const Form = () => {
     const [loaded] = useFonts({
@@ -31,7 +30,6 @@ const Form = () => {
                 <TextInput style={styles.boldText}>Gender: </TextInput>
                 <TextInput style={styles.boldText}>Weight: </TextInput>
             </View>
-			<CustomButton text='Continue' />
         </View>
     )
 }

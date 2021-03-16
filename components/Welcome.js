@@ -61,7 +61,7 @@ const Welcome = () => {
 
 	useEffect(() => {
 		const initSound = async () => {
-			await playSound()
+			// await playSound()
 		}
 		initSound()
 		return sound ? () => sound.unloadAsync() : undefined
