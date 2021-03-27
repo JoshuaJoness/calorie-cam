@@ -71,9 +71,9 @@ const Gender = ({ navigation }) => {
 				</Picker>
 			</Animated.View>
 
-			<Animated.View style={{ marginTop: '35%', opacity: fadeAnimThree }}>
-				<CustomButton text='Continue' onPress={() => navigation.navigate('BodyStats')} />
-			</Animated.View> 
+			<View style={{ marginTop: '35%' }}>
+				<CustomButton text='Continue' onPress={() => navigation.navigate('Height')} />
+			</View> 
 		</View>
 	)
 }
@@ -84,7 +84,7 @@ const styles = StyleSheet.create ({
 	container:{
 		backgroundColor: '#ffe8d6',
 		height: '100%',
-		paddingTop: '20%'
+		paddingTop: '5%'
 	},
 	imgender: {
 		height:150,

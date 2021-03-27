@@ -6,7 +6,9 @@ import Welcome from './components/Welcome';
 import GetStarted from './components/getStarted';
 import Age from './components/age';
 import Gender from './components/gender';
-import BodyStats from './components/bodyStats';
+import Height from './components/height';
+import Weight from './components/weight';
+import ActivityLevel from './components/activityLevel';
 
 const Stack = createStackNavigator();
 
@@ -43,8 +45,26 @@ function App() {
               }
           }}/>
           <Stack.Screen 
-            name="BodyStats" 
-            component={BodyStats} 
+            name="Height" 
+            component={Height} 
+            options={{
+              title: '',
+              headerStyle: {
+                backgroundColor: '#ffe8d6'
+              }
+          }}/>
+          <Stack.Screen 
+            name="Weight" 
+            component={Weight} 
+            options={{
+              title: '',
+              headerStyle: {
+                backgroundColor: '#ffe8d6'
+              }
+          }}/>
+          <Stack.Screen 
+            name="ActivityLevel" 
+            component={ActivityLevel} 
             options={{
               title: '',
               headerStyle: {

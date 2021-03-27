@@ -1,12 +1,12 @@
 import React from 'react'
-import { View, Text, Image, StyleSheet, TextInput, Animated } from 'react-native'
+import { View, Text, StyleSheet, TextInput, Animated } from 'react-native'
 import { useFonts } from 'expo-font'
-import Birthday from './svgs/birthday'
+import Pushup from './svgs/pushup'
 import CustomButton from './button'
 
 
-const Age = ({ navigation }) => {
-	const [age, setAge] = React.useState(null);
+const Weight = ({ navigation }) => {
+	const [weight, setWeight] = React.useState(null);
 	const [fadeAnim, setFadeAnim] = React.useState(new Animated.Value(0.1))
 	const [fadeAnimTwo] = React.useState(new Animated.Value(0))
 	const [fadeAnimThree] = React.useState(new Animated.Value(0))
@@ -29,56 +29,54 @@ const Age = ({ navigation }) => {
 		}, 1000)
 	  }, [])
 
-	React.useEffect(() => {
-		if (fadeAnim === 1) {
-			Animated.timing(fadeAnimTwo, {
-				toValue: 1,
-				duration: 500,
-			}).start()
-		};
-	  }, [fadeAnim])
+	// React.useEffect(() => {
+	// 	if (fadeAnim === 1) {
+	// 		Animated.timing(fadeAnimTwo, {
+	// 			toValue: 1,
+	// 			duration: 500,
+	// 		}).start()
+	// 	};
+	//   }, [fadeAnim])
 
-	React.useEffect(() => {
-		if (age) {
-			Animated.timing(fadeAnimThree, {
-				toValue: 1,
-				duration: 500
-			}).start();
-		}
-	}, [age])
+	// React.useEffect(() => {
+	// 	if (gender) {
+	// 		Animated.timing(fadeAnimThree, {
+	// 			toValue: 1,
+	// 			duration: 500,
+	// 		}).start();
+	// 	}
+	// }, [gender])
 
     if (!loaded)
       return null
 
 	return (
 		<View style={styles.container}>
-				<View style={{marginLeft:'auto', marginRight:'auto'}}>
-				<Birthday />
+			<View style={{marginLeft:'auto', marginRight:'auto'}}>
+				<Pushup />
 			</View >
-			<Animated.Text style={{ ...styles.subText, opacity: fadeAnim }}>Great! Let's start with your 
-				<Text style={styles.boldText}> age </Text>
-			</Animated.Text>
-			<Animated.View style={{marginTop:'10%', marginRight:'auto', alignItems: 'left', width: '100%', opacity: fadeAnimTwo}}>
-				<TextInput 
-					style={styles.input} 
-					value={age} 
-					onSubmitEditing={(age) => setAge(age)}
-						placeholder={'24'}
-				/>
-			</Animated.View>
 
-			<Animated.View style={{ marginTop: '5%', opacity: fadeAnimThree }}>
-				<CustomButton 
-					text='Continue' 
-					disabled={!age}
-					onPress={() => navigation.navigate('Gender')} 
-				/>
-			</Animated.View> 
+			<Animated.Text style={{ ...styles.subText, opacity: fadeAnim }}>Enter your
+				<Text style={styles.boldText}> weight </Text>
+			</Animated.Text>
+            
+            <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>  
+                <TextInput 
+                        style={styles.input} 
+                        value={weight} 
+                        onSubmitEditing={(weight) => setWeight(weight)}
+                            placeholder={'180lbs'}
+                    />
+                </View>
+            <View style={{ marginTop: 50 }}>
+                <CustomButton text='Continue' onPress={() => navigation.navigate('ActivityLevel')} disabled={!weight}/>
+            </View>
+ 
 		</View>
 	)
 }
 
-export default Age
+export default Weight
 
 const styles = StyleSheet.create ({
 	container:{
@@ -86,7 +84,7 @@ const styles = StyleSheet.create ({
 		height: '100%',
 		paddingTop: '5%'
 	},
-	image: {
+	imgender: {
 		height:150,
 		width:150,
 		marginLeft:'auto',
