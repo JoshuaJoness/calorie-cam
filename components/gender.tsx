@@ -1,12 +1,12 @@
 import React from 'react'
-import { View, Text, Image, StyleSheet, TextInput, Animated } from 'react-native'
+import { View, Text, StyleSheet, Picker, Animated } from 'react-native'
 import { useFonts } from 'expo-font'
-import Birthday from './birthday'
+import Girl from './svgs/girl'
 import CustomButton from './button'
-import FormTwo from './formTwo'
 
-const Form = ({ navigation }) => {
-	const [age, setAge] = React.useState(null);
+
+const Gender = ({ navigation }) => {
+	const [gender, setGender] = React.useState(null);
 	const [fadeAnim, setFadeAnim] = React.useState(new Animated.Value(0.1))
 	const [fadeAnimTwo] = React.useState(new Animated.Value(0))
 	const [fadeAnimThree] = React.useState(new Animated.Value(0))
@@ -21,7 +21,7 @@ const Form = ({ navigation }) => {
 	React.useEffect(() => {
 		Animated.timing(fadeAnim, {
 		  toValue: 1,
-		  duration: 1500,
+		  duration: 500,
 		}).start()
 
 		setTimeout(() => {
@@ -33,48 +33,52 @@ const Form = ({ navigation }) => {
 		if (fadeAnim === 1) {
 			Animated.timing(fadeAnimTwo, {
 				toValue: 1,
-				duration: 1000,
+				duration: 500,
 			}).start()
 		};
 	  }, [fadeAnim])
 
 	React.useEffect(() => {
-		if (age) {
+		if (gender) {
 			Animated.timing(fadeAnimThree, {
 				toValue: 1,
-				duration: 1000
+				duration: 500,
 			}).start();
 		}
-	}, [age])
+	}, [gender])
 
     if (!loaded)
       return null
 
 	return (
 		<View style={styles.container}>
-				<View style={{marginLeft:'auto', marginRight:'auto'}}>
-				<Birthday />
+			<View style={{marginLeft:'auto', marginRight:'auto'}}>
+				<Girl />
 			</View >
-			<Animated.Text style={{ ...styles.subText, opacity: fadeAnim }}>Great! Let's start with your 
-				<Text style={styles.boldText}> age </Text>
+
+			<Animated.Text style={{ ...styles.subText, opacity: fadeAnim }}>Next, please select a 
+				<Text style={styles.boldText}> gender </Text>
 			</Animated.Text>
-			<Animated.View style={{marginTop:'10%', marginRight:'auto', alignItems: 'left', width: '100%', opacity: fadeAnimTwo}}>
-				<TextInput 
-					style={styles.input} 
-					value={age} 
-					onSubmitEditing={(age) => setAge(age)}
-						placeholder={'24'}
-				/>
+
+			<Animated.View style={{ marginRight:'auto', alignItems: 'left', width: '100%', opacity: fadeAnimTwo }}>
+				<Picker
+					selectedValue={gender}
+					style={styles.picker}
+					onValueChange={(itemValue, itemIndex) => setGender(itemValue)}
+				>
+					<Picker.Item label="Male" value="male" />
+					<Picker.Item label="Female" value="female" />
+				</Picker>
 			</Animated.View>
 
-			<Animated.View style={{ marginTop: '5%', opacity: fadeAnimThree }}>
-				<CustomButton text='Continue' onPress={() => console.log(age, '****')} />
+			<Animated.View style={{ marginTop: '35%', opacity: fadeAnimThree }}>
+				<CustomButton text='Continue' onPress={() => navigation.navigate('BodyStats')} />
 			</Animated.View> 
 		</View>
 	)
 }
 
-export default Form
+export default Gender
 
 const styles = StyleSheet.create ({
 	container:{
@@ -82,7 +86,7 @@ const styles = StyleSheet.create ({
 		height: '100%',
 		paddingTop: '20%'
 	},
-	image: {
+	imgender: {
 		height:150,
 		width:150,
 		marginLeft:'auto',
@@ -115,15 +119,12 @@ const styles = StyleSheet.create ({
 		paddingRight: '10%',
 		textAlign: 'center',
     },
-	input: {
+	picker: {
 		backgroundColor: '#ffe8d6',
 		opacity: 1,
-		borderBottomColor: '#6B705C',
-		borderBottomWidth: 2,
 		borderRadius: 4,
         height: 45,
         width: 200,
-        marginTop: '5%',
         marginLeft: 'auto',
         marginRight: 'auto',
 		textAlign: 'center'

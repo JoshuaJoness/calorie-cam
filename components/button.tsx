@@ -6,7 +6,7 @@ import { Button } from '@ui-kitten/components'
 import { TouchableHighlight, TouchableNativeFeedback, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 
-const CutomButton = ({ text, onPress }) => {
+const CutomButton = ({ text, onPress, disabled }) => {
     const [sound, setSound] = useState()
 
 	const playSound = async () => {
@@ -23,6 +23,7 @@ const CutomButton = ({ text, onPress }) => {
                 playSound();
                 onPress();
             }}
+            disabled={disabled}
         >
             <Text style={styles.text}>{text}</Text>
         </TouchableHighlight> 

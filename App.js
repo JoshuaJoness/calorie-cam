@@ -1,88 +1,59 @@
-import React, { useState, useEffect} from 'react'
-import { StyleSheet, Button, TextInput, Text, View, ImageBackground, ScrollView } from 'react-native'
-import axios from 'axios'
-import * as Font from 'expo-font'
-import Welcome from './components/Welcome'
-import Predicts from './components/Predicts'
-import Log from './components/Log'
-import GetStarted from './components/getStarted'
-import Form from './components/form'
+import * as React from 'react';
+import { View, Text } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import Welcome from './components/Welcome';
+import GetStarted from './components/getStarted';
+import Age from './components/age';
+import Gender from './components/gender';
+import BodyStats from './components/bodyStats';
 
-import { ApplicationProvider } from '@ui-kitten/components'
-import { mapping, light as lightTheme } from '@eva-design/eva'
+const Stack = createStackNavigator();
 
-import {createAppContainer} from 'react-navigation'
-import {createStackNavigator} from 'react-navigation-stack'
-
-import { createBottomTabNavigator } from 'react-navigation-tabs'
-
-import { Ionicons } from '@expo/vector-icons'
-
-const BottomNav = createAppContainer(createBottomTabNavigator({
-	Welcome: {screen: Welcome, // TODO change back to Welcome
-		navigationOptions: ({ navigation }) => ({
-			title: 'Welcome'
-		})
-	},
-
-	GetStarted: {screen: GetStarted},
-
-	Form: {screen: Form},
-
-	Search: {screen: Predicts,
-		navigationOptions: ({ navigation }) => ({
-			title: '',
-			tabBarIcon: ({ tintColor }) => (
-				<Ionicons name="md-camera" size={72} color={tintColor} style={{position:'absolute', marginBottom:10}} />
-			)
-		})
-	},
-
-	Log: {screen: Log},
-
-	},
-
-	{
-  	initialRouteName: 'Welcome',
-    tabBarOptions: {
-			showIcon: true,
-      style: {
-        height: 55,
-        backgroundColor: '#ffe8d6',
-			},
-			inactiveTintColor: 'transparent',
-			activeTintColor: 'transparent'
-      }
-		}
-	))
-
-const RoutedApp = createAppContainer(createStackNavigator({
-	Welcome: {screen: Welcome},
-	// Search: {screen: Predicts},
-	// Log: {screen: Log},
-	GetStarted: {screen: GetStarted},
-	Form: {screen: Form},
-}))
-
-export default class App extends React.Component {
-	render() {
-		state = {
-			active: false
-		}
-		
-		return(
-			<ApplicationProvider mapping={mapping} theme={lightTheme}>
-		    	<BottomNav style={{zIndex:1000}}/>
-		  	</ApplicationProvider>
-		)
-	}
+function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="GetStarted">
+        <Stack.Screen name="Welcome" component={Welcome} />
+        <Stack.Screen 
+          name="GetStarted" 
+          component={GetStarted} 
+          options={{
+            title: '',
+            headerStyle: {
+              backgroundColor: '#ffe8d6'
+            }
+          }}/>
+        <Stack.Screen 
+          name="Age" 
+          component={Age} 
+          options={{
+            title: '',
+            headerStyle: {
+              backgroundColor: '#ffe8d6'
+            }
+          }}/>
+          <Stack.Screen 
+            name="Gender" 
+            component={Gender} 
+            options={{
+              title: '',
+              headerStyle: {
+                backgroundColor: '#ffe8d6'
+              }
+          }}/>
+          <Stack.Screen 
+            name="BodyStats" 
+            component={BodyStats} 
+            options={{
+              title: '',
+              headerStyle: {
+                backgroundColor: '#ffe8d6'
+              }
+          }}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }
 
-// Code for TabBarLabel (i.e. to change tab bar navigation font size)
-{/*
-	Welcome: {screen: Welcome,
-		navigationOptions: ({ navigation }) => ({
-			tabBarLabel: <Text style={{ fontSize: 18, fontWeight: 'bold' }}> Welcome </Text>
-		})
-	},
-*/}
+export default App;

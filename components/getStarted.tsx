@@ -22,7 +22,7 @@ const GetStarted = ({ navigation }) => {
             <Text style={styles.subText}>
                 To begin, we just need to ask you a few questions which well help us tailor your weight loss journey.
             </Text>
-            <CustomButton text='Get Started' onPress={() => navigation.navigate('Form')} />
+            <CustomButton text='Get Started' onPress={() => navigation.navigate('Age')} />
         </View>
     )
 }
