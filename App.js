@@ -8,6 +8,7 @@ import Gender from './components/gender';
 import Height from './components/height';
 import Weight from './components/weight';
 import ActivityLevel from './components/activityLevel';
+import Results from './components/results';
 
 import { StateProvider } from './store.js';
 
@@ -17,7 +18,7 @@ function App() {
   return (
       <StateProvider>
           <NavigationContainer>
-              <Stack.Navigator initialRouteName="GetStarted">
+              <Stack.Navigator initialRouteName="Results">
                   <Stack.Screen name="Welcome" component={Welcome} />
                   <Stack.Screen 
                     name="GetStarted" 
@@ -67,6 +68,15 @@ function App() {
                     <Stack.Screen 
                       name="ActivityLevel" 
                       component={ActivityLevel} 
+                      options={{
+                        title: '',
+                        headerStyle: {
+                          backgroundColor: '#ffe8d6'
+                        }
+                    }}/>
+                    <Stack.Screen 
+                      name="Results" 
+                      component={Results} 
                       options={{
                         title: '',
                         headerStyle: {

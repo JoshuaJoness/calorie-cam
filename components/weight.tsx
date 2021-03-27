@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, TextInput, Animated, AsyncStorage } from 'react-native'
+import { View, Text, StyleSheet, TextInput, Animated, AsyncStorage, Alert } from 'react-native'
 import { useFonts } from 'expo-font'
 import Pushup from './svgs/pushup'
 import CustomButton from './button'
@@ -64,8 +64,16 @@ const Weight = ({ navigation }) => {
                 <TextInput 
                         style={styles.input} 
                         value={weight} 
-                        onSubmitEditing={(weight) => setWeight(weight)}
-                            placeholder={'180lbs'}
+                        onChangeText={weight => {
+                            const weightToNumber = Number(weight);
+                            if (!weightToNumber && weight !== '') {
+                                Alert.alert('Please enter numbers only.');
+                                setWeight(null);
+                            } else {
+                                setWeight(weight)
+                            }
+                        }}
+                        placeholder={'180lbs'}
                     />
                 </View>
             <View style={{ marginTop: 50 }}>

@@ -74,7 +74,7 @@ const ActivityLevel = ({ navigation }) => {
 					style={styles.picker}
 					onValueChange={(itemValue, itemIndex) => setActivityLevel(itemValue)}
 				>
-                    { ACTIVITY_LEVELS.map(({value,label}) => <Picker.Item value={value} label={label} />) }
+                    { ACTIVITY_LEVELS.map(({value,label}) => <Picker.Item value={value} label={label} key={value} />) }
 				</Picker>
 
             </View>
@@ -88,7 +88,7 @@ const ActivityLevel = ({ navigation }) => {
                         } catch (e) {
                             console.log(e)
                         }
-                        navigation.navigate('Weight');
+                        navigation.navigate('Results');
                     }} 
                     disabled={!activityLevel}
                     />

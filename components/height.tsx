@@ -93,7 +93,7 @@ const Height = ({ navigation }) => {
 					style={{ height: 45, width: 100, flex: 1, marginLeft: 100 }}
 					onValueChange={(itemValue, itemIndex) => setFeet(itemValue)}
 				>
-                    { FEET.map(({value,label}) => <Picker.Item value={value} label={label} />) }
+                    { FEET.map(({value,label}) => <Picker.Item value={value} label={label} key={value} />) }
 				</Picker>
 
                 <Picker
@@ -101,7 +101,7 @@ const Height = ({ navigation }) => {
 					style={{ height: 45, width: 100, flex: 1, marginLeft: 200 }}
 					onValueChange={(itemValue, itemIndex) => setInches(itemValue)}
 				>
-                    { INCHES.map(({value,label}) => <Picker.Item value={value} label={label} />) }
+                    { INCHES.map(({value,label}) => <Picker.Item value={value} label={label} key={value} />) }
 				</Picker>
 
             </View>
