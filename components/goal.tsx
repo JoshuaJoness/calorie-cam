@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, StyleSheet, Picker, Animated, AsyncStorage } from 'react-native';
 import { useFonts } from 'expo-font';
 import CustomButton from './button'
+import Pilates from './svgs/pilates'
+import { store } from '../store';
 
-const Results = ({ navigation }) => {
+const Goal = ({ navigation }) => {
+    const globalState = useContext(store);
+	const { dispatch } = globalState; // maybe I can just unset goal
+
     const [loaded] = useFonts({
 		Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
 		MontserratLight: require('../assets/fonts/Montserrat-Light.ttf'),
@@ -18,10 +23,13 @@ const Results = ({ navigation }) => {
     const [weight, setWeight] = useState(null);
     const [activityLevel, setActivityLevel] = useState(null);
 
-    const [bmr, setBmr] = useState(null);
-    const [totalDailyCalorieNeeds, setTotalDailyCalorieNeeds] = useState(null);
+    const [goal, setGoal] = useState(null);
+
 
     const [refresh, setRefresh] = useState(false);
+
+    const [bmr, setBmr] = useState(null);
+    const [totalDailyCalorieNeeds, setTotalDailyCalorieNeeds] = useState(null);
 
     AsyncStorage.getItem('age').then(data => setAge(data))
     AsyncStorage.getItem('gender').then(data => setGender(data))
@@ -29,6 +37,9 @@ const Results = ({ navigation }) => {
     AsyncStorage.getItem('inches').then(data => setInches(data))
     AsyncStorage.getItem('weight').then(data => setWeight(data))
     AsyncStorage.getItem('activityLevel').then(data => setActivityLevel(data))
+
+    AsyncStorage.getItem('goal').then(data => setGoal(data))
+
 
     useEffect(() => {
         if (age && gender && feet && inches && weight && activityLevel)
@@ -56,63 +67,57 @@ const Results = ({ navigation }) => {
 
     }, [age, gender, feet, inches, weight, activityLevel]);
 
-    if (!loaded)
-        return null
-
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>RESULTS</Text>
-            <Text style={styles.boldText}>{Math.round(Number(totalDailyCalorieNeeds))} 
-                <Text style={styles.text}> calories is the amount of calories that your body needs for it's daily energy expenditure.</Text>
-            </Text>
-            <Text style={{ ...styles.text, marginTop: 50 }}>
-                This is known as your <Text style={styles.boldText}>maintenance</Text> calories
-            </Text>
-            <Text style={{ ...styles.text, marginTop: 50 }}>
-                Would you like to
-            </Text>
-            <View style={{display:'flex', flexDirection: 'column' }}>
-                <CustomButton 
-                    text={'Lose Weight'} 
-                    onPress={async () => {
-                        try {
-                            await AsyncStorage.setItem('goal', 'loseWeight')
-                        } catch (e) {
-                            console.log(e)
-                        }
-                        setRefresh(!refresh)
-                        // navigation.navigate('Log');
-                    }}
-                />
-                <CustomButton 
-                    text={'Maintain Weight'}
-                    onPress={async () => {
-                        try {
-                            await AsyncStorage.setItem('goal', 'maintainWeight')
-                        } catch (e) {
-                            console.log(e)
-                        }
-                        setRefresh(!refresh)
-                        // navigation.navigate('Log');
-                    }}
-                    />
-                <CustomButton 
-                    text={'Gain Weight'} 
-                    onPress={async () => {
-                        try {
-                            await AsyncStorage.setItem('goal', 'gainWeight')
-                        } catch (e) {
-                            console.log(e)
-                        }
-                        navigation.navigate('Home');
-                    }}
-                />
+        <Text style={styles.title}>Your Goals</Text>
+
+        {goal === 'loseWeight' ? (
+            <View>
+                <Text style={styles.boldText}>{Math.round(Number(totalDailyCalorieNeeds)) - 500} 
+                    <Text style={styles.text}> calories is the amount of calories that we recommend you eat daily to lose weight.</Text>
+                </Text>
+                <Text style={{ ...styles.text, marginTop: 35 }}>We arrived at this number by subtracting <Text style={styles.boldText}>500 calories</Text> to your maintenance calories.</Text>
             </View>
-        </View>
+        ) : goal === 'maintainWeight' ? (
+            <View>
+                <Text style={styles.boldText}>{Math.round(Number(totalDailyCalorieNeeds))} 
+                    <Text style={styles.text}> calories is the amount of calories that we recommend you eat daily to maintain your current weight.</Text>
+                </Text>
+                <Text style={{ ...styles.text, marginTop: 35 }}>We arrived at this number by adding calculating your daily energy expenditure using the information you provided.</Text>
+            </View>
+        ) : goal === 'gainWeight' ? (
+            <View>
+                <Text style={styles.boldText}>{Math.round(Number(totalDailyCalorieNeeds)) + 500} 
+                    <Text style={styles.text}> calories is the amount of calories that we recommend you eat daily to gain weight.</Text>
+                </Text>
+                <Text style={{ ...styles.text, marginTop: 35 }}>We arrived at this number by adding <Text style={styles.boldText}>500 calories</Text> to your maintenance calories.</Text>
+            </View>
+        ) : null}
+
+        <Text style={{ ...styles.text, marginTop: 35 }}>
+            This is known as <Text style={styles.boldText}>{ goal === 'loseWeight' ? 'a caloric deficit' : goal === 'maintainWeight' ? 'your maintenance calories' : goal === 'gainWeight' ? 'a caloric surplus' : null }</Text>
+        </Text>
+
+        <View style={{ marginLeft:'auto', marginRight:'auto' }}>
+            <Pilates />
+        </View >
+
+        <CustomButton 
+            text="Change Goal" 
+            onPress={async () => {
+                try {
+                    await AsyncStorage.removeItem('goal');
+                } catch (e) {
+                    console.log(e);
+                }
+                navigation.navigate('GetStarted')
+            }} 
+        />
+    </View>
     )
 }
 
-export default Results;
+export default Goal;
 
 const styles = StyleSheet.create ({
 	container:{
@@ -127,6 +132,15 @@ const styles = StyleSheet.create ({
 		marginRight:'auto',
 
 	},
+    title: {
+        fontFamily: 'Pacifico',
+		color: '#6b705c',
+		fontSize: 35,
+		paddingLeft: '10%',
+		paddingRight: '10%',
+        marginBottom: 30,
+		textAlign: 'center',
+    },
 	text: {
 		fontFamily: 'MontserratLight',
 		color: '#6b705c',

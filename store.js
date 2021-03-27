@@ -7,10 +7,11 @@ const { Provider } = store;
 const StateProvider = ( { children } ) => {
   const [state, dispatch] = useReducer((state, action) => {
     switch(action.type) {
-      case 'SET_AGE':
-        return { ...initialState, age: action.data }
+      case 'FORCE_RERENDER':
+        return { ...initialState, rerender: true }
+        break;
       default:
-        throw new Error();
+        break;
     };
   }, initialState);
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Welcome from './components/Welcome';
@@ -10,29 +10,59 @@ import Weight from './components/weight';
 import ActivityLevel from './components/activityLevel';
 import Results from './components/results';
 import Log from './components/log';
+import Goal from './components/goal';
+import Predicts from './components/Predicts';
+import Camera from './components/camera';
 
 import { StateProvider } from './store.js';
 
-// import { createBottomTabNavigator } from 'react-navigation-tabs'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-// const Tab = createBottomTabNavigator();
+import { AsyncStorage, TouchableOpacity, Text } from 'react-native'
 
-// function MyTabs() {
-//   return (
-//     <Tab.Navigator>
-//       <Tab.Screen name="Home" component={HomeScreen} />
-//       <Tab.Screen name="Settings" component={SettingsScreen} />
-//     </Tab.Navigator>
-//   );
-// }
+import { store } from './store';
+
+
+
+
+const Tab = createBottomTabNavigator();
+
+
+
+function Home() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Goal" component={Goal} />
+      <Tab.Screen name="Camera" component={Camera} />
+      <Tab.Screen name="Log" component={Log} />
+    </Tab.Navigator>
+  );
+}
 
 const Stack = createStackNavigator();
 
+
+
 function App() {
+  const [goal, setGoal] = useState('nothing')
+  AsyncStorage.getItem('goal').then(data => setGoal(data))
+
+  const globalState = useContext(store);
+  const { state } = globalState; // maybe I can just unset goal
+  console.log(state)
+
+  useEffect(() => {
+    AsyncStorage.getItem('goal').then(data => setGoal(data))
+  }, [])
+
+  if (goal === 'nothing')
+    return null
+
   return (
       <StateProvider>
+
           <NavigationContainer>
-              <Stack.Navigator initialRouteName="GetStarted">
+              <Stack.Navigator initialRouteName={goal ? "Home" : "GetStarted"}>
                   <Stack.Screen name="Welcome" component={Welcome} />
                   <Stack.Screen 
                     name="GetStarted" 
@@ -106,7 +136,16 @@ function App() {
                           backgroundColor: '#ffe8d6'
                         }
                     }}/>
-              </Stack.Navigator>
+                    <Stack.Screen 
+                      name="Home" 
+                      component={Home} 
+                      options={{
+                        title: '',
+                        headerStyle: {
+                          backgroundColor: '#ffe8d6'
+                        }
+                    }}/>
+              </Stack.Navigator> 
           </NavigationContainer>
       </StateProvider>
   );

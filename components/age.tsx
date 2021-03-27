@@ -9,12 +9,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const Age = ({ navigation }) => {
 	const globalState = useContext(store);
-
-	React.useEffect(() => {
-		console.log(globalState)
-	}, [globalState])
-
 	const { dispatch } = globalState;
+	
 	const [age, setAge] = React.useState(null);
 	const [fadeAnim, setFadeAnim] = React.useState(new Animated.Value(0.1))
 	const [fadeAnimTwo] = React.useState(new Animated.Value(0))
