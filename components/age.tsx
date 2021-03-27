@@ -1,11 +1,20 @@
-import React from 'react'
-import { View, Text, Image, StyleSheet, TextInput, Animated } from 'react-native'
+import React, { useContext, useRef } from 'react'
+import { View, Text, Image, StyleSheet, TextInput, Animated, Alert, AsyncStorage } from 'react-native'
 import { useFonts } from 'expo-font'
 import Birthday from './svgs/birthday'
 import CustomButton from './button'
+import { store } from '../store';
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 
 const Age = ({ navigation }) => {
+	const globalState = useContext(store);
+
+	React.useEffect(() => {
+		console.log(globalState)
+	}, [globalState])
+
+	const { dispatch } = globalState;
 	const [age, setAge] = React.useState(null);
 	const [fadeAnim, setFadeAnim] = React.useState(new Animated.Value(0.1))
 	const [fadeAnimTwo] = React.useState(new Animated.Value(0))
@@ -17,6 +26,8 @@ const Age = ({ navigation }) => {
 		MontserratMedium: require('../assets/fonts/Montserrat-Medium.ttf'),
 		MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf')
 	  })
+
+	const inputRef = useRef(null);
 
 	React.useEffect(() => {
 		Animated.timing(fadeAnim, {
@@ -54,16 +65,31 @@ const Age = ({ navigation }) => {
 		<View style={styles.container}>
 				<View style={{marginLeft:'auto', marginRight:'auto'}}>
 				<Birthday />
-			</View >
+			</View>
 			<Animated.Text style={{ ...styles.subText, opacity: fadeAnim }}>Great! Let's start with your 
 				<Text style={styles.boldText}> age </Text>
 			</Animated.Text>
 			<Animated.View style={{marginTop:'10%', marginRight:'auto', alignItems: 'left', width: '100%', opacity: fadeAnimTwo}}>
 				<TextInput 
+					ref={inputRef}
 					style={styles.input} 
 					value={age} 
-					onSubmitEditing={(age) => setAge(age)}
-						placeholder={'24'}
+					// keyboardType='number-pad'
+					onSubmitEditing={() => dispatch({ type: 'SET_AGE', data: age })}
+					maxLength={3}
+					onChangeText={age => {
+						console.log(age, 'AGE')
+						const ageToNumber = Number(age);
+						if (!ageToNumber && age !== '') {
+							Alert.alert('Please enter numbers only.');
+							setAge(null);
+							inputRef.current.clear();
+							console.log(inputRef.current.clear,  "INPUT REF");
+						} else {
+							setAge(age)
+						}
+					}}
+					placeholder={'24'}
 				/>
 			</Animated.View>
 
@@ -71,8 +97,23 @@ const Age = ({ navigation }) => {
 				<CustomButton 
 					text='Continue' 
 					disabled={!age}
-					onPress={() => navigation.navigate('Gender')} 
+					onPress={async () => {
+						try {
+							await AsyncStorage.setItem('age', age)
+						} catch (err) {
+							console.log(err)
+						}
+						
+						dispatch({ type: 'SET_AGE', data: age });
+						navigation.navigate('Gender');
+					}} 
 				/>
+				<TouchableOpacity 
+					onPress={async() => {
+						const test = await AsyncStorage.getItem('age');
+						console.log(test); 
+					}
+				}><Text>TEST</Text></TouchableOpacity>
 			</Animated.View> 
 		</View>
 	)

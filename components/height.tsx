@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, Picker, Animated, Switch } from 'react-native'
+import { View, Text, StyleSheet, Picker, Animated, AsyncStorage } from 'react-native'
 import { useFonts } from 'expo-font'
 import Workout from './svgs/workout'
 import CustomButton from './button'
@@ -107,7 +107,18 @@ const Height = ({ navigation }) => {
             </View>
 
             <View style={{ marginTop: 250 }}>
-                <CustomButton text='Continue' onPress={() => navigation.navigate('Weight')} disabled={!feet && !inches}/>
+                <CustomButton 
+					text='Continue' 
+					onPress={async () => {
+						try {
+							await AsyncStorage.setItem('feet', feet);
+							await AsyncStorage.setItem('inches', inches);
+						} catch (err) {
+							console.log(err)
+						}
+						navigation.navigate('Weight')
+					}} 
+					disabled={!feet && !inches}/>
             </View>
  
 		</View>

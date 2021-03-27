@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, Picker, Animated } from 'react-native'
+import { View, Text, StyleSheet, Picker, Animated, AsyncStorage } from 'react-native'
 import { useFonts } from 'expo-font'
 import Pilates from './svgs/pilates'
 import CustomButton from './button'
@@ -80,7 +80,18 @@ const ActivityLevel = ({ navigation }) => {
             </View>
 
             <View style={{ marginTop: 200 }}>
-                <CustomButton text='Continue' onPress={() => navigation.navigate('Weight')} disabled={!activityLevel}/>
+                <CustomButton 
+                    text='Continue' 
+                    onPress={async() => {
+                        try {
+                            await AsyncStorage.setItem('activityLevel', activityLevel);
+                        } catch (e) {
+                            console.log(e)
+                        }
+                        navigation.navigate('Weight');
+                    }} 
+                    disabled={!activityLevel}
+                    />
             </View>
  
 		</View>

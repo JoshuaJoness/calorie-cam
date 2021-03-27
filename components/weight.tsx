@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, TextInput, Animated } from 'react-native'
+import { View, Text, StyleSheet, TextInput, Animated, AsyncStorage } from 'react-native'
 import { useFonts } from 'expo-font'
 import Pushup from './svgs/pushup'
 import CustomButton from './button'
@@ -69,7 +69,17 @@ const Weight = ({ navigation }) => {
                     />
                 </View>
             <View style={{ marginTop: 50 }}>
-                <CustomButton text='Continue' onPress={() => navigation.navigate('ActivityLevel')} disabled={!weight}/>
+                <CustomButton 
+                    text='Continue' 
+                    onPress={async () => {
+                        try {
+                            await AsyncStorage.setItem('weight', weight);
+                        } catch (e) {
+                            console.log(e)
+                        }
+                        navigation.navigate('ActivityLevel');
+                    }} 
+                    disabled={!weight}/>
             </View>
  
 		</View>

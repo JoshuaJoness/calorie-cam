@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, Picker, Animated } from 'react-native'
+import { View, Text, StyleSheet, Picker, Animated, AsyncStorage } from 'react-native'
 import { useFonts } from 'expo-font'
 import Girl from './svgs/girl'
 import CustomButton from './button'
@@ -72,7 +72,17 @@ const Gender = ({ navigation }) => {
 			</Animated.View>
 
 			<View style={{ marginTop: '35%' }}>
-				<CustomButton text='Continue' onPress={() => navigation.navigate('Height')} />
+				<CustomButton 
+					text='Continue'
+					onPress={async() => {
+						try {
+							await AsyncStorage.setItem('gender', gender)
+						} catch (err) {
+							console.log(err)
+						}
+						navigation.navigate('Height');
+					}
+					} />
 			</View> 
 		</View>
 	)
