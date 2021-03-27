@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Picker, Animated, AsyncStorage } from 'react-native';
 import { useFonts } from 'expo-font';
+import CustomButton from './button'
 
-const Results = () => {
+const Results = ({ navigation }) => {
     const [loaded] = useFonts({
 		Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
 		MontserratLight: require('../assets/fonts/Montserrat-Light.ttf'),
@@ -59,7 +60,51 @@ const Results = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.text}>RESULTS</Text>
-            <Text style={styles.text}>{Math.round(Number(totalDailyCalorieNeeds))} calories per day</Text>
+            <Text style={styles.boldText}>{Math.round(Number(totalDailyCalorieNeeds))} 
+                <Text style={styles.text}> calories is the amount of calories that your body needs for it's daily energy expenditure.</Text>
+            </Text>
+            <Text style={{ ...styles.text, marginTop: 50 }}>
+                This is known as your <Text style={styles.boldText}>maintenance</Text> calories
+            </Text>
+            <Text style={{ ...styles.text, marginTop: 50 }}>
+                Would you like to
+            </Text>
+            <View style={{display:'flex', flexDirection: 'column' }}>
+                <CustomButton 
+                    text={'Lose Weight'} 
+                    onPress={async () => {
+                        try {
+                            await AsyncStorage.setItem('goal', 'loseWeight')
+                        } catch (e) {
+                            console.log(e)
+                        }
+                        navigation.navigate('Log');
+                    }}
+                />
+                <CustomButton 
+                    text={'Maintain Weight'}
+                    onPress={async () => {
+                        try {
+                            await AsyncStorage.setItem('goal', 'maintainWeight')
+                        } catch (e) {
+                            console.log(e)
+                        }
+                        navigation.navigate('Log');
+                    }}
+                    />
+                <CustomButton 
+                    text={'Gain Weight'} 
+                    onPress={async () => {
+                        try {
+                            await AsyncStorage.setItem('goal', 'gainWeight')
+                        } catch (e) {
+                            console.log(e)
+                        }
+                        navigation.navigate('Log');
+                    }}
+                />
+            </View>
+
         </View>
     )
 }
@@ -82,7 +127,7 @@ const styles = StyleSheet.create ({
 	text: {
 		fontFamily: 'MontserratLight',
 		color: '#6b705c',
-		fontSize: 35,
+		fontSize: 25,
 		paddingLeft: '10%',
 		paddingRight: '10%',
 		textAlign: 'center',

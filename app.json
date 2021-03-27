@@ -27,9 +27,9 @@
     "orientation": "portrait",
     "icon": "./assets/icn.png",
     "splash": {
-      "image": "./assets/eating.png",
+      "image": "./assets/images/customEatingPNG.png",
       "resizeMode": "contain",
-      "backgroundColor": "#FFF"
+      "backgroundColor": "#ffe8d6"
     },
     "updates": {
       "fallbackToCacheTimeout": 0

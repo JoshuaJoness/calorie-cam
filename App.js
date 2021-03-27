@@ -9,8 +9,22 @@ import Height from './components/height';
 import Weight from './components/weight';
 import ActivityLevel from './components/activityLevel';
 import Results from './components/results';
+import Log from './components/log';
 
 import { StateProvider } from './store.js';
+
+// import { createBottomTabNavigator } from 'react-navigation-tabs'
+
+// const Tab = createBottomTabNavigator();
+
+// function MyTabs() {
+//   return (
+//     <Tab.Navigator>
+//       <Tab.Screen name="Home" component={HomeScreen} />
+//       <Tab.Screen name="Settings" component={SettingsScreen} />
+//     </Tab.Navigator>
+//   );
+// }
 
 const Stack = createStackNavigator();
 
@@ -18,7 +32,7 @@ function App() {
   return (
       <StateProvider>
           <NavigationContainer>
-              <Stack.Navigator initialRouteName="Results">
+              <Stack.Navigator initialRouteName="GetStarted">
                   <Stack.Screen name="Welcome" component={Welcome} />
                   <Stack.Screen 
                     name="GetStarted" 
@@ -77,6 +91,15 @@ function App() {
                     <Stack.Screen 
                       name="Results" 
                       component={Results} 
+                      options={{
+                        title: '',
+                        headerStyle: {
+                          backgroundColor: '#ffe8d6'
+                        }
+                    }}/>
+                    <Stack.Screen 
+                      name="Log" 
+                      component={Log} 
                       options={{
                         title: '',
                         headerStyle: {
