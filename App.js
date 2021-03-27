@@ -55,12 +55,15 @@ function App() {
     AsyncStorage.getItem('goal').then(data => setGoal(data))
   }, [])
 
+  useEffect(() => {
+    console.log(goal)
+  }, [goal])
+
   if (goal === 'nothing')
     return null
 
   return (
       <StateProvider>
-
           <NavigationContainer>
               <Stack.Navigator initialRouteName={goal ? "Home" : "GetStarted"}>
                   <Stack.Screen name="Welcome" component={Welcome} />

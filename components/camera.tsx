@@ -6,6 +6,8 @@ import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import axios from 'axios'
 import moment from 'moment'
 
+import CustomButton from './button';
+
 {/* Clarifai Import to recognize images */}
 const Clarifai = require('clarifai');
 // initialize with your api key. This will also work in your browser via http://browserify.org/
@@ -36,7 +38,7 @@ const Camera = (props) => {
                 base64: true
         });
         setImage(base64);
-            setImageToDisplay(uri)
+        setImageToDisplay(uri)
     };
 
     {/* This is the function to change the nutrient amounts based on the grams selected by the user*/}
@@ -146,28 +148,22 @@ setLabel('')
 
 	return(
 		<View style={styles.container}>
-            <View style={{backgroundColor:'#FFFBE6'}}>
-                <StatusBar barStyle='dark-content'/>
+            <View style={{backgroundColor:'#B7B7A4'}}>
                 <Image style={styles.image} source={{ uri: imageToDisplay }} />
                 <View style={styles.row}>
-                    <Button onPress={takePicture} style={styles.buttons} title="Camera" />
-                    <Button onPress={predict.bind(this)} style={styles.buttons} title="Submit" />
+                    {/* <CustomButton text="Camera"/> */}
+                    <Button onPress={takePicture} title="Camera" />
+                    <Button onPress={predict.bind(this)} title="Submit" />
                 </View>
             </View>
 			{
 				!label ? (
                     <View>
-                        <View>
-                            <View style={{marginTop:35, padding: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5, borderBottomLeftRadius: 5, borderBottomRightRadius: 5, backgroundColor: '#B9E4C9'}}>
-                            <Text style={{fontWeight:'bold', fontSize:15, color: '#FD5523'}}>1. Press 'Camera' to take a picture of your food!</Text>
-                        </View>
-                        <View style={{marginTop:35, padding: 10, borderTopLeftRadius: 5, borderTopRightRadius: 5, borderBottomLeftRadius: 5, borderBottomRightRadius: 5, backgroundColor: '#B9E4C9'}}>
-                            <Text style={{fontWeight:'bold', fontSize:15, marginTop:5, color: '#FD5523'}}>2. Press 'Submit' to retrieve nutritional information!</Text>
-                            </View>
-                        </View>
+                        <Text style={styles.text}>1. Press 'Camera' to take a picture of your food!</Text>
+                        <Text style={styles.text}>2. Press 'Submit' to retrieve nutritional information!</Text>
                     </View>
                 )
-				:<View style={styles.card}>
+				:<View>
                     <TouchableHighlight
                         onPress={() => {
                             setImage(null)
@@ -184,19 +180,18 @@ setLabel('')
                         <Ionicons name="md-close" size={26} />
                     </TouchableHighlight>
 
-                    <Image source={require('../assets/eating.png')} style={{width:300, height: 170, marginBottom:30}}></Image>
-
-                    <Text style={{marginBottom:30}}>We've identified this as a(n) <Text style={{fontWeight:'bold'}}>{label}</Text></Text>
+                    <Text style={styles.text}>We've identified this as a(n) <Text style={{fontWeight:'bold'}}>{label}</Text></Text>
 
                     <View style={{display:'flex', flexDirection:'row', alignItems:'center', marginBottom:30}}>
-                        <Text>Per </Text>
+                        <Text style={styles.text}>Per </Text>
                         <TextInput
+                            
                             placeholder='Place your Text'
                             // caption="Change me!"
                             value={grams}
                             onChangeText={text => onChangeText(text)}
                             />
-                        <Text> grams it contains:</Text>
+                        <Text style={styles.text}> grams it contains:</Text>
                     </View>
 
                     <View style={{display:'flex', flexDirection:'row'}}>
@@ -215,18 +210,35 @@ setLabel('')
 
                     <Button onPress={setAsync} style={styles.buttons} title="Click here to log this item" />
                 </View>
-}
-</View>
+            }
+            </View>
     )
 }
 
 const styles = StyleSheet.create({
-  text: { fontSize: 21 },
-  row: { display:'flex', flexDirection:'row', marginTop:20, marginLeft:10 },
-  buttons: { margin:20, backgroundColor:'#FD5523', borderColor:'#FD5523'},
-  image: { width: 300, height: 300, backgroundColor: '#ECECEC', borderBottomLeftRadius: 5, borderBottomRightRadius: 5, borderTopLeftRadius: 5, borderTopRightRadius: 5 },
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center'},
-  card: { height: 640, backgroundColor:'#FFFBE6' }
+  row: { 
+      display:'flex', 
+      flexDirection:'row', 
+      marginLeft: 'auto', 
+      marginRight: 'auto'
+    },
+    image: { width: 300, height: 300, backgroundColor: '#ECECEC', borderBottomLeftRadius: 5, borderBottomRightRadius: 5, borderTopLeftRadius: 5, borderTopRightRadius: 5 },
+    container:{
+        backgroundColor: '#ffe8d6',
+        height: '100%',
+        paddingTop: '5%',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    text: {
+        fontFamily: 'MontserratLight',
+        color: '#6b705c',
+        fontSize: 25,
+        paddingLeft: '10%',
+        paddingRight: '10%',
+        textAlign: 'center',
+    },
 });
 
 

@@ -80,9 +80,7 @@ const Goal = ({ navigation }) => {
             </View>
         ) : goal === 'maintainWeight' ? (
             <View>
-                <Text style={styles.boldText}>{Math.round(Number(totalDailyCalorieNeeds))} 
-                    <Text style={styles.text}> calories is the amount of calories that we recommend you eat daily to maintain your current weight.</Text>
-                </Text>
+                <Text style={styles.text}><Text style={styles.boldText}>{Math.round(Number(totalDailyCalorieNeeds))}</Text> calories is the amount of calories that we recommend you eat daily to maintain your current weight.</Text>
                 <Text style={{ ...styles.text, marginTop: 35 }}>We arrived at this number by adding calculating your daily energy expenditure using the information you provided.</Text>
             </View>
         ) : goal === 'gainWeight' ? (
