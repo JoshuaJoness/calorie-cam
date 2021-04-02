@@ -31,44 +31,39 @@ const Log = (props) => {
   useEffect(() => {
     getFoods()
     setTotals()
-
   },[props, foodToLog])
 
-  const setTotals = () => {
-    console.log(loggedFoods);
+  const setTotals = async () => {
+    await getFoods;
+    if (loggedFoods.length > 0) {
+      const valuesAsNumbers: any = loggedFoods.map(({label, calories, carbs, protein ,fat }) => ({ label, calories: Number(calories), carbs: Number(carbs), protein: Number(protein), fat: Number(fat) }))
 
-    if (loggedFoods !== []) {
-      {/* Here I am setting the totals for each nutritional property */}
-      for (let i = 0; i < loggedFoods.length; i++) {
-        total = total + loggedFoods[i].calories
-      }
-      setTotalCalories(total)
+      const totalCalories = valuesAsNumbers.reduce((a,b) => {
+        return a + b.calories;
+      }, 0);
+      setTotalCalories(totalCalories);
 
-      for (let i = 0; i < loggedFoods.length; i++) {
-        total1 = total1 + loggedFoods[i].carbs
-      }
-      setTotalCarbs(total1)
+      const totalCarbs = valuesAsNumbers.reduce((a,b) => {
+        return a + b.carbs;
+      }, 0);
+      setTotalCarbs(totalCarbs);
 
-      for (let i = 0; i < loggedFoods.length; i++) {
-        total2 = total2 + loggedFoods[i].protein
-      }
-      setTotalProtein(total2)
+      const totalProtein = valuesAsNumbers.reduce((a,b) => {
+        return a + b.protein;
+      }, 0);
+      setTotalProtein(totalProtein);
 
-      for (let i = 0; i < loggedFoods.length; i++) {
-        total3 = total3 + loggedFoods[i].fat
-      }
-      setTotalFat(total3)
-    }
-      else {
-        getFoods()
-      }
+      const totalFat = valuesAsNumbers.reduce((a,b) => {
+        return a + b.fat;
+      }, 0);
+      setTotalFat(totalFat);
+    } 
   }
 
-  const getFoods = async () => {
+  const getFoods = async () => { 
     try {
       const value = await AsyncStorage.getItem('foods');
       if (value !== null) {
-        // We have data!!
         let parsed = JSON.parse(value)
         await setLoggedFoods(parsed)
       }
@@ -88,19 +83,7 @@ const Log = (props) => {
       total1 = 0
       total2 = 0
       total3 = 0
-    }
-
-    const addItemToLog = async () => {
-      try {
-        let foods = await AsyncStorage.getItem('foods') || '[]';
-        foods = JSON.parse(foods);
-        foods.push(foodToLog);
-        await AsyncStorage.setItem('foods', JSON.stringify(foods));
-        setFoodToLog({});
-     } catch (err) {
-        console.log(err)
-      }
-    };
+  }
   
   if (!loaded)
     return null
@@ -137,7 +120,6 @@ const Log = (props) => {
 
         <Modal
           animationType="fade"
-          // transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
             setModalVisible(!modalVisible);
