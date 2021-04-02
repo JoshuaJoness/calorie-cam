@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { ScrollView, View, Text, AsyncStorage, Image, StyleSheet, SafeAreaView, TextInput } from 'react-native'
-import { Input, Modal, Button, Card } from '@ui-kitten/components';
+import { ScrollView, View, Text, AsyncStorage, Image, StyleSheet, Modal, TextInput } from 'react-native'
+import { useFonts } from 'expo-font'
 import CutomButton from './button';
+import AddItemModal from './addItemModal';
 
 const Log = (props) => {
+  const [loaded] = useFonts({
+    Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
+    MontserratLight: require('../assets/fonts/Montserrat-Light.ttf'),
+    MontserratMedium: require('../assets/fonts/Montserrat-Medium.ttf'),
+    MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf')
+  })
+
   const [totalCalories, setTotalCalories] = useState(0);
   const [totalCarbs, setTotalCarbs] = useState(0);
   const [totalProtein, setTotalProtein] = useState(0);
@@ -11,6 +19,8 @@ const Log = (props) => {
   const [loggedFoods, setLoggedFoods] = useState([]);
 
   const [foodToLog, setFoodToLog] = useState({ });
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   let total = 0;
   let total1 = 0;
@@ -91,112 +101,61 @@ const Log = (props) => {
         console.log(err)
       }
     };
+  
+  if (!loaded)
+    return null
 
   return(
-    <ScrollView style={styles.container}>
-      <Text style={styles.subText}>LOG</Text>
-        <View style={{display:'flex', flexDirection:'row', padding:10, borderBottomWidth: '1px', borderColor:'black'}} >
-          <Text style={{width:90, fontWeight:'bold', color:'#37966F'}}>Food</Text>
-          <Text style={{width:70, fontWeight:'bold', color:'#FD5523'}}>Calories</Text>
-          <Text style={{width:70, fontWeight:'bold', color:'#FD5523'}}>Carbs</Text>
-          <Text style={{width:70, fontWeight:'bold', color:'#FD5523'}}>Protein</Text>
-          <Text style={{width:70, fontWeight:'bold', color:'#FD5523'}}>Fat</Text>
-       </View>
+    <View style={styles.container}>
+      <Text style={styles.title}>Daily Log</Text>
+      <View style={styles.box}>
+        <View style={{ display:'flex', flexDirection:'row', padding:10, borderBottomWidth: 1, borderColor:'#6b705c' }} >
+          <Text style={{ ...styles.label, color:'#6b705c' }}>Food</Text>
+          <Text style={styles.label}>Calories</Text>
+          <Text style={styles.label}>Carbs</Text>
+          <Text style={styles.label}>Protein</Text>
+          <Text style={styles.label}>Fat</Text>
+        </View>
 
-       { loggedFoods.map((food,i) => <View style={{display:'flex', flexDirection:'row', padding:10, color:'white'}} key={i}>
-            <Text style={{width:110}}>{food.label}</Text>
-            <Text style={{width:70}}>{Math.round(food.calories)}</Text>
-            <Text style={{width:70}}>{Math.round(food.carbs)}</Text>
-            <Text style={{width:70}}>{Math.round(food.protein)}</Text>
-            <Text style={{width:70}}>{Math.round(food.fat)}</Text>
+        {loggedFoods.map((food,i) => <View style={{ display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6', borderBottomWidth: i === loggedFoods.length - 1 ? 0 : 1 }} key={i}>
+            <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food.label}</Text>
+            <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{Math.round(food.calories)}</Text>
+            <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{Math.round(food.carbs)}</Text>
+            <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{Math.round(food.protein)}</Text>
+            <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{Math.round(food.fat)}</Text>
           </View>
-          )}
+        )}
 
-<View style={{display:'flex', flexDirection:'row', padding:10, borderTopWidth: '1px', borderColor:'black'}}>
-            <Text style={{width:110, fontWeight:'bold'}}>Totals:</Text>
-            <Text style={{width:70, fontWeight:'bold'}}>{Math.round(totalCalories)}</Text>
-            <Text style={{width:70, fontWeight:'bold'}}>{Math.round(totalCarbs)} g</Text>
-            <Text style={{width:70, fontWeight:'bold'}}>{Math.round(totalProtein)} g</Text>
-            <Text style={{width:70, fontWeight:'bold'}}>{Math.round(totalFat)} g</Text>
+          <View style={{display:'flex', flexDirection:'row', padding:10, borderTopWidth: '1px', borderColor:'black'}}>
+            <Text style={{ ...styles.label, color:'#6b705c' }}>Totals:</Text>
+            <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalCalories)}</Text>
+            <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalCarbs)} g</Text>
+            <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalProtein)} g</Text>
+            <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalFat)} g</Text>
           </View>
+        </View>
 
+        <Modal
+          animationType="fade"
+          // transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <AddItemModal 
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+            setFoodToLog={setFoodToLog}
+            foodToLog={foodToLog}
+          />
+        </Modal>
 
-        <Text onPress={() => console.log(loggedFoods)} style={{ marginTop: 50 }}>Enter a food item below </Text>
-        <SafeAreaView style={{display: 'flex', flexDirection:'row'}}>
-          
-          <TextInput
-            style={{marginLeft:'auto', marginRight:'auto', borderColor: '#000', borderBottomWidth: '1px'}}
-            placeholder="Food"
-            value={foodToLog['label']}
-            onChangeText={(label) => {
-              setFoodToLog({ ...foodToLog, label});
-            }}
-          />
-          <TextInput
-            style={{marginLeft:'auto', marginRight:'auto', borderColor: '#000', borderBottomWidth: '1px'}}
-            placeholder="Calories"
-            value={foodToLog['calories']}
-            onChangeText={(calories) => {
-              setFoodToLog({ ...foodToLog, calories });
-            }}
-          />
-          <TextInput
-            style={{marginLeft:'auto', marginRight:'auto', borderColor: '#000', borderBottomWidth: '1px'}}
-            placeholder="Carbs"
-            value={foodToLog['carbs']}
-            onChangeText={(carbs) => {
-              setFoodToLog({ ...foodToLog, carbs });
-            }}
-          />
-          <TextInput
-            style={{marginLeft:'auto', marginRight:'auto', borderColor: '#000', borderBottomWidth: '1px'}}
-            placeholder="Protein"
-            value={foodToLog['protein']}
-            onChangeText={(protein) => {
-              setFoodToLog({ ...foodToLog, protein });
-            }}
-          />
-          <TextInput
-            style={{marginLeft:'auto', marginRight:'auto', borderColor: '#000', borderBottomWidth: '1px'}}
-            placeholder="Fat"
-            value={foodToLog['fat']}
-            onChangeText={(fat) => {
-              setFoodToLog({ ...foodToLog, fat });
-            }}
-          />
-      </SafeAreaView>
-      <CutomButton text='log item' onPress={addItemToLog}/>
-      <CutomButton text='clear log' onPress={clearLog}/>
-    </ScrollView>
-    // <ScrollView>
-    //   {/*The X icon to clear the log*/}
-    //   <Card style={{marginTop:100, borderBottom:0, backgroundColor:'#FFFBE6', width: '95%', marginLeft:'auto', marginRight:'auto'}}>
-    //     <View style={{display:'flex', flexDirection:'row', padding:10, borderBottomWidth: '1px', borderColor:'black'}}>
-    //       <Text style={{width:90, fontWeight:'bold', color:'#37966F'}}>Food</Text>
-    //       <Text style={{width:70, fontWeight:'bold', color:'#FD5523'}}>Calories</Text>
-    //       <Text style={{width:70, fontWeight:'bold', color:'#FD5523'}}>Carbs</Text>
-    //       <Text style={{width:70, fontWeight:'bold', color:'#FD5523'}}>Protein</Text>
-    //       <Text style={{width:70, fontWeight:'bold', color:'#FD5523'}}>Fat</Text>
-    //     </View>
-
-        // {loggedFoods.map((food,i) => <View style={{display:'flex', flexDirection:'row', padding:10, color:'white'}} key={i}>
-        //     <Text style={{width:110}}>{food.label}</Text>
-        //     <Text style={{width:70}}>{Math.round(food.calories)}</Text>
-        //     <Text style={{width:70}}>{Math.round(food.carbs)}</Text>
-        //     <Text style={{width:70}}>{Math.round(food.protein)}</Text>
-        //     <Text style={{width:70}}>{Math.round(food.fat)}</Text>
-        //   </View>)}
-
-          // <View style={{display:'flex', flexDirection:'row', padding:10, borderTopWidth: '1px', borderColor:'black'}}>
-          //   <Text style={{width:110, fontWeight:'bold'}}>Totals:</Text>
-          //   <Text style={{width:70, fontWeight:'bold'}}>{Math.round(totalCalories)}</Text>
-          //   <Text style={{width:70, fontWeight:'bold'}}>{Math.round(totalCarbs)} g</Text>
-          //   <Text style={{width:70, fontWeight:'bold'}}>{Math.round(totalProtein)} g</Text>
-          //   <Text style={{width:70, fontWeight:'bold'}}>{Math.round(totalFat)} g</Text>
-          // </View>
-    //       <Button onPress={clear} style={{width:200, marginLeft:'auto', marginRight:'auto', marginTop:30, backgroundColor:'#FD5523', borderColor:'#FD5523'}}>Click here to clear log</Button>
-    //     </Card>
-    //   </ScrollView>
+        <View style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto', marginRight: 'auto', padding: 10  }}>
+            <CutomButton text='Log Item' onPress={() => setModalVisible(!modalVisible)} style={{ width: 100, height: 30, backgroundColor: '#a5a58d', marginRight: 5 }} />
+            <CutomButton text='Clear Log' onPress={clearLog} style={{ width: 100, height: 30, marginLeft: 5 }} />
+        </View>
+    </View>
     )
   }
 
@@ -208,30 +167,28 @@ const styles = StyleSheet.create ({
 		height: '100%',
 		paddingTop: '5%'
 	},
-	imgender: {
-		height:150,
-		width:150,
-		marginLeft:'auto',
-		marginRight:'auto',
-
-	},
-	text: {
-		fontFamily: 'MontserratLight',
-		color: '#6b705c',
-		fontSize: 25,
-		paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-	},
-    subText: {
-		fontFamily: 'MontserratLight',
-		color: '#6b705c',
-		fontSize: 25,
-        marginTop: '5%',
-        paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-	},
+  box: {
+    width: '90%',
+    marginLeft: 'auto', 
+    marginRight: 'auto', 
+    borderColor: 'black', 
+    borderWidth: 1, 
+    backgroundColor: '#ddbea9'
+  },
+  title: {
+    fontFamily: 'Pacifico',
+    color: '#6b705c',
+    fontSize: 35,
+    paddingLeft: '10%',
+    paddingRight: '10%',
+    marginBottom: 30,
+    textAlign: 'center',
+  },
+  label: {
+    color: '#cb997e',
+    fontWeight: 'bold',
+    flex: 1,
+  },
     boldText: {
         fontFamily: 'MontserratMedium',
 		color: '#6b705c',
@@ -241,14 +198,13 @@ const styles = StyleSheet.create ({
 		paddingRight: '10%',
 		textAlign: 'center',
     },
-	picker: {
-		backgroundColor: '#ffe8d6',
-		opacity: 1,
-        height: 45,
-        width: 200,
-        marginTop: '5%',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-		textAlign: 'center'
-	  },
+	input: {
+    borderColor: '#6b705c', 
+    borderBottomWidth: 2,
+    marginLeft: 5,
+    marginRight: 5,
+    textAlign: 'center',
+    fontSize: 17,
+    width: 170
+	},
 })

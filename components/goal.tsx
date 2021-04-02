@@ -67,6 +67,9 @@ const Goal = ({ navigation }) => {
 
     }, [age, gender, feet, inches, weight, activityLevel]);
 
+    if (!loaded)
+        return null
+
     return (
         <View style={styles.container}>
         <Text style={styles.title}>Your Goals</Text>

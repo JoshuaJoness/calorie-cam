@@ -6,7 +6,7 @@ import { Button } from '@ui-kitten/components'
 import { TouchableHighlight, TouchableNativeFeedback, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 
-const CutomButton = ({ text, onPress, disabled }) => {
+const CutomButton = ({ text, onPress, disabled, style }) => {
     const [sound, setSound] = useState()
 
 	const playSound = async () => {
@@ -17,7 +17,7 @@ const CutomButton = ({ text, onPress, disabled }) => {
 
     return (
         <TouchableHighlight 
-            style={styles.button} 
+            style={style ? { ...styles.button, ...style } : styles.button} 
             onPress={() => {
                 Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Heavy);
                 playSound();
