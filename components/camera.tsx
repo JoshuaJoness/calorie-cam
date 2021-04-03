@@ -1,10 +1,12 @@
-import React, {useState} from 'react'
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, TouchableHighlight, StatusBar, TextInput, AsyncStorage, Button } from 'react-native'
+import React, {useState, useEffect, useRef} from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, TouchableHighlight, StatusBar, TextInput, AsyncStorage, Button, ActivityIndicator } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import * as Permissions from 'expo-permissions'
-import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import axios from 'axios'
 import moment from 'moment'
+
+import { Camera } from 'expo-camera';
 
 import CustomButton from './button';
 
@@ -15,7 +17,7 @@ const app = new Clarifai.App({
  apiKey: '6e326e5cab504a7bb99b3e622c9d9c8e'
 });
 
-const Camera = (props) => {
+const CalorieCam = (props) => {
 	const [image, setImage] = useState()
 	const [imageToDisplay, setImageToDisplay] = useState()
 	const [label, setLabel] = useState('')
@@ -31,20 +33,20 @@ const Camera = (props) => {
     const [object, setObject] = useState({label:'',calories:0,carbs:0,protein:0,fat:0})
     let arr = []
 
-    const takePicture = async () => {
-        await Permissions.askAsync(Permissions.CAMERA);
-        const { cancelled, uri, base64 } = await ImagePicker.launchCameraAsync({
-        allowsEditing: false,
-                base64: true
-        });
-        setImage(base64);
-        setImageToDisplay(uri)
-    };
+    // const takePicture = async () => {
+    //     await Permissions.askAsync(Permissions.CAMERA);
+        // const { cancelled, uri, base64 } = await ImagePicker.launchCameraAsync({
+        // allowsEditing: false,
+        //         base64: true
+        // });
+        // setImage(base64);
+        // setImageToDisplay(uri)
+    // };
 
     {/* This is the function to change the nutrient amounts based on the grams selected by the user*/}
     const onChangeText = (amount) => {
         setGrams(amount)
-        setObject({label:label, calories:calories*amount, carbs:carbs*amount, protein:protein*amount, fat:fat*amount})
+        setObject({ label:label, calories:calories*amount, carbs:carbs*amount, protein:protein*amount, fat:fat*amount })
     }
 
     {/*This is the function to recognize the image and retrieve the nutritional information*/}
@@ -146,17 +148,84 @@ getAsync()
 setLabel('')
   }
 
+  const [hasPermission, setHasPermission] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestPermissionsAsync();
+      setHasPermission(status === 'granted');
+    })();
+  }, []);
+
+  const cameraRef = useRef(null)
+
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (imageToDisplay || image) {
+        setLoading(false);
+    }
+  }, [imageToDisplay, image])
+
 	return(
 		<View style={styles.container}>
-            <View style={{backgroundColor:'#B7B7A4'}}>
-                <Image style={styles.image} source={{ uri: imageToDisplay }} />
+            <Text style={styles.title}>Calorie Cam</Text>
+            <View style={{ backgroundColor:'#B7B7A4', width: '90%', height: 400 }}>
+                {/* <Image style={styles.image} source={{ uri: imageToDisplay }} /> */}
+                {
+                imageToDisplay ? 
+                    <Image style={styles.image} source={{ uri: imageToDisplay }} />
+                    :
+                    <Camera 
+                        type={Camera.Constants.Type.back} 
+                        style={{ marginLeft: 'auto', marginRight: 'auto', width: '100%', height: '100%' }}
+                        ref={cameraRef}
+                    />
+                    
+                }
+                
                 <View style={styles.row}>
-                    {/* <CustomButton text="Camera"/> */}
-                    <Button onPress={takePicture} title="Camera" />
-                    <Button onPress={predict.bind(this)} title="Submit" />
+                {!imageToDisplay ? <CustomButton 
+                    text='Take Picture'
+                    onPress={async () => {
+                        setLoading(true)
+                            if (cameraRef) {
+                                try {
+                                    const { cancelled, uri, base64 } = await cameraRef.current.takePictureAsync({ base64: true });
+                                    setImageToDisplay(uri);
+                                    setImage(base64);
+                                } catch (err) {
+                                    console.log(err);
+                                }
+                            }
+                        }
+                    }
+                    style={{ width:200 }}
+                />
+                :
+                <CustomButton 
+                    text='Retake'
+                    onPress={() => {
+                        setImage(null);
+                        setImageToDisplay(null);
+                        setLoading(false)
+                    }}
+                />
+                }
+            
+                    
                 </View>
+
+                <CustomButton 
+                    text='Submit'
+                    onPress={predict.bind(this)}
+                />
+                
+                
+                {/* <Button onPress={predict.bind(this)} title="Submit" /> */}
             </View>
-			{
+			{/* {
 				!label ? (
                     <View>
                         <Text style={styles.text}>1. Press 'Camera' to take a picture of your food!</Text>
@@ -210,10 +279,10 @@ setLabel('')
 
                     <Button onPress={setAsync} style={styles.buttons} title="Click here to log this item" />
                 </View>
-            }
+            } */}
             </View>
     )
-}
+} 
 
 const styles = StyleSheet.create({
   row: { 
@@ -222,12 +291,30 @@ const styles = StyleSheet.create({
       marginLeft: 'auto', 
       marginRight: 'auto'
     },
-    image: { width: 300, height: 300, backgroundColor: '#ECECEC', borderBottomLeftRadius: 5, borderBottomRightRadius: 5, borderTopLeftRadius: 5, borderTopRightRadius: 5 },
+    title: {
+        fontFamily: 'Pacifico',
+		color: '#6b705c',
+		fontSize: 35,
+		paddingLeft: '10%',
+		paddingRight: '10%',
+        marginBottom: 30,
+		textAlign: 'center',
+    },
+    image: { 
+        width: '100%', 
+        height: 400, 
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        backgroundColor: '#ECECEC', 
+        borderBottomLeftRadius: 5, 
+        borderBottomRightRadius: 5, 
+        borderTopLeftRadius: 5, 
+        borderTopRightRadius: 5 },
     container:{
         backgroundColor: '#ffe8d6',
-        height: '100%',
+        // height: '100%',
         paddingTop: '5%',
-        flex: 1,
+        // flex: 1,
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -242,4 +329,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default Camera;
+export default CalorieCam;
