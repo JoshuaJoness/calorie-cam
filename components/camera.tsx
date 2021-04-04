@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, TouchableHighlight, StatusBar, TextInput, AsyncStorage, Button, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, Picker, View, Image, ScrollView, TouchableHighlight, StatusBar, TextInput, AsyncStorage, Button, ActivityIndicator } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import * as Permissions from 'expo-permissions'
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
@@ -21,16 +21,20 @@ const CalorieCam = (props) => {
 	const [image, setImage] = useState()
 	const [imageToDisplay, setImageToDisplay] = useState()
 	const [label, setLabel] = useState('')
-	const [calories, setCalories] = useState(0)
-	const [carbs, setCarbs] = useState(0)
-	const [protein, setProtein] = useState(0)
-	const [fat, setFat] = useState(0)
+	// const [calories, setCalories] = useState(0)
+	// const [carbs, setCarbs] = useState(0)
+	// const [protein, setProtein] = useState(0)
+	// const [fat, setFat] = useState(0)
     const [grams, setGrams] = useState('100')
     const [loggedFoods, setLoggedFoods] = useState([])
     const [date, setDate] = useState(moment(Date.now()).format("dddd, MMMM Do YYYY, h:mm:ss a"))
     const [show, setShow] = useState(false)
     const [showResults, setShowResults] = useState(false)
     const [object, setObject] = useState({label:'',calories:0,carbs:0,protein:0,fat:0})
+    const [foodPredictions, setFoodPredictions] = useState([]);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [dailyNutrientReqs, setDailyNutrientReqs] = useState(null);
+    const [totalNutrients, setTotalNutrients] = useState(null);
     let arr = []
 
     // const takePicture = async () => {
@@ -43,64 +47,68 @@ const CalorieCam = (props) => {
         // setImageToDisplay(uri)
     // };
 
-    {/* This is the function to change the nutrient amounts based on the grams selected by the user*/}
-    const onChangeText = (amount) => {
-        setGrams(amount)
-        setObject({ label:label, calories:calories*amount, carbs:carbs*amount, protein:protein*amount, fat:fat*amount })
-    }
+    // {/* This is the function to change the nutrient amounts based on the grams selected by the user*/}
+    // const onChangeText = (amount) => {
+    //     setGrams(amount)
+    //     setObject({ label:label, calories:calories*amount, carbs:carbs*amount, protein:protein*amount, fat:fat*amount })
+    // }
 
-    {/*This is the function to recognize the image and retrieve the nutritional information*/}
-        const predict = () =>	{
-            {/*here we send the image encoded as base 64 to the clarifai API to determine what kind of food it is*/}
-            app.models.predict("bd367be194cf45149e75f01d59f77ba7", {base64:image}).then(
-                function(response){
-            {/*Once retrieving the predicted item, we set this as our 'tag' and send it to edamam API to retrieve the nutritional information*/}
-                    let tag = response.rawData.outputs[0].data.concepts[0].name;
-                        axios.get(`https://api.edamam.com/api/food-database/parser?app_id=7ff1ee7e&app_key=aa4824adda205d7ff601301c08816573&ingr=${tag}`)
-                            .then(res => {
-                                console.log('Response data',res.data.hints[0].food.label,res.data.hints[0].food.nutrients.ENERC_KCAL, res.data.hints[0].food.nutrients.CHOCDF,res.data.hints[0].food.nutrients.PROCNT,res.data.hints[0].food.nutrients.FAT)
-                                setLabel(res.data.hints[0].food.label)
-                {/* Here we divide the response data for each macronutrient by 100 to get the value per 1 gram */}
-                                setCalories(res.data.hints[0].food.nutrients.ENERC_KCAL/100)
-                                setCarbs(res.data.hints[0].food.nutrients.CHOCDF/100)
-                                setProtein(res.data.hints[0].food.nutrients.PROCNT/100)
-                                setFat(res.data.hints[0].food.nutrients.FAT/100)
-                {/* Here we set the object that we will push to our array,
-                    we multiply by the grams variable so that
-                    the value changes when the user specifies the grams */}
-                setObject({label:res.data.hints[0].food.label,
-                    calories:res.data.hints[0].food.nutrients.ENERC_KCAL/100*grams,
-                    carbs:res.data.hints[0].food.nutrients.CHOCDF/100*grams,
-                    protein:res.data.hints[0].food.nutrients.PROCNT/100*grams,
-                    fat:res.data.hints[0].food.nutrients.FAT/100*grams,
-                    date:date
-                })
-                setShowResults(true)
-                            })
-                            .catch(err => {
-                                console.log(err)})
-                    },
-                    function(err){
-                    console.log(err)
-                    }
-                    )
-        {/* THIS RIGHT HERE was the key to saving my app :) */}
-        clear()
+
+        const predict = async () =>	{
+            const data = await app.models.predict("bd367be194cf45149e75f01d59f77ba7", {base64:image});
+            const foodPredictions = data.outputs[0].data.concepts;
+            setFoodPredictions(foodPredictions);
+            return;
                 }
 
-    const clear = () => {
-    setImage()
-    setImageToDisplay()
-    setLabel('')
-    setCarbs(0)
-    setProtein(0)
-    setFat(0)
-    setCalories(0)
-    setGrams('100')
-    setObject({label:'',calories:0,carbs:0,protein:0,fat:0})
-    setShow(false)
-    setShowResults(false)
-    }
+        
+        const edamamId = '7ff1ee7e'
+        const edamamKey = 'aa4824adda205d7ff601301c08816573';
+        
+
+        const getCalories = async () => {
+            try {
+                const data = await axios.get(`https://api.edamam.com/api/food-database/parser?app_id=${edamamId}&app_key=${edamamKey}&ingr=${selectedItem}`);
+                // const nutrients = data.data.hints[0].food.nutrients;
+                const foodId = data.data.hints[0].food.foodId;
+
+                const nutrients = await axios.post(
+                    `https://api.edamam.com/api/food-database/v2/nutrients?app_id=${edamamId}&app_key=${edamamKey}`,
+                    {
+                        "ingredients": [
+                            {
+                              "quantity": 1,
+                              "measureURI": "http://www.edamam.com/ontologies/edamam.owl#Measure_unit",
+                              "foodId": foodId
+                            }
+                          ]
+                    }
+                )
+
+                const totalDailyPercentages = nutrients.data.totalDaily;
+                const totalNutrients = nutrients.data.totalNutrients;
+                
+                setDailyNutrientReqs(totalDailyPercentages);
+                setTotalNutrients(totalNutrients);
+                console.log(totalNutrients)
+            } catch (err) {
+                console.log(err)
+            }
+        };
+ 
+    // const clear = () => {
+    // setImage()
+    // setImageToDisplay()
+    // setLabel('')
+    // setCarbs(0)
+    // setProtein(0)
+    // setFat(0)
+    // setCalories(0)
+    // setGrams('100')
+    // setObject({label:'',calories:0,carbs:0,protein:0,fat:0})
+    // setShow(false)
+    // setShowResults(false)
+    // }
 
   {/*This function pushes the food object to the loggedFoods array and then stores it in AsyncStorage.
   getAsync() is then called, which checks AsyncStorage for a value, parses this values, and finally
@@ -150,30 +158,52 @@ setLabel('')
 
   const [hasPermission, setHasPermission] = useState(null);
 
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
-    })();
-  }, []);
+//   useEffect(() => {
+//     (async () => {
+//       const { status } = await Camera.requestPermissionsAsync();
+//       setHasPermission(status === 'granted');
+//     })();
+//   }, []);
 
   const cameraRef = useRef(null)
 
 
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (imageToDisplay || image) {
-        setLoading(false);
-    }
-  }, [imageToDisplay, image])
+//   useEffect(() => {
+//     if (imageToDisplay || image) {
+//         setLoading(false);
+//     }
+//   }, [imageToDisplay, image])
+
+    // const { ENERC_KCAL: cals, CHOCDF: carbs, FAT: fat, PROCNT: protein } = totalNutrients || []; // TODO HERE, extracting carbs, etc. for display
 
 	return(
 		<View style={styles.container}>
             <Text style={styles.title}>Calorie Cam</Text>
-            <View style={{ backgroundColor:'#B7B7A4', width: '90%', height: 400 }}>
-                {/* <Image style={styles.image} source={{ uri: imageToDisplay }} /> */}
+            <View style={{ backgroundColor:'#ddbea9', width: '90%', height: 400 }}>
                 {
+                totalNutrients ? 
+                <View>
+                    <Text>NUTRIENT RESULTS</Text>
+                    <Text>NUTRIENT RESULTS</Text>
+                    <Text>NUTRIENT RESULTS</Text>
+                    <Text>NUTRIENT RESULTS</Text>
+                </View>
+                :
+                foodPredictions.length > 0 ? 
+                <View style={{ marginTop: 30, display: 'flex', justifyContent: 'center' }}>
+                    <Text style={styles.text}>We've identified this as a(n): </Text>
+                    <Picker
+                        selectedValue={selectedItem}
+                        style={styles.picker}
+                        onValueChange={(itemValue, itemIndex) => setSelectedItem(itemValue)}
+                    >
+                        {foodPredictions.map(({name}) => <Picker.Item label={name} value={name} key={name} />)}
+                    </Picker>
+                </View>
+                
+                :
                 imageToDisplay ? 
                     <Image style={styles.image} source={{ uri: imageToDisplay }} />
                     :
@@ -184,47 +214,53 @@ setLabel('')
                     />
                     
                 }
-                
-                <View style={styles.row}>
-                {!imageToDisplay ? <CustomButton 
-                    text='Take Picture'
-                    onPress={async () => {
-                        setLoading(true)
-                            if (cameraRef) {
-                                try {
-                                    const { cancelled, uri, base64 } = await cameraRef.current.takePictureAsync({ base64: true });
-                                    setImageToDisplay(uri);
-                                    setImage(base64);
-                                } catch (err) {
-                                    console.log(err);
+            </View>
+            <View style={styles.buttonContainer}>
+                    {!imageToDisplay ? 
+                        <CustomButton 
+                            text='Take Picture'
+                            onPress={async () => {
+                                setLoading(true)
+                                    if (cameraRef) {
+                                        try {
+                                            const { cancelled, uri, base64 } = await cameraRef.current.takePictureAsync({ base64: true });
+                                            setImageToDisplay(uri);
+                                            setImage(base64);
+                                        } catch (err) {
+                                            console.log(err);
+                                        }
+                                    }
                                 }
                             }
+                            style={{ width: 250 }}
+                        />
+                        :
+                        <CustomButton 
+                            text='Retake'
+                            onPress={() => {
+                                setImage(null);
+                                setImageToDisplay(null);
+                                setLoading(false);
+                                setFoodPredictions([]);
+                            }}
+                            style={{ width: 250 }}
+                        />
+                        }          
+                        {
+                            foodPredictions.length > 0 ? 
+                            <CustomButton 
+                                text='Get Calories'
+                                onPress={getCalories}
+                                style={{ width: 250, backgroundColor: '#6b705c' }}
+                            />
+                            :
+                            <CustomButton 
+                                text='Submit'
+                                onPress={predict.bind(this)}
+                                style={{ width: 250, backgroundColor: '#6b705c' }}
+                            />
                         }
-                    }
-                    style={{ width:200 }}
-                />
-                :
-                <CustomButton 
-                    text='Retake'
-                    onPress={() => {
-                        setImage(null);
-                        setImageToDisplay(null);
-                        setLoading(false)
-                    }}
-                />
-                }
-            
-                    
                 </View>
-
-                <CustomButton 
-                    text='Submit'
-                    onPress={predict.bind(this)}
-                />
-                
-                
-                {/* <Button onPress={predict.bind(this)} title="Submit" /> */}
-            </View>
 			{/* {
 				!label ? (
                     <View>
@@ -285,11 +321,14 @@ setLabel('')
 } 
 
 const styles = StyleSheet.create({
-  row: { 
+    buttonContainer: { 
       display:'flex', 
-      flexDirection:'row', 
+      flexDirection:'column', 
+      alignItems: 'flex-end',
       marginLeft: 'auto', 
-      marginRight: 'auto'
+      marginRight: 'auto',
+      marginTop: 25,
+      paddingBottom: 50, // TODO this is a temp fix for white space at bottom
     },
     title: {
         fontFamily: 'Pacifico',
@@ -312,20 +351,22 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 5 },
     container:{
         backgroundColor: '#ffe8d6',
-        // height: '100%',
         paddingTop: '5%',
-        // flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
     },
     text: {
-        fontFamily: 'MontserratLight',
+        fontFamily: 'MontserratMedium',
         color: '#6b705c',
         fontSize: 25,
         paddingLeft: '10%',
         paddingRight: '10%',
         textAlign: 'center',
+        fontWeight: 'bold',
     },
+    picker: {
+        // width: 150
+        // marginTop: -50
+    }
 });
 
 

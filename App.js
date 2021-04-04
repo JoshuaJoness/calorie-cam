@@ -55,9 +55,9 @@ function App() {
     AsyncStorage.getItem('goal').then(data => setGoal(data))
   }, [])
 
-  useEffect(() => {
-    console.log(goal)
-  }, [goal])
+  // useEffect(() => {
+  //   console.log(goal)
+  // }, [goal])
 
   if (goal === 'nothing')
     return null
