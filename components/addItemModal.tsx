@@ -13,6 +13,9 @@ const AddItemModal = ({ setModalVisible, modalVisible, setFoodToLog, foodToLog }
 
     // const [foodToLog, setFoodToLog] = useState({ });
 
+
+    console.log(foodToLog, 'foodToLog')
+
     const addItemToLog = async () => {
         try {
             let foods = await AsyncStorage.getItem('foods') || '[]';
@@ -51,8 +54,9 @@ const AddItemModal = ({ setModalVisible, modalVisible, setFoodToLog, foodToLog }
                   placeholder="200"
                   keyboardType="numeric"
                   value={foodToLog['calories']}
-                  onChangeText={(calories) => {
-                    setFoodToLog({ ...foodToLog, calories });
+                  onChangeText={(energy) => {
+                    
+                    setFoodToLog({ ...foodToLog, energy: { quantity: energy, unit: 'g' } });
                   }}
                 />
               </View>
@@ -64,7 +68,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, setFoodToLog, foodToLog }
                   keyboardType="numeric"
                   value={foodToLog['carbs']}
                   onChangeText={(carbs) => {
-                    setFoodToLog({ ...foodToLog, carbs });
+                    setFoodToLog({ ...foodToLog, carbs: { quantity: carbs, unit: 'g' } });
                   }}
                 />
               </View>
@@ -76,7 +80,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, setFoodToLog, foodToLog }
                   keyboardType="numeric"
                   value={foodToLog['protein']}
                   onChangeText={(protein) => {
-                    setFoodToLog({ ...foodToLog, protein });
+                    setFoodToLog({ ...foodToLog, protein: { quantity: protein, unit: 'g' } });
                   }}
                 />
               </View>
@@ -88,7 +92,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, setFoodToLog, foodToLog }
                   keyboardType="numeric"
                   value={foodToLog['fat']}
                   onChangeText={(fat) => {
-                    setFoodToLog({ ...foodToLog, fat });
+                    setFoodToLog({ ...foodToLog, fat: { quantity: fat, unit: 'g' } });
                   }}
                 />
               </View>

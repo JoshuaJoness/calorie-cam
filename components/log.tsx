@@ -1,10 +1,22 @@
-import React, { useState, useEffect } from 'react'
-import { ScrollView, View, Text, AsyncStorage, Image, StyleSheet, Modal, TextInput } from 'react-native'
-import { useFonts } from 'expo-font'
+import React, { useState, useEffect, useContext } from 'react';
+import { ScrollView, View, Text, AsyncStorage, Image, StyleSheet, Modal, TextInput } from 'react-native';
+import { useFonts } from 'expo-font';
 import CutomButton from './button';
 import AddItemModal from './addItemModal';
+import { store } from '../store';
 
 const Log = (props) => {
+  const globalState = useContext(store);
+	const { state } = globalState;
+
+  const [triggerRerender, setTriggerRerender] = useState('')
+  // TODO remove above, need to figure out hwo to trigger re-render
+
+  useEffect(() => {
+    console.log(Object.keys(state)[0], 'STATE')
+    setTriggerRerender(Object.keys(state)[0]);
+  }, [state])
+
   const [loaded] = useFonts({
     Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
     MontserratLight: require('../assets/fonts/Montserrat-Light.ttf'),
@@ -28,10 +40,10 @@ const Log = (props) => {
   let total3 = 0;
 
   // {/* Need to call getAsync on componentWillMount, then set variable to array OR access AsyncStorage directly */}
-  useEffect(() => {
-    getFoods()
-    setTotals()
-  },[props, foodToLog])
+    useEffect(() => {
+      getFoods()
+      setTotals()
+    },[props, foodToLog])
 
   const setTotals = async () => {
     await getFoods;
@@ -102,10 +114,10 @@ const Log = (props) => {
 
         {loggedFoods.map((food,i) => <View style={{ display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6', borderBottomWidth: i === loggedFoods.length - 1 ? 0 : 1 }} key={i}>
             <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food.label}</Text>
-            <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{Math.round(food.calories)}</Text>
-            <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{Math.round(food.carbs)}</Text>
-            <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{Math.round(food.protein)}</Text>
-            <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{Math.round(food.fat)}</Text>
+            <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{Math.round(food.energy.quantity)}</Text>
+            <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{Math.round(food.carbs.quantity)}</Text>
+            <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{Math.round(food.protein.quantity)}</Text>
+            <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{Math.round(food.fat.quantity)}</Text>
           </View>
         )}
 
@@ -137,6 +149,7 @@ const Log = (props) => {
             <CutomButton text='Log Item' onPress={() => setModalVisible(!modalVisible)} style={{ width: 100, height: 30, backgroundColor: '#a5a58d', marginRight: 5 }} />
             <CutomButton text='Clear Log' onPress={clearLog} style={{ width: 100, height: 30, marginLeft: 5 }} />
         </View>
+        <Text style={{ display: 'none' }}>{triggerRerender}</Text>
     </View>
     )
   }

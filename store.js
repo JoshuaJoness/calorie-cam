@@ -11,6 +11,12 @@ const StateProvider = ( { children } ) => {
         return { ...initialState, goal: action.data }
         break;
       }
+      case 'ADD_FOOD_TO_LOG': {
+        const foods = initialState.foods || [];
+        foods.push(action.data)
+        return { ...initialState, foods }
+        break;
+      }
       default:
         break;
     };

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, { useState, useContext, useRef } from 'react'
 import { StyleSheet, Text, Picker, View, Image, ScrollView, TouchableHighlight, StatusBar, TextInput, AsyncStorage, Alert } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import * as Permissions from 'expo-permissions'
@@ -10,6 +10,7 @@ import { Camera } from 'expo-camera';
 
 import CustomButton from './button';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { store }  from '../store';
 
 {/* Clarifai Import to recognize images */}
 const Clarifai = require('clarifai');
@@ -18,10 +19,13 @@ const app = new Clarifai.App({
  apiKey: '6e326e5cab504a7bb99b3e622c9d9c8e'
 });
 
-const CalorieCam = (props) => {
+const CalorieCam = ({ navigation }) => {
+    const globalState = useContext(store);
+	const { dispatch } = globalState;
+
 	const [image, setImage] = useState()
 	const [imageToDisplay, setImageToDisplay] = useState()
-	const [label, setLabel] = useState('')
+
 	// const [calories, setCalories] = useState(0)
 	// const [carbs, setCarbs] = useState(0)
 	// const [protein, setProtein] = useState(0)
@@ -80,7 +84,6 @@ const CalorieCam = (props) => {
                 // const nutrients = data.data.hints[0].food.nutrients;
                 const foodId = data.data.hints[0].food.foodId;
                 const foodLabel = data.data.hints[0].food.label;
-                console.log(data.data.hints[0].food)
                 setFoodLabel(foodLabel)
 
                 const nutrients = await axios.post(
@@ -140,7 +143,7 @@ const CalorieCam = (props) => {
 getAsync()
 */}
           
-         goToLog()
+        //  goToLog()
         })
       }
       catch(error) {
@@ -162,11 +165,10 @@ getAsync()
     }
   };
 
-  {/* This function navigates to the Log component and passes it the loggedFoods array */}
-  const goToLog = () => {
-    props.navigation.navigate('Log', {loggedFoods:loggedFoods})
-setLabel('')
-  }
+//   {/* This function navigates to the Log component and passes it the loggedFoods array */}
+//   const goToLog = () => {
+//     navigation.navigate('Log', {loggedFoods:loggedFoods})
+//   }
 
   const [hasPermission, setHasPermission] = useState(null);
 
@@ -182,9 +184,18 @@ setLabel('')
 
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-      console.log(totalNutrients)
-  }, [totalNutrients])
+  const addItemToLog = async (foodToLog) => {
+    try {
+        let foods = await AsyncStorage.getItem('foods') || '[]';
+        foods = JSON.parse(foods);
+        foods.push(foodToLog);
+        await AsyncStorage.setItem('foods', JSON.stringify(foods));
+        // setFoodToLog({});
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 
 //   useEffect(() => {
 //     if (imageToDisplay || image) {
@@ -197,7 +208,7 @@ setLabel('')
 	return(
 		<View style={styles.container}>
             <Text style={styles.title}>Calorie Cam</Text>
-            <View style={{ backgroundColor:'#ddbea9', width: '90%', height: 400, paddingBottom: '7%' }}>
+            <View style={{ backgroundColor:'#ddbea9', width: '90%', height: 400, paddingBottom: totalNutrients ? '7%' : 0 }}>
                 {
                 totalNutrients ? 
                 <ScrollView>
@@ -235,20 +246,20 @@ setLabel('')
                     {totalNutrients ? 
                         <View style={{ display: 'flex', flexDirection: 'row', width: '90%', alignSelf: 'center' }}>
                             <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
-                                <Text style={styles.value}>{Math.round(totalNutrients.ENERC_KCAL.quantity * grams)}</Text>
-                                <Text style={styles.value}>{totalNutrients.ENERC_KCAL.unit}</Text>
+                                <Text style={styles.value}>{Math.round(totalNutrients.ENERC_KCAL.quantity * grams) || 0}</Text>
+                                <Text style={styles.value}>{totalNutrients.ENERC_KCAL.unit || ''}</Text>
                             </View>
                             <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
-                                <Text style={styles.value}>{Math.round(totalNutrients.CHOCDF.quantity * grams)}</Text>
-                                <Text style={styles.value}>{totalNutrients.CHOCDF.unit}</Text>
+                                <Text style={styles.value}>{Math.round(totalNutrients.CHOCDF.quantity * grams) || 0}</Text>
+                                <Text style={styles.value}>{totalNutrients.CHOCDF.unit || ''}</Text>
                             </View>
                             <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
-                                <Text style={styles.value}>{Math.round(totalNutrients.PROCNT.quantity * grams)}</Text>
-                                <Text style={styles.value}>{totalNutrients.PROCNT.unit}</Text>
+                                <Text style={styles.value}>{Math.round(totalNutrients.PROCNT.quantity * grams) || ''}</Text>
+                                <Text style={styles.value}>{totalNutrients.PROCNT?.unit}</Text>
                             </View>
                             <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
-                                <Text style={styles.value}>{Math.round(totalNutrients.FAT.quantity * grams)}</Text>
-                                <Text style={styles.value}>{totalNutrients.FAT.unit}</Text>
+                                <Text style={styles.value}>{Math.round(totalNutrients.FAT.quantity * grams) || 0}</Text>
+                                <Text style={styles.value}>{totalNutrients.FAT.unit || ''}</Text>
                             </View>    
                         </View>
                     : null}
@@ -287,8 +298,8 @@ setLabel('')
                                 >
                                     <Text style={{ ...styles.value, flex: 1.5 }}>{totalNutrients[key].label}</Text>
                                     <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
-                                        <Text style={styles.value}>{totalNutrients[key].quantity.toFixed(2) * grams}</Text>
-                                        <Text style={styles.value}>{totalNutrients[key].unit}</Text>
+                                        <Text style={styles.value}>{totalNutrients[key].quantity.toFixed(2) * grams || 0}</Text>
+                                        <Text style={styles.value}>{totalNutrients[key].unit || ''}</Text>
                                     </View>
                                 </View>
                                 )
@@ -332,7 +343,23 @@ setLabel('')
                 }
             </View>
             <View style={styles.buttonContainer}>
-                    {!imageToDisplay ? 
+                    {
+                    totalNutrients ? 
+                    <CustomButton 
+                            text='Cancel'
+                            onPress={() => {
+                                setImage(null);
+                                setImageToDisplay(null);
+                                setLoading(false);
+                                setFoodPredictions([]);
+                                setTotalNutrients(null);
+                                setFoodLabel(null);
+                                setGrams(100);
+                            }}
+                            style={{ width: 250 }}
+                        />
+                    :
+                    !imageToDisplay ? 
                         <CustomButton 
                             text='Take Picture'
                             onPress={async () => {
@@ -362,7 +389,36 @@ setLabel('')
                             style={{ width: 250 }}
                         />
                         }          
-                        {
+                        {   
+                            totalNutrients ? 
+                            <CustomButton 
+                                text='Log Item'
+                                onPress={() => {
+                                    const foodToLog = { 
+                                        label: foodLabel,
+                                     }
+                                    Object.keys(totalNutrients).forEach(key => {
+                                         const labelToLog = totalNutrients[key].label.toLowerCase()
+
+                                        foodToLog[labelToLog] = { quantity: totalNutrients[key].quantity, unit: totalNutrients[key].unit  }
+                                        addItemToLog(foodToLog);
+
+                                        setImage(null);
+                                        setImageToDisplay(null);
+                                        setLoading(false);
+                                        setFoodPredictions([]);
+                                        setTotalNutrients(null);
+                                        setFoodLabel(null);
+                                        setGrams(100);
+
+                                        dispatch({ type: 'ADD_FOOD_TO_LOG', data: foodToLog })
+
+                                        navigation.navigate('Log')
+                                    }) 
+                                }}
+                                style={{ width: 250, backgroundColor: '#6b705c' }}
+                            /> 
+                            :
                             foodPredictions.length > 0 ? 
                             <CustomButton 
                                 text='Get Calories'
