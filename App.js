@@ -48,16 +48,16 @@ function App() {
   AsyncStorage.getItem('goal').then(data => setGoal(data))
 
   const globalState = useContext(store);
-  const { state } = globalState; // maybe I can just unset goal
-  console.log(state)
+	const { dispatch } = globalState;
+  console.log('dispatch',dispatch)
 
   useEffect(() => {
     AsyncStorage.getItem('goal').then(data => setGoal(data))
   }, [])
 
-  // useEffect(() => {
-  //   console.log(goal)
-  // }, [goal])
+  useEffect(() => {
+    console.log(goal, 'GOAL')
+  }, [goal])
 
   if (goal === 'nothing')
     return null

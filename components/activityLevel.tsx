@@ -14,6 +14,8 @@ const ACTIVITY_LEVELS = [
 ]
 
 const ActivityLevel = ({ navigation }) => {
+	// AsyncStorage.getItem('activityLevel').then(data => setActivityLevel(data));  
+
 	const [activityLevel, setActivityLevel] = React.useState(null);
 	const [fadeAnim, setFadeAnim] = React.useState(new Animated.Value(0.1))
 	const [fadeAnimTwo] = React.useState(new Animated.Value(0))

@@ -31,9 +31,11 @@ const INCHES = [
 
 
 const Height = ({ navigation }) => {
+	AsyncStorage.getItem('feet').then(data => setFeet(data)) 
+	AsyncStorage.getItem('inches').then(data => setInches(data))  
+	
 	const [feet, setFeet] = React.useState(null);
 	const [inches, setInches] = React.useState(null);
-	const [pounds, setPounds] = React.useState(null);
 	const [fadeAnim, setFadeAnim] = React.useState(new Animated.Value(0.1))
 	const [fadeAnimTwo] = React.useState(new Animated.Value(0))
 	const [fadeAnimThree] = React.useState(new Animated.Value(0))
@@ -106,7 +108,7 @@ const Height = ({ navigation }) => {
 
             </View>
 
-            <View style={{ marginTop: 250 }}>
+            {feet && inches ? <View style={{ marginTop: 250 }}>
                 <CustomButton 
 					text='Continue' 
 					onPress={async () => {
@@ -119,7 +121,7 @@ const Height = ({ navigation }) => {
 						navigation.navigate('Weight')
 					}} 
 					disabled={!feet && !inches}/>
-            </View>
+            </View> : null}
  
 		</View>
 	)

@@ -6,6 +6,7 @@ import CustomButton from './button'
 
 
 const Gender = ({ navigation }) => {
+	// AsyncStorage.getItem('gender').then(data => setGender(data));
 	const [gender, setGender] = React.useState(null);
 	const [fadeAnim, setFadeAnim] = React.useState(new Animated.Value(0.1))
 	const [fadeAnimTwo] = React.useState(new Animated.Value(0))
@@ -60,7 +61,7 @@ const Gender = ({ navigation }) => {
 				<Text style={styles.boldText}> gender </Text>
 			</Animated.Text>
 
-			<Animated.View style={{ marginRight:'auto', alignItems: 'left', width: '100%', opacity: fadeAnimTwo }}>
+			<View style={{ marginRight:'auto', alignItems: 'left', width: '100%' }}>
 				<Picker
 					selectedValue={gender}
 					style={styles.picker}
@@ -69,9 +70,9 @@ const Gender = ({ navigation }) => {
 					<Picker.Item label="Male" value="male" />
 					<Picker.Item label="Female" value="female" />
 				</Picker>
-			</Animated.View>
+			</View>
 
-			<View style={{ marginTop: '35%' }}>
+			{gender ? <View style={{ marginTop: '35%' }}>
 				<CustomButton 
 					text='Continue'
 					onPress={async() => {
@@ -83,7 +84,7 @@ const Gender = ({ navigation }) => {
 						navigation.navigate('Height');
 					}
 					} />
-			</View> 
+			</View> : null}
 		</View>
 	)
 }

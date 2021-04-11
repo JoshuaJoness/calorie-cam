@@ -17,51 +17,59 @@ const Results = ({ navigation }) => {
     const [inches, setInches] = useState(null);
     const [weight, setWeight] = useState(null);
     const [activityLevel, setActivityLevel] = useState(null);
-
     const [bmr, setBmr] = useState(null);
     const [totalDailyCalorieNeeds, setTotalDailyCalorieNeeds] = useState(null);
 
     const [refresh, setRefresh] = useState(false);
 
-    AsyncStorage.getItem('age').then(data => setAge(data))
-    AsyncStorage.getItem('gender').then(data => setGender(data))
-    AsyncStorage.getItem('feet').then(data => setFeet(data))
-    AsyncStorage.getItem('inches').then(data => setInches(data))
-    AsyncStorage.getItem('weight').then(data => setWeight(data))
-    AsyncStorage.getItem('activityLevel').then(data => setActivityLevel(data))
-
     useEffect(() => {
-        if (age && gender && feet && inches && weight && activityLevel)
-            console.log(age, gender, feet, inches, weight, activityLevel);
+        const getData = async () => {
+            await AsyncStorage.getItem('age').then(data => setAge(data))
+            await AsyncStorage.getItem('gender').then(data => setGender(data))
+            await AsyncStorage.getItem('feet').then(data => setFeet(data))
+            await AsyncStorage.getItem('inches').then(data => setInches(data))
+            await AsyncStorage.getItem('weight').then(data => setWeight(data))
+            await AsyncStorage.getItem('activityLevel').then(data => setActivityLevel(data))
+        }
+        getData();
+    }, [])
 
+    
 
+    useEffect(() => {        
+        if (age && gender && feet && inches && weight && activityLevel) {
+            console.log(age, gender, feet, inches, weight, activityLevel, "CONFIGS")
             const feetToInches = feet * 12;
-
-            const totalInches = Number(inches) + Number(feetToInches)
-            console.log(totalInches, 'totalInches')
+            const totalInches = Number(inches) + Number(feetToInches);
 
             if (gender === 'female') {
                 setBmr(655 + (4.35 * weight) + (4.7 * totalInches) - (4.7 * age))
             } else {
                 setBmr(66 + (6.23 * weight) + (12.7 * totalInches) - (6.8 * age))
             }
-
-            if (activityLevel === 'notVeryActive') {
-                setTotalDailyCalorieNeeds(bmr * 1.2);
-            } else if (activityLevel === 'moderatelyActive') {
-                setTotalDailyCalorieNeeds(bmr * 1.375);
-            } else {
-                setTotalDailyCalorieNeeds(bmr * 1.55);
-            }
-
+        }
     }, [age, gender, feet, inches, weight, activityLevel]);
+
+    useEffect(() => {
+        if (activityLevel === 'notVeryActive') {
+            setTotalDailyCalorieNeeds(bmr * 1.2);
+        } else if (activityLevel === 'moderatelyActive') {
+            setTotalDailyCalorieNeeds(bmr * 1.375);
+        } else {
+            setTotalDailyCalorieNeeds(bmr * 1.55);
+        }
+    }, [bmr])
+
+    useEffect(() => {
+        console.log(totalDailyCalorieNeeds, 'CALORIEs')
+    }, [totalDailyCalorieNeeds])
 
     if (!loaded)
         return null
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>RESULTS</Text>
+            <Text style={styles.title}>Results</Text>
             <Text style={styles.boldText}>{Math.round(Number(totalDailyCalorieNeeds))} 
                 <Text style={styles.text}> calories is the amount of calories that your body needs for it's daily energy expenditure.</Text>
             </Text>
@@ -76,34 +84,41 @@ const Results = ({ navigation }) => {
                     text={'Lose Weight'} 
                     onPress={async () => {
                         try {
-                            await AsyncStorage.setItem('goal', 'loseWeight')
+                            await AsyncStorage.setItem('goal', 'loseWeight');
+                            if (totalDailyCalorieNeeds)
+                                await AsyncStorage.setItem('totalDailyCalorieNeeds', totalDailyCalorieNeeds);
                         } catch (e) {
                             console.log(e)
                         }
-                        setRefresh(!refresh)
-                        // navigation.navigate('Log');
+                        // setRefresh(!refresh)
+                        navigation.navigate('Home');
                     }}
                 />
                 <CustomButton 
                     text={'Maintain Weight'}
                     onPress={async () => {
                         try {
-                            await AsyncStorage.setItem('goal', 'maintainWeight')
+                            await AsyncStorage.setItem('goal', 'maintainWeight');
+                            if (totalDailyCalorieNeeds)
+                                await AsyncStorage.setItem('totalDailyCalorieNeeds', totalDailyCalorieNeeds);
                         } catch (e) {
                             console.log(e)
                         }
-                        setRefresh(!refresh)
-                        // navigation.navigate('Log');
+                        // setRefresh(!refresh)
+                        navigation.navigate('Home');
                     }}
                     />
                 <CustomButton 
                     text={'Gain Weight'} 
                     onPress={async () => {
                         try {
-                            await AsyncStorage.setItem('goal', 'gainWeight')
+                            await AsyncStorage.setItem('goal', 'gainWeight');
+                            if (totalDailyCalorieNeeds)
+                                await AsyncStorage.setItem('totalDailyCalorieNeeds', totalDailyCalorieNeeds);
                         } catch (e) {
                             console.log(e)
                         }
+                        // setRefresh(!refresh)
                         navigation.navigate('Home');
                     }}
                 />
@@ -127,6 +142,15 @@ const styles = StyleSheet.create ({
 		marginRight:'auto',
 
 	},
+    title: {
+        fontFamily: 'Pacifico',
+		color: '#6b705c',
+		fontSize: 35,
+		paddingLeft: '10%',
+		paddingRight: '10%',
+        marginBottom: 30,
+		textAlign: 'center',
+    },
 	text: {
 		fontFamily: 'MontserratLight',
 		color: '#6b705c',

@@ -8,8 +8,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 
 
 const Age = ({ navigation }) => {
-	const globalState = useContext(store);
-	const { dispatch } = globalState;
+	AsyncStorage.getItem('age').then(data => setAge(data)) 
 	
 	const [age, setAge] = React.useState(null);
 	const [fadeAnim, setFadeAnim] = React.useState(new Animated.Value(0.1))
@@ -22,8 +21,6 @@ const Age = ({ navigation }) => {
 		MontserratMedium: require('../assets/fonts/Montserrat-Medium.ttf'),
 		MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf')
 	})
-
-	// AsyncStorage.getItem('age').then(data => setAge(data))
 
 	React.useEffect(() => {
 		Animated.timing(fadeAnim, {
@@ -68,12 +65,9 @@ const Age = ({ navigation }) => {
 			<View style={{marginTop:'10%', marginRight:'auto', alignItems: 'left', width: '100%' }}>
 				<TextInput 
 					style={styles.input} 
-					value={age} 
-					// keyboardType='number-pad'
-					onSubmitEditing={() => dispatch({ type: 'SET_AGE', data: age })}
+					value={age} 	
 					maxLength={3}
 					onChangeText={age => {
-						console.log(age, 'AGE')
 						const ageToNumber = Number(age);
 						if (!ageToNumber && age !== '') {
 							Alert.alert('Please enter numbers only.');
@@ -96,8 +90,6 @@ const Age = ({ navigation }) => {
 						} catch (err) {
 							console.log(err)
 						}
-						
-						dispatch({ type: 'SET_AGE', data: age });
 						navigation.navigate('Gender');
 					}} 
 				/>

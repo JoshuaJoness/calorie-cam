@@ -6,6 +6,7 @@ import CustomButton from './button'
 
 
 const Weight = ({ navigation }) => {
+	AsyncStorage.getItem('weight').then(data => setWeight(data)) 
 	const [weight, setWeight] = React.useState(null);
 	const [fadeAnim, setFadeAnim] = React.useState(new Animated.Value(0.1))
 	const [fadeAnimTwo] = React.useState(new Animated.Value(0))
@@ -76,7 +77,7 @@ const Weight = ({ navigation }) => {
                         placeholder={'180lbs'}
                     />
                 </View>
-            <View style={{ marginTop: 50 }}>
+            {weight ? <View style={{ marginTop: 50 }}>
                 <CustomButton 
                     text='Continue' 
                     onPress={async () => {
@@ -88,7 +89,7 @@ const Weight = ({ navigation }) => {
                         navigation.navigate('ActivityLevel');
                     }} 
                     disabled={!weight}/>
-            </View>
+            </View> : null}
  
 		</View>
 	)
