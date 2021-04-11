@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import { StyleSheet, Text, Picker, View, Image, ScrollView, TouchableHighlight, StatusBar, TextInput, AsyncStorage, Button, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, Picker, View, Image, ScrollView, TouchableHighlight, StatusBar, TextInput, AsyncStorage, Button, Alert } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import * as Permissions from 'expo-permissions'
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
@@ -25,7 +25,7 @@ const CalorieCam = (props) => {
 	// const [carbs, setCarbs] = useState(0)
 	// const [protein, setProtein] = useState(0)
 	// const [fat, setFat] = useState(0)
-    const [grams, setGrams] = useState('100')
+
     const [loggedFoods, setLoggedFoods] = useState([])
     const [date, setDate] = useState(moment(Date.now()).format("dddd, MMMM Do YYYY, h:mm:ss a"))
     const [show, setShow] = useState(false)
@@ -35,6 +35,10 @@ const CalorieCam = (props) => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [dailyNutrientReqs, setDailyNutrientReqs] = useState(null);
     const [totalNutrients, setTotalNutrients] = useState(null);
+
+    const [foodLabel, setFoodLabel] = useState(null);
+    const [grams, setGrams] = useState<number>(100);
+
     let arr = []
 
     // const takePicture = async () => {
@@ -71,6 +75,9 @@ const CalorieCam = (props) => {
                 const data = await axios.get(`https://api.edamam.com/api/food-database/parser?app_id=${edamamId}&app_key=${edamamKey}&ingr=${selectedItem}`);
                 // const nutrients = data.data.hints[0].food.nutrients;
                 const foodId = data.data.hints[0].food.foodId;
+                const foodLabel = data.data.hints[0].food.label;
+                console.log(data.data.hints[0].food)
+                setFoodLabel(foodLabel)
 
                 const nutrients = await axios.post(
                     `https://api.edamam.com/api/food-database/v2/nutrients?app_id=${edamamId}&app_key=${edamamKey}`,
@@ -78,19 +85,19 @@ const CalorieCam = (props) => {
                         "ingredients": [
                             {
                               "quantity": 1,
-                              "measureURI": "http://www.edamam.com/ontologies/edamam.owl#Measure_unit",
+                              "measureURI": "http://www.edamam.com/ontologies/edamam.owl#Measure_gram",
                               "foodId": foodId
                             }
                           ]
                     }
                 )
+                
 
                 const totalDailyPercentages = nutrients.data.totalDaily;
                 const totalNutrients = nutrients.data.totalNutrients;
                 
                 setDailyNutrientReqs(totalDailyPercentages);
                 setTotalNutrients(totalNutrients);
-                console.log(totalNutrients)
             } catch (err) {
                 console.log(err)
             }
@@ -104,7 +111,7 @@ const CalorieCam = (props) => {
     // setProtein(0)
     // setFat(0)
     // setCalories(0)
-    // setGrams('100')
+    // setGrams('100') 
     // setObject({label:'',calories:0,carbs:0,protein:0,fat:0})
     // setShow(false)
     // setShowResults(false)
@@ -185,10 +192,42 @@ setLabel('')
                 {
                 totalNutrients ? 
                 <View>
-                    <Text>NUTRIENT RESULTS</Text>
-                    <Text>NUTRIENT RESULTS</Text>
-                    <Text>NUTRIENT RESULTS</Text>
-                    <Text>NUTRIENT RESULTS</Text>
+                    <View style={{ display: 'flex', flexDirection: 'row', paddingTop: '5%' }}>
+                        <Text style={{ ...styles.text, textAlign: 'left' }}>Per </Text>
+                        <View>
+                            <TextInput 
+                                style={styles.input} 
+                                value={String(grams)}
+                                onChangeText={grams => {
+                                    const gramsToNumber = Number(grams);
+                                    if (!gramsToNumber && grams !== '') {
+                                        Alert.alert('Please enter numbers only.');
+                                        setGrams(null);
+                                    } else {
+                                        setGrams(gramsToNumber)
+                                    }
+                                }}
+                            /> 
+                        </View>
+                        <Text style={styles.text}>grams</Text>
+                    </View>
+                    <Text style={{ ...styles.text, textAlign: 'left' }}>{foodLabel} contains:</Text>
+
+                    
+                    {Object.keys(totalNutrients).map(key => {
+                        if (totalNutrients[key].label === 'Energy' || totalNutrients[key].label === 'Fat' || totalNutrients[key].label === 'Protein' || totalNutrients[key].label === 'Carbs') {
+                            return (
+                                <View style={{ display: 'flex', flexDirection: 'row', margin: 10}}>
+                                    
+                                    <Text>{totalNutrients[key].label}</Text>
+                                    <Text>{Math.round(totalNutrients[key].quantity) * grams}</Text>
+                                    <Text>{totalNutrients[key].unit}</Text>
+                                </View>
+                            )
+                        } else {
+                            return null;
+                        }
+                    })}
                 </View>
                 :
                 foodPredictions.length > 0 ? 
@@ -363,10 +402,21 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: 'bold',
     },
-    picker: {
-        // width: 150
-        // marginTop: -50
-    }
+    input: {
+		backgroundColor: '#ddbea9',
+		opacity: 1,
+		borderBottomColor: '#6B705C',
+		borderBottomWidth: 2,
+		borderRadius: 4,
+        // height: 45,
+        width: 50,
+        // marginTop: '5%',
+        fontSize: 25,
+        color: '#a5a58d',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+		textAlign: 'center'
+	  },
 });
 
 

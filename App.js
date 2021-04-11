@@ -44,24 +44,12 @@ const Stack = createStackNavigator();
 
 
 function App() {
-  const [goal, setGoal] = useState(null)
-  AsyncStorage.getItem('goal').then(data => setGoal(data))
-
-  const globalState = useContext(store);
-	const { state, dispatch } = globalState;
-
+  const [goal, setGoal] = useState(null);
+  AsyncStorage.getItem('goal').then(data => setGoal(data));
 
   useEffect(() => {
-    console.log(globalState, 'globalState')
-  }, [globalState])
-
-  useEffect(() => {
-    AsyncStorage.getItem('goal').then(data => setGoal(data))
-  }, [])
-
-  useEffect(() => {
-    console.log(goal, 'GOAL')
-  }, [goal])
+    AsyncStorage.getItem('goal').then(data => setGoal(data));
+  }, []);
 
   if (!goal)
     return null

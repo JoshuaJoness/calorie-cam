@@ -8,7 +8,6 @@ const StateProvider = ( { children } ) => {
   const [state, dispatch] = useReducer((state, action) => {
     switch(action.type) {
       case 'GOAL_UPDATED': {
-        console.log('CALLED')
         return { ...initialState, goal: action.data }
         break;
       }
