@@ -38,6 +38,7 @@ const CalorieCam = (props) => {
 
     const [foodLabel, setFoodLabel] = useState(null);
     const [grams, setGrams] = useState<number>(100);
+    // const [nutrientKeys, setNutrientKeys] = useState(null);
 
     let arr = []
 
@@ -63,7 +64,7 @@ const CalorieCam = (props) => {
             const foodPredictions = data.outputs[0].data.concepts;
             setFoodPredictions(foodPredictions);
             return;
-                }
+        }
 
         
         const edamamId = '7ff1ee7e'
@@ -98,6 +99,7 @@ const CalorieCam = (props) => {
                 
                 setDailyNutrientReqs(totalDailyPercentages);
                 setTotalNutrients(totalNutrients);
+                // setNutrientKeys(Object.keys(totalNutrients))
             } catch (err) {
                 console.log(err)
             }
@@ -177,6 +179,10 @@ setLabel('')
 
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+      console.log(totalNutrients)
+  }, [totalNutrients])
+
 //   useEffect(() => {
 //     if (imageToDisplay || image) {
 //         setLoading(false);
@@ -213,21 +219,42 @@ setLabel('')
                     </View>
                     <Text style={{ ...styles.text, textAlign: 'left' }}>{foodLabel} contains:</Text>
 
+                    {totalNutrients ? 
+                        <View style={{ display:'flex', flexDirection: 'row', padding:10, borderBottomWidth: 1, borderColor:'#6b705c', width: '90%', alignSelf:'center', marginTop: '5%' }} >
+                            {/* <Text style={{ ...styles.label, color:'#6b705c' }}>Food</Text> */}
+                            <Text style={styles.label}>Calories</Text>
+                            <Text style={styles.label}>Carbs</Text>
+                            <Text style={styles.label}>Protein</Text>
+                            <Text style={styles.label}>Fat</Text>
+                        </View> 
+                    : null}
+
+                    {totalNutrients ? 
+                        <View style={{ display: 'flex', flexDirection: 'row', width: '90%', alignSelf: 'center' }}>
+                            <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
+                                <Text style={styles.value}>{Math.round(totalNutrients.ENERC_KCAL.quantity * grams)}</Text>
+                                <Text style={styles.value}>{totalNutrients.ENERC_KCAL.unit}</Text>
+                            </View>
+                            <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
+                                <Text style={styles.value}>{Math.round(totalNutrients.CHOCDF.quantity * grams)}</Text>
+                                <Text style={styles.value}>{totalNutrients.CHOCDF.unit}</Text>
+                            </View>
+                            <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
+                                <Text style={styles.value}>{Math.round(totalNutrients.PROCNT.quantity * grams)}</Text>
+                                <Text style={styles.value}>{totalNutrients.PROCNT.unit}</Text>
+                            </View>
+                            <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
+                                <Text style={styles.value}>{Math.round(totalNutrients.FAT.quantity * grams)}</Text>
+                                <Text style={styles.value}>{totalNutrients.FAT.unit}</Text>
+                            </View>    
+                        </View>
+                    : null}
                     
-                    {Object.keys(totalNutrients).map(key => {
-                        if (totalNutrients[key].label === 'Energy' || totalNutrients[key].label === 'Fat' || totalNutrients[key].label === 'Protein' || totalNutrients[key].label === 'Carbs') {
-                            return (
-                                <View style={{ display: 'flex', flexDirection: 'row', margin: 10}}>
-                                    
-                                    <Text>{totalNutrients[key].label}</Text>
-                                    <Text>{Math.round(totalNutrients[key].quantity) * grams}</Text>
-                                    <Text>{totalNutrients[key].unit}</Text>
-                                </View>
-                            )
-                        } else {
-                            return null;
-                        }
-                    })}
+              
+
+
+
+                    
                 </View>
                 :
                 foodPredictions.length > 0 ? 
@@ -417,7 +444,34 @@ const styles = StyleSheet.create({
         marginRight: 'auto',
 		textAlign: 'center'
 	  },
+      label: {
+        color: '#cb997e',
+        fontWeight: 'bold',
+        flex: 1,
+      },
+      value: {
+        color: '#6b705c',
+        fontWeight: 'bold',
+        marginLeft: 2,
+      },
 });
 
 
 export default CalorieCam;
+
+
+// {Object.keys(totalNutrients).map(key => {
+//     if (totalNutrients[key].label === 'Energy' || totalNutrients[key].label === 'Fat' || totalNutrients[key].label === 'Protein' || totalNutrients[key].label === 'Carbs') {
+//         return (
+//             <View></View>
+//             // <View style={{ display: 'flex', flexDirection: 'row' }}  key={totalNutrients[key]}>
+//             //     {/* <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food.label}</Text> */}
+//             //     <Text>{totalNutrients[key].label}</Text>
+//             //     <Text>{Math.round(totalNutrients[key].quantity) * grams}</Text>
+//             //     <Text>{totalNutrients[key].unit}</Text>
+//             // </View>
+//         )
+//     } else {
+//         return null;
+//     }
+// })}
