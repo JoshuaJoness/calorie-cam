@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import { StyleSheet, Text, Picker, View, Image, ScrollView, TouchableHighlight, StatusBar, TextInput, AsyncStorage, Button, Alert } from 'react-native'
+import { StyleSheet, Text, Picker, View, Image, ScrollView, TouchableHighlight, StatusBar, TextInput, AsyncStorage, Alert } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import * as Permissions from 'expo-permissions'
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
@@ -9,6 +9,7 @@ import moment from 'moment'
 import { Camera } from 'expo-camera';
 
 import CustomButton from './button';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 {/* Clarifai Import to recognize images */}
 const Clarifai = require('clarifai');
@@ -38,6 +39,8 @@ const CalorieCam = (props) => {
 
     const [foodLabel, setFoodLabel] = useState(null);
     const [grams, setGrams] = useState<number>(100);
+
+    const [showMicros, setShowMicros] = useState(false);
     // const [nutrientKeys, setNutrientKeys] = useState(null);
 
     let arr = []
@@ -194,11 +197,11 @@ setLabel('')
 	return(
 		<View style={styles.container}>
             <Text style={styles.title}>Calorie Cam</Text>
-            <View style={{ backgroundColor:'#ddbea9', width: '90%', height: 400 }}>
+            <View style={{ backgroundColor:'#ddbea9', width: '90%', height: 400, paddingBottom: '7%' }}>
                 {
                 totalNutrients ? 
-                <View>
-                    <View style={{ display: 'flex', flexDirection: 'row', paddingTop: '5%' }}>
+                <ScrollView>
+                    <View style={{ display: 'flex', flexDirection: 'row', paddingTop: '5%', paddingBottom: '5%' }}>
                         <Text style={{ ...styles.text, textAlign: 'left' }}>Per </Text>
                         <View>
                             <TextInput 
@@ -249,13 +252,60 @@ setLabel('')
                             </View>    
                         </View>
                     : null}
+
+                    <TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', marginBottom: '2%' }} onPress={() => setShowMicros(!showMicros)}>
+                        <Text style={{ ...styles.value, textDecorationLine: 'underline' }}>{!showMicros ? 'View micros' : 'hide micros'}</Text>
+                    </TouchableOpacity>
+
+                    {showMicros ? 
+                        Object.keys(totalNutrients)
+                            .filter(key => key !== 'ENERC_KCAL' && key !== 'CHOCDF' && key !== 'PROCNT' && key !== 'FAT')
+                            .map((key, i) => {
+                                return (
+                                    // <View style={{display:'flex', flexDirection:'row', padding:10, borderTopWidth: '1px', borderColor:'black'}}>
+                                    //     <Text style={{ ...styles.label, color:'#6b705c' }}>Totals:</Text>
+                                    //     <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalCalories)}</Text>
+                                    //     <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalCarbs)} g</Text>
+                                    //     <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalProtein)} g</Text>
+                                    //     <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalFat)} g</Text>
+                                    // </View>
+
+
+
+                                <View 
+                                    style={{
+                                        display:'flex', 
+                                        flexDirection:'row', 
+                                        padding:10, 
+                                        borderWidth: 1,
+                                        borderBottomWidth: i === Object.keys(totalNutrients).length - 1 ? 1 : 0,
+                                        borderColor:'black', 
+                                        backgroundColor: '#ffe8d6', 
+                                        width: '90%', 
+                                        alignSelf: 'center',
+                                    }}
+                                >
+                                    <Text style={{ ...styles.value, flex: 1.5 }}>{totalNutrients[key].label}</Text>
+                                    <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
+                                        <Text style={styles.value}>{totalNutrients[key].quantity.toFixed(2) * grams}</Text>
+                                        <Text style={styles.value}>{totalNutrients[key].unit}</Text>
+                                    </View>
+                                </View>
+                                )
+                        })  
+                    : null}
+
+
+              
+
+                    
                     
               
 
 
 
                     
-                </View>
+                </ScrollView>
                 :
                 foodPredictions.length > 0 ? 
                 <View style={{ marginTop: 30, display: 'flex', justifyContent: 'center' }}>
