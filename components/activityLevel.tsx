@@ -32,6 +32,7 @@ const ActivityLevel = ({ navigation }) => {
 		Animated.timing(fadeAnim, {
 		  toValue: 1,
 		  duration: 500,
+		  useNativeDriver: false,
 		}).start()
 
 		setTimeout(() => {

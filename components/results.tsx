@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Picker, Animated, AsyncStorage } from 'react-native';
 import { useFonts } from 'expo-font';
 import CustomButton from './button'
+import { store } from '../store';
 
 const Results = ({ navigation }) => {
     const [loaded] = useFonts({
@@ -58,6 +59,9 @@ const Results = ({ navigation }) => {
         }
     }, [bmr]);
 
+    const globalState = useContext(store);
+	const { dispatch } = globalState;
+
     if (!loaded)
         return null
 
@@ -77,11 +81,9 @@ const Results = ({ navigation }) => {
                 <CustomButton 
                     text={'Lose Weight'} 
                     onPress={async () => {
-                        console.log(1)
                         try {
-                            console.log(2)
-                            await AsyncStorage.setItem('goal', 'loseWeight');                     
-                            console.log(3)
+                            await AsyncStorage.setItem('goal', 'loseWeight');        
+                            dispatch({ type: 'GOAL_UPDATED', data: 'loseWeight' });            
                         } catch (e) {
                             console.log(e)
                         }
@@ -93,6 +95,7 @@ const Results = ({ navigation }) => {
                     onPress={async () => {
                         try {
                             await AsyncStorage.setItem('goal', 'maintainWeight');
+                            dispatch({ type: 'GOAL_UPDATED', data: 'maintainWeight' });
                         } catch (e) {
                             console.log(e)
                         }
@@ -104,6 +107,7 @@ const Results = ({ navigation }) => {
                     onPress={async () => {
                         try {
                             await AsyncStorage.setItem('goal', 'gainWeight');
+                            dispatch({ type: 'GOAL_UPDATED', data: 'gainWeight' });
                         } catch (e) {
                             console.log(e)
                         }

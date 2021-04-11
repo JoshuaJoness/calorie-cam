@@ -3,8 +3,17 @@ import { View, Text, StyleSheet, Picker, Animated, AsyncStorage } from 'react-na
 import { useFonts } from 'expo-font';
 import CustomButton from './button'
 import Pilates from './svgs/pilates'
+import { store } from '../store';
 
-const Goal = ({ navigation }) => {
+const Goal = ({ route, navigation }) => {
+
+    const globalState = useContext(store);
+    const { state } = globalState;
+    const { goal: goalFromGlobalState } = state;
+    useEffect(() => {
+        setGoal(goalFromGlobalState);
+    }, [goalFromGlobalState]);
+
     const [loaded] = useFonts({
 		Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
 		MontserratLight: require('../assets/fonts/Montserrat-Light.ttf'),
@@ -28,24 +37,24 @@ const Goal = ({ navigation }) => {
     const [totalDailyCalorieNeeds, setTotalDailyCalorieNeeds] = useState(null);
 
     useEffect(() => {
-        console.log(age,gender,feet,inches,weight,activityLevel)
-
-
         const getData = async () => {
-            await AsyncStorage.getItem('age').then(data => setAge(data))
-            await AsyncStorage.getItem('gender').then(data => setGender(data))
-            await AsyncStorage.getItem('feet').then(data => setFeet(data))
-            await AsyncStorage.getItem('inches').then(data => setInches(data))
-            await AsyncStorage.getItem('weight').then(data => setWeight(data))
-            await AsyncStorage.getItem('activityLevel').then(data => setActivityLevel(data))
-            AsyncStorage.getItem('goal').then(data => setGoal(data))
+            try {
+                await AsyncStorage.getItem('age').then(data => setAge(data));
+                await AsyncStorage.getItem('gender').then(data => setGender(data));
+                await AsyncStorage.getItem('feet').then(data => setFeet(data));
+                await AsyncStorage.getItem('inches').then(data => setInches(data));
+                await AsyncStorage.getItem('weight').then(data => setWeight(data));
+                await AsyncStorage.getItem('activityLevel').then(data => setActivityLevel(data));
+                await AsyncStorage.getItem('goal').then(data => setGoal(data));
+            } catch (err) {
+                console.log(err);
+            }
         }
         getData();
     }, []);
 
     useEffect(() => {        
         if (age && gender && feet && inches && weight && activityLevel) {
-            console.log(age, gender, feet, inches, weight, activityLevel, "CONFIGS")
             const feetToInches = feet * 12;
             const totalInches = Number(inches) + Number(feetToInches);
 
@@ -99,10 +108,11 @@ const Goal = ({ navigation }) => {
             This is known as <Text style={styles.boldText}>{ goal === 'loseWeight' ? 'a caloric deficit' : goal === 'maintainWeight' ? 'your maintenance calories' : goal === 'gainWeight' ? 'a caloric surplus' : null }</Text>
         </Text>
 
-        <CustomButton 
+        <CustomButton
+            style={{ marginTop: '15%' }} 
             text="Update Your Goals" 
             onPress={() => {
-                navigation.navigate('GetStarted')
+                navigation.navigate('GetStarted');
             }} 
         />
               {/* <View style={{ marginLeft:'auto', marginRight:'auto' }}>
