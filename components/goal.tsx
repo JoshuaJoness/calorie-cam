@@ -76,6 +76,12 @@ const Goal = ({ route, navigation }) => {
         }
     }, [bmr]);
 
+    // TODO set and pull out total
+    // useEffect(() => {
+    //     const setLocalCalorieNeeds = async () => await AsyncStorage.setItem('totalDailyCalorieNeeds', totalDailyCalorieNeeds);
+    //     setLocalCalorieNeeds();
+    // }, [totalDailyCalorieNeeds])
+
     if (!loaded)
         return null
 

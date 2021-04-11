@@ -15,7 +15,7 @@ const Log = (props) => {
   useEffect(() => {
     console.log(Object.keys(state)[0], 'STATE')
     setTriggerRerender(Object.keys(state)[0]);
-  }, [state])
+  }, [])
 
   const [loaded] = useFonts({
     Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
@@ -42,35 +42,35 @@ const Log = (props) => {
   // {/* Need to call getAsync on componentWillMount, then set variable to array OR access AsyncStorage directly */}
     useEffect(() => {
       getFoods()
-      setTotals()
+      // setTotals()
     },[props, foodToLog])
 
-  const setTotals = async () => {
-    await getFoods;
-    if (loggedFoods.length > 0) {
-      const valuesAsNumbers: any = loggedFoods.map(({label, calories, carbs, protein ,fat }) => ({ label, calories: Number(calories), carbs: Number(carbs), protein: Number(protein), fat: Number(fat) }))
+  // const setTotals = async () => {
+  //   await getFoods;
+  //   if (loggedFoods.length > 0) {
+  //     const valuesAsNumbers: any = loggedFoods.map(({label, calories, carbs, protein ,fat }) => ({ label, calories: Number(calories), carbs: Number(carbs), protein: Number(protein), fat: Number(fat) }))
 
-      const totalCalories = valuesAsNumbers.reduce((a,b) => {
-        return a + b.calories;
-      }, 0);
-      setTotalCalories(totalCalories);
+  //     const totalCalories = valuesAsNumbers.reduce((a,b) => {
+  //       return a + b.calories;
+  //     }, 0);
+  //     setTotalCalories(totalCalories);
 
-      const totalCarbs = valuesAsNumbers.reduce((a,b) => {
-        return a + b.carbs;
-      }, 0);
-      setTotalCarbs(totalCarbs);
+  //     const totalCarbs = valuesAsNumbers.reduce((a,b) => {
+  //       return a + b.carbs;
+  //     }, 0);
+  //     setTotalCarbs(totalCarbs);
 
-      const totalProtein = valuesAsNumbers.reduce((a,b) => {
-        return a + b.protein;
-      }, 0);
-      setTotalProtein(totalProtein);
+  //     const totalProtein = valuesAsNumbers.reduce((a,b) => {
+  //       return a + b.protein;
+  //     }, 0);
+  //     setTotalProtein(totalProtein);
 
-      const totalFat = valuesAsNumbers.reduce((a,b) => {
-        return a + b.fat;
-      }, 0);
-      setTotalFat(totalFat);
-    } 
-  }
+  //     const totalFat = valuesAsNumbers.reduce((a,b) => {
+  //       return a + b.fat;
+  //     }, 0);
+  //     setTotalFat(totalFat);
+  //   } 
+  // }
 
   const getFoods = async () => { 
     try {
@@ -96,6 +96,23 @@ const Log = (props) => {
       total2 = 0
       total3 = 0
   }
+
+  useEffect(() => {
+    let energy = 0;
+    let carbs = 0;
+    let protein = 0;
+    let fat = 0;
+    loggedFoods.forEach(food => {
+      energy += Number(food.energy.quantity)
+      carbs += Number(food.carbs.quantity)
+      protein += Number(food.protein.quantity)
+      fat += Number(food.fat.quantity)
+    });
+    setTotalCalories(energy);
+    setTotalCarbs(carbs);
+    setTotalProtein(protein);
+    setTotalFat(fat);
+  }, [loggedFoods])
   
   if (!loaded)
     return null
@@ -123,7 +140,7 @@ const Log = (props) => {
 
           <View style={{display:'flex', flexDirection:'row', padding:10, borderTopWidth: '1px', borderColor:'black'}}>
             <Text style={{ ...styles.label, color:'#6b705c' }}>Totals:</Text>
-            <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalCalories)}</Text>
+            <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalCalories)} kcal</Text>
             <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalCarbs)} g</Text>
             <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalProtein)} g</Text>
             <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalFat)} g</Text>

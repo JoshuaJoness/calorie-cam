@@ -400,7 +400,7 @@ getAsync()
                                     Object.keys(totalNutrients).forEach(key => {
                                          const labelToLog = totalNutrients[key].label.toLowerCase()
 
-                                        foodToLog[labelToLog] = { quantity: totalNutrients[key].quantity, unit: totalNutrients[key].unit  }
+                                        foodToLog[labelToLog] = { quantity: totalNutrients[key].quantity * grams, unit: totalNutrients[key].unit  }
                                         addItemToLog(foodToLog);
 
                                         setImage(null);
