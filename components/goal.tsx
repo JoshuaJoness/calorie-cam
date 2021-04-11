@@ -149,6 +149,7 @@ const styles = StyleSheet.create ({
 		fontSize: 35,
 		paddingLeft: '10%',
 		paddingRight: '10%',
+        marginTop: '5%',
         marginBottom: 30,
 		textAlign: 'center',
     },
