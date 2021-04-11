@@ -23,6 +23,7 @@ const Gender = ({ navigation }) => {
 		Animated.timing(fadeAnim, {
 		  toValue: 1,
 		  duration: 500,
+		  useNativeDriver: false,
 		}).start()
 
 		setTimeout(() => {
@@ -35,6 +36,7 @@ const Gender = ({ navigation }) => {
 			Animated.timing(fadeAnimTwo, {
 				toValue: 1,
 				duration: 500,
+				useNativeDriver: false,
 			}).start()
 		};
 	  }, [fadeAnim])
@@ -44,6 +46,7 @@ const Gender = ({ navigation }) => {
 			Animated.timing(fadeAnimThree, {
 				toValue: 1,
 				duration: 500,
+				useNativeDriver: false,
 			}).start();
 		}
 	}, [gender])

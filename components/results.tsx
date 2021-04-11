@@ -32,9 +32,7 @@ const Results = ({ navigation }) => {
             await AsyncStorage.getItem('activityLevel').then(data => setActivityLevel(data))
         }
         getData();
-    }, [])
-
-    
+    }, []);
 
     useEffect(() => {        
         if (age && gender && feet && inches && weight && activityLevel) {
@@ -58,11 +56,7 @@ const Results = ({ navigation }) => {
         } else {
             setTotalDailyCalorieNeeds(bmr * 1.55);
         }
-    }, [bmr])
-
-    useEffect(() => {
-        console.log(totalDailyCalorieNeeds, 'CALORIEs')
-    }, [totalDailyCalorieNeeds])
+    }, [bmr]);
 
     if (!loaded)
         return null
@@ -83,14 +77,14 @@ const Results = ({ navigation }) => {
                 <CustomButton 
                     text={'Lose Weight'} 
                     onPress={async () => {
+                        console.log(1)
                         try {
-                            await AsyncStorage.setItem('goal', 'loseWeight');
-                            if (totalDailyCalorieNeeds)
-                                await AsyncStorage.setItem('totalDailyCalorieNeeds', totalDailyCalorieNeeds);
+                            console.log(2)
+                            await AsyncStorage.setItem('goal', 'loseWeight');                     
+                            console.log(3)
                         } catch (e) {
                             console.log(e)
                         }
-                        // setRefresh(!refresh)
                         navigation.navigate('Home');
                     }}
                 />
@@ -99,12 +93,9 @@ const Results = ({ navigation }) => {
                     onPress={async () => {
                         try {
                             await AsyncStorage.setItem('goal', 'maintainWeight');
-                            if (totalDailyCalorieNeeds)
-                                await AsyncStorage.setItem('totalDailyCalorieNeeds', totalDailyCalorieNeeds);
                         } catch (e) {
                             console.log(e)
                         }
-                        // setRefresh(!refresh)
                         navigation.navigate('Home');
                     }}
                     />
@@ -113,12 +104,9 @@ const Results = ({ navigation }) => {
                     onPress={async () => {
                         try {
                             await AsyncStorage.setItem('goal', 'gainWeight');
-                            if (totalDailyCalorieNeeds)
-                                await AsyncStorage.setItem('totalDailyCalorieNeeds', totalDailyCalorieNeeds);
                         } catch (e) {
                             console.log(e)
                         }
-                        // setRefresh(!refresh)
                         navigation.navigate('Home');
                     }}
                 />

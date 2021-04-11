@@ -12,20 +12,60 @@ const Goal = ({ navigation }) => {
 		MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf')
 	});
 
+    const [age, setAge] = useState(null);
+    const [gender, setGender] = useState(null);
+    const [feet, setFeet] = useState(null);
+    const [inches, setInches] = useState(null);
+    const [weight, setWeight] = useState(null);
+    const [activityLevel, setActivityLevel] = useState(null);
+
     const [goal, setGoal] = useState(null);
+
+
+    const [refresh, setRefresh] = useState(false);
+
+    const [bmr, setBmr] = useState(null);
     const [totalDailyCalorieNeeds, setTotalDailyCalorieNeeds] = useState(null);
 
     useEffect(() => {
-        AsyncStorage.getItem('goal').then(data => setGoal(data));
-        AsyncStorage.getItem('totalDailyCalorieNeeds').then(data => setTotalDailyCalorieNeeds(data));
-    }, [])
- 
+        console.log(age,gender,feet,inches,weight,activityLevel)
 
 
-    useEffect(() => {
-        console.log(goal, 'GOAL')
-        console.log(totalDailyCalorieNeeds, 'totalDailyCalorieNeeds')
-    }, [goal])
+        const getData = async () => {
+            await AsyncStorage.getItem('age').then(data => setAge(data))
+            await AsyncStorage.getItem('gender').then(data => setGender(data))
+            await AsyncStorage.getItem('feet').then(data => setFeet(data))
+            await AsyncStorage.getItem('inches').then(data => setInches(data))
+            await AsyncStorage.getItem('weight').then(data => setWeight(data))
+            await AsyncStorage.getItem('activityLevel').then(data => setActivityLevel(data))
+            AsyncStorage.getItem('goal').then(data => setGoal(data))
+        }
+        getData();
+    }, []);
+
+    // useEffect(() => {        
+    //     if (age && gender && feet && inches && weight && activityLevel) {
+    //         console.log(age, gender, feet, inches, weight, activityLevel, "CONFIGS")
+    //         const feetToInches = feet * 12;
+    //         const totalInches = Number(inches) + Number(feetToInches);
+
+    //         if (gender === 'female') {
+    //             setBmr(655 + (4.35 * weight) + (4.7 * totalInches) - (4.7 * age))
+    //         } else {
+    //             setBmr(66 + (6.23 * weight) + (12.7 * totalInches) - (6.8 * age))
+    //         }
+    //     }
+    // }, [age, gender, feet, inches, weight, activityLevel]);
+
+    // useEffect(() => {
+    //     if (activityLevel === 'notVeryActive') {
+    //         setTotalDailyCalorieNeeds(bmr * 1.2);
+    //     } else if (activityLevel === 'moderatelyActive') {
+    //         setTotalDailyCalorieNeeds(bmr * 1.375);
+    //     } else {
+    //         setTotalDailyCalorieNeeds(bmr * 1.55);
+    //     }
+    // }, [bmr]);
 
     if (!loaded)
         return null

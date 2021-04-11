@@ -81,7 +81,7 @@ const ActivityLevel = ({ navigation }) => {
 
             </View>
 
-            <View style={{ marginTop: 200 }}>
+            {activityLevel ? <View style={{ marginTop: 200 }}>
                 <CustomButton 
                     text='Continue' 
                     onPress={async() => {
@@ -94,7 +94,7 @@ const ActivityLevel = ({ navigation }) => {
                     }} 
                     disabled={!activityLevel}
                     />
-            </View>
+            </View> : null}
  
 		</View>
 	)

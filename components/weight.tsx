@@ -23,6 +23,7 @@ const Weight = ({ navigation }) => {
 		Animated.timing(fadeAnim, {
 		  toValue: 1,
 		  duration: 500,
+		  useNativeDriver: false,
 		}).start()
 
 		setTimeout(() => {
@@ -47,7 +48,7 @@ const Weight = ({ navigation }) => {
 	// 		}).start();
 	// 	}
 	// }, [gender])
-
+ 
     if (!loaded)
       return null
 

@@ -51,6 +51,7 @@ const Height = ({ navigation }) => {
 		Animated.timing(fadeAnim, {
 		  toValue: 1,
 		  duration: 500,
+		  useNativeDriver: false,
 		}).start()
 
 		setTimeout(() => {
@@ -75,7 +76,7 @@ const Height = ({ navigation }) => {
 	// 		}).start();
 	// 	}
 	// }, [gender])
-
+ 
     if (!loaded)
       return null
 

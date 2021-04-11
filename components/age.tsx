@@ -26,6 +26,7 @@ const Age = ({ navigation }) => {
 		Animated.timing(fadeAnim, {
 		  toValue: 1,
 		  duration: 500,
+		  useNativeDriver: false,
 		}).start()
 
 		setTimeout(() => {
@@ -38,6 +39,7 @@ const Age = ({ navigation }) => {
 			Animated.timing(fadeAnimTwo, {
 				toValue: 1,
 				duration: 500,
+				useNativeDriver: false,
 			}).start()
 		};
 	  }, [fadeAnim])
@@ -46,7 +48,8 @@ const Age = ({ navigation }) => {
 		if (age) {
 			Animated.timing(fadeAnimThree, {
 				toValue: 1,
-				duration: 500
+				duration: 500,
+				useNativeDriver: false,
 			}).start();
 		}
 	}, [age])
