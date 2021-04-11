@@ -43,29 +43,29 @@ const Goal = ({ navigation }) => {
         getData();
     }, []);
 
-    // useEffect(() => {        
-    //     if (age && gender && feet && inches && weight && activityLevel) {
-    //         console.log(age, gender, feet, inches, weight, activityLevel, "CONFIGS")
-    //         const feetToInches = feet * 12;
-    //         const totalInches = Number(inches) + Number(feetToInches);
+    useEffect(() => {        
+        if (age && gender && feet && inches && weight && activityLevel) {
+            console.log(age, gender, feet, inches, weight, activityLevel, "CONFIGS")
+            const feetToInches = feet * 12;
+            const totalInches = Number(inches) + Number(feetToInches);
 
-    //         if (gender === 'female') {
-    //             setBmr(655 + (4.35 * weight) + (4.7 * totalInches) - (4.7 * age))
-    //         } else {
-    //             setBmr(66 + (6.23 * weight) + (12.7 * totalInches) - (6.8 * age))
-    //         }
-    //     }
-    // }, [age, gender, feet, inches, weight, activityLevel]);
+            if (gender === 'female') {
+                setBmr(655 + (4.35 * weight) + (4.7 * totalInches) - (4.7 * age))
+            } else {
+                setBmr(66 + (6.23 * weight) + (12.7 * totalInches) - (6.8 * age))
+            }
+        }
+    }, [age, gender, feet, inches, weight, activityLevel]);
 
-    // useEffect(() => {
-    //     if (activityLevel === 'notVeryActive') {
-    //         setTotalDailyCalorieNeeds(bmr * 1.2);
-    //     } else if (activityLevel === 'moderatelyActive') {
-    //         setTotalDailyCalorieNeeds(bmr * 1.375);
-    //     } else {
-    //         setTotalDailyCalorieNeeds(bmr * 1.55);
-    //     }
-    // }, [bmr]);
+    useEffect(() => {
+        if (activityLevel === 'notVeryActive') {
+            setTotalDailyCalorieNeeds(bmr * 1.2);
+        } else if (activityLevel === 'moderatelyActive') {
+            setTotalDailyCalorieNeeds(bmr * 1.375);
+        } else {
+            setTotalDailyCalorieNeeds(bmr * 1.55);
+        }
+    }, [bmr]);
 
     if (!loaded)
         return null
