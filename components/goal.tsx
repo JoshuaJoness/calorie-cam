@@ -121,9 +121,9 @@ const Goal = ({ route, navigation }) => {
                 navigation.navigate('GetStarted');
             }} 
         />
-              {/* <View style={{ marginLeft:'auto', marginRight:'auto' }}>
+              <View style={{ marginLeft:'auto', marginRight:'auto' }}>
             <Pilates />
-        </View > */}
+        </View >
     </View>
     )
 }
@@ -149,14 +149,14 @@ const styles = StyleSheet.create ({
 		fontSize: 35,
 		paddingLeft: '10%',
 		paddingRight: '10%',
-        marginTop: '5%',
+        // marginTop: '5%',
         marginBottom: 30,
 		textAlign: 'center',
     },
 	text: {
 		fontFamily: 'MontserratLight',
 		color: '#6b705c',
-		fontSize: 25,
+		fontSize: 22,
 		paddingLeft: '10%',
 		paddingRight: '10%',
 		textAlign: 'center',

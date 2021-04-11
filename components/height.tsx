@@ -31,8 +31,8 @@ const INCHES = [
 
 
 const Height = ({ navigation }) => {
-	AsyncStorage.getItem('feet').then(data => setFeet(data)) 
-	AsyncStorage.getItem('inches').then(data => setInches(data))  
+	// AsyncStorage.getItem('feet').then(data => setFeet(data)) 
+	// AsyncStorage.getItem('inches').then(data => setInches(data))  
 	
 	const [feet, setFeet] = React.useState(null);
 	const [inches, setInches] = React.useState(null);
@@ -119,7 +119,7 @@ const Height = ({ navigation }) => {
 						} catch (err) {
 							console.log(err)
 						}
-						navigation.navigate('Weight')
+						navigation.navigate('Weight') 
 					}} 
 					disabled={!feet && !inches}/>
             </View> : null}
