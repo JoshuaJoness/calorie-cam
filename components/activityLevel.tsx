@@ -88,8 +88,8 @@ const ActivityLevel = ({ navigation }) => {
                     onPress={async() => {
                         try {
                             await AsyncStorage.setItem('activityLevel', activityLevel);
-                        } catch (e) {
-                            console.log(e)
+                        } catch (err) {
+                            console.log(err)
                         }
                         navigation.navigate('Results');
                     }} 

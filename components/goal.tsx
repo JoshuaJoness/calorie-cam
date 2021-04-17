@@ -5,85 +5,12 @@ import CustomButton from './button'
 import Pilates from './svgs/pilates'
 import { store } from '../store';
 
-const Goal = ({ route, navigation }) => {
-
+const Goal = ({ route, navigation }) => {   
     const globalState = useContext(store);
     const { state } = globalState;
-    const { goal: goalFromGlobalState } = state;
-    useEffect(() => {
-        setGoal(goalFromGlobalState);
-    }, [goalFromGlobalState]);
+    const { totalDailyCalorieNeeds, goal } = state;
 
-    const [loaded] = useFonts({
-		Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
-		MontserratLight: require('../assets/fonts/Montserrat-Light.ttf'),
-		MontserratMedium: require('../assets/fonts/Montserrat-Medium.ttf'),
-		MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf')
-	});
-
-    const [age, setAge] = useState(null);
-    const [gender, setGender] = useState(null);
-    const [feet, setFeet] = useState(null);
-    const [inches, setInches] = useState(null);
-    const [weight, setWeight] = useState(null);
-    const [activityLevel, setActivityLevel] = useState(null);
-
-    const [goal, setGoal] = useState(null);
-
-
-    const [refresh, setRefresh] = useState(false);
-
-    const [bmr, setBmr] = useState(null);
-    const [totalDailyCalorieNeeds, setTotalDailyCalorieNeeds] = useState(null);
-
-    useEffect(() => {
-        const getData = async () => {
-            try {
-                await AsyncStorage.getItem('age').then(data => setAge(data));
-                await AsyncStorage.getItem('gender').then(data => setGender(data));
-                await AsyncStorage.getItem('feet').then(data => setFeet(data));
-                await AsyncStorage.getItem('inches').then(data => setInches(data));
-                await AsyncStorage.getItem('weight').then(data => setWeight(data));
-                await AsyncStorage.getItem('activityLevel').then(data => setActivityLevel(data));
-                await AsyncStorage.getItem('goal').then(data => setGoal(data));
-            } catch (err) {
-                console.log(err);
-            }
-        }
-        getData();
-    }, []);
-
-    useEffect(() => {        
-        if (age && gender && feet && inches && weight && activityLevel) {
-            const feetToInches = feet * 12;
-            const totalInches = Number(inches) + Number(feetToInches);
-
-            if (gender === 'female') {
-                setBmr(655 + (4.35 * weight) + (4.7 * totalInches) - (4.7 * age))
-            } else {
-                setBmr(66 + (6.23 * weight) + (12.7 * totalInches) - (6.8 * age))
-            }
-        }
-    }, [age, gender, feet, inches, weight, activityLevel]);
-
-    useEffect(() => {
-        if (activityLevel === 'notVeryActive') {
-            setTotalDailyCalorieNeeds(bmr * 1.2);
-        } else if (activityLevel === 'moderatelyActive') {
-            setTotalDailyCalorieNeeds(bmr * 1.375);
-        } else {
-            setTotalDailyCalorieNeeds(bmr * 1.55);
-        }
-    }, [bmr]);
-
-    // TODO set and pull out total
-    // useEffect(() => {
-    //     const setLocalCalorieNeeds = async () => await AsyncStorage.setItem('totalDailyCalorieNeeds', totalDailyCalorieNeeds);
-    //     setLocalCalorieNeeds();
-    // }, [totalDailyCalorieNeeds])
-
-    if (!loaded)
-        return null
+    // need to pull in from async storage b/c this will get reset every time... right?
 
     return (
         <View style={styles.container}>
@@ -94,7 +21,7 @@ const Goal = ({ route, navigation }) => {
                 <Text style={styles.boldText}>{Math.round(Number(totalDailyCalorieNeeds)) - 500} 
                     <Text style={styles.text}> calories is the amount of calories that we recommend you eat daily to lose weight.</Text>
                 </Text>
-                <Text style={{ ...styles.text, marginTop: 35 }}>We arrived at this number by subtracting <Text style={styles.boldText}>500 calories</Text> to your maintenance calories.</Text>
+                <Text style={{ ...styles.text, marginTop: 35 }}>We arrived at this number by subtracting <Text style={styles.boldText}>500 calories</Text> from your maintenance calories.</Text>
             </View>
         ) : goal === 'maintainWeight' ? (
             <View>
@@ -115,7 +42,7 @@ const Goal = ({ route, navigation }) => {
         </Text>
 
         <CustomButton
-            style={{ marginTop: '15%' }} 
+            style={{ marginTop: '15%' }}
             text="Update Your Goals" 
             onPress={() => {
                 navigation.navigate('GetStarted');

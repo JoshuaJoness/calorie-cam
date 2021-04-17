@@ -119,7 +119,7 @@ const Height = ({ navigation }) => {
 						} catch (err) {
 							console.log(err)
 						}
-						navigation.navigate('Weight') 
+						navigation.navigate('Weight')	
 					}} 
 					disabled={!feet && !inches}/>
             </View> : null}

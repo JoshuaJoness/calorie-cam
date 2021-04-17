@@ -58,8 +58,17 @@ const Results = ({ navigation }) => {
         }
     }, [bmr]);
 
+
     const globalState = useContext(store);
 	const { dispatch } = globalState;
+
+    useEffect(() => {
+        if (totalDailyCalorieNeeds)
+            dispatch({
+                type: 'CALORIE_NEEDS_UPDATED',
+                data: totalDailyCalorieNeeds
+            });
+    }, [totalDailyCalorieNeeds]);
 
     if (!loaded)
         return null
@@ -83,8 +92,8 @@ const Results = ({ navigation }) => {
                         try {
                             await AsyncStorage.setItem('goal', 'loseWeight');        
                             dispatch({ type: 'GOAL_UPDATED', data: 'loseWeight' });            
-                        } catch (e) {
-                            console.log(e)
+                        } catch (err) {
+                            console.log(err)
                         }
                         navigation.navigate('Home');
                     }}
@@ -95,8 +104,8 @@ const Results = ({ navigation }) => {
                         try {
                             await AsyncStorage.setItem('goal', 'maintainWeight');
                             dispatch({ type: 'GOAL_UPDATED', data: 'maintainWeight' });
-                        } catch (e) {
-                            console.log(e)
+                        } catch (err) {
+                            console.log(err)
                         }
                         navigation.navigate('Home');
                     }}
@@ -107,8 +116,8 @@ const Results = ({ navigation }) => {
                         try {
                             await AsyncStorage.setItem('goal', 'gainWeight');
                             dispatch({ type: 'GOAL_UPDATED', data: 'gainWeight' });
-                        } catch (e) {
-                            console.log(e)
+                        } catch (err) {
+                            console.log(err)
                         }
                         navigation.navigate('Home');
                     }}

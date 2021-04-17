@@ -13,7 +13,7 @@ const Log = (props) => {
   // TODO remove above, need to figure out hwo to trigger re-render
 
   useEffect(() => {
-    console.log(Object.keys(state)[0], 'STATE')
+    // console.log(Object.keys(state)[0], 'STATE')
     setTriggerRerender(Object.keys(state)[0]);
   }, [])
 
@@ -79,8 +79,8 @@ const Log = (props) => {
         let parsed = JSON.parse(value)
         await setLoggedFoods(parsed)
       }
-    } catch (error) {
-      console.log('Error')
+    } catch (err) {
+      console.log(err)
     }
   };
 

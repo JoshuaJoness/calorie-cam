@@ -5,8 +5,14 @@ import { Audio } from 'expo-av'
 import { Button } from '@ui-kitten/components'
 import { TouchableHighlight, TouchableNativeFeedback, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
+interface IProps {
+    text: string;
+    onPress: () => any;
+    disabled?: boolean;
+    style?: any;
+}
 
-const CutomButton = ({ text, onPress, disabled, style }) => {
+const CutomButton = ({ text, onPress, disabled, style } : IProps) => {
     const [sound, setSound] = useState()
 
 	const playSound = async () => {

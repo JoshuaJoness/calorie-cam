@@ -21,6 +21,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AsyncStorage, TouchableOpacity, Text } from 'react-native'
 
 import { store } from './store';
+import { useFonts } from 'expo-font';
 
 
 
@@ -41,9 +42,15 @@ function Home() {
 
 const Stack = createStackNavigator();
 
-
-
 function App() {
+  const [loaded] = useFonts({
+    Pacifico: require('./assets/fonts/Pacifico-Regular.ttf'),
+    MontserratLight: require('./assets/fonts/Montserrat-Light.ttf'),
+    MontserratMedium: require('./assets/fonts/Montserrat-Medium.ttf'),
+    MontserratRegular: require('./assets/fonts/Montserrat-Regular.ttf')
+  });
+
+
   const [goal, setGoal] = useState(null);
   AsyncStorage.getItem('goal').then(data => setGoal(data));
 
@@ -51,7 +58,11 @@ function App() {
     AsyncStorage.getItem('goal').then(data => setGoal(data));
   }, []);
 
+
   if (!goal)
+    return null
+
+  if (!loaded)
     return null
 
   return (

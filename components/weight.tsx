@@ -84,8 +84,8 @@ const Weight = ({ navigation }) => {
                     onPress={async () => {
                         try {
                             await AsyncStorage.setItem('weight', weight);
-                        } catch (e) {
-                            console.log(e)
+                        } catch (err) {
+                            console.log(err)
                         }
                         navigation.navigate('ActivityLevel');
                     }} 

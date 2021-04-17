@@ -14,8 +14,6 @@ const AddItemModal = ({ setModalVisible, modalVisible, setFoodToLog, foodToLog }
     // const [foodToLog, setFoodToLog] = useState({ });
 
 
-    console.log(foodToLog, 'foodToLog')
-
     const addItemToLog = async () => {
         try {
             let foods = await AsyncStorage.getItem('foods') || '[]';
