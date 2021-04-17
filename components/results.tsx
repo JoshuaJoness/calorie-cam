@@ -91,6 +91,7 @@ const Results = ({ navigation }) => {
                     onPress={async () => {
                         try {
                             await AsyncStorage.setItem('goal', 'loseWeight');        
+                            await AsyncStorage.setItem('totalDailyCalorieNeeds', JSON.stringify(totalDailyCalorieNeeds));        
                             dispatch({ type: 'GOAL_UPDATED', data: 'loseWeight' });            
                         } catch (err) {
                             console.log(err)
@@ -102,7 +103,9 @@ const Results = ({ navigation }) => {
                     text={'Maintain Weight'}
                     onPress={async () => {
                         try {
+
                             await AsyncStorage.setItem('goal', 'maintainWeight');
+                            await AsyncStorage.setItem('totalDailyCalorieNeeds', JSON.stringify(totalDailyCalorieNeeds));     
                             dispatch({ type: 'GOAL_UPDATED', data: 'maintainWeight' });
                         } catch (err) {
                             console.log(err)
@@ -114,7 +117,9 @@ const Results = ({ navigation }) => {
                     text={'Gain Weight'} 
                     onPress={async () => {
                         try {
+            
                             await AsyncStorage.setItem('goal', 'gainWeight');
+                            await AsyncStorage.setItem('totalDailyCalorieNeeds', JSON.stringify(totalDailyCalorieNeeds));     
                             dispatch({ type: 'GOAL_UPDATED', data: 'gainWeight' });
                         } catch (err) {
                             console.log(err)

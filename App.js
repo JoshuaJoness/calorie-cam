@@ -55,7 +55,7 @@ function App() {
   AsyncStorage.getItem('goal').then(data => setGoal(data));
 
   useEffect(() => {
-    AsyncStorage.getItem('goal').then(data => setGoal(data));
+    AsyncStorage.getItem('goal').then(data => {setGoal(data)});
   }, []);
 
 

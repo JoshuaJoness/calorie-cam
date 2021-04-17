@@ -8,9 +8,27 @@ import { store } from '../store';
 const Goal = ({ route, navigation }) => {   
     const globalState = useContext(store);
     const { state } = globalState;
-    const { totalDailyCalorieNeeds, goal } = state;
+    const { totalDailyCalorieNeeds: tdcnFromState, goal: goalFromState } = state;
 
-    // need to pull in from async storage b/c this will get reset every time... right?
+    const [goal, setGoal] = useState(null);
+    const [totalDailyCalorieNeeds, setTotalDailyCalorieNeeds] = useState(null);
+
+    useEffect(() => {
+        const getData = async () => {
+            await AsyncStorage.getItem('goal').then(data => setGoal(data))
+            await AsyncStorage.getItem('totalDailyCalorieNeeds').then(data => setTotalDailyCalorieNeeds(data))
+        }
+        getData();
+    }, []);
+
+    useEffect(() => {
+        if (goalFromState !== goal) {
+            setGoal(goalFromState);
+        }
+        if (tdcnFromState !== totalDailyCalorieNeeds) {
+            setTotalDailyCalorieNeeds(tdcnFromState);
+        }
+    }, [tdcnFromState, goalFromState]);
 
     return (
         <View style={styles.container}>
