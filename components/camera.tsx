@@ -75,6 +75,8 @@ const CalorieCam = ({ navigation }) => {
         try {
             let foods = await AsyncStorage.getItem('foods') || '[]';
             foods = JSON.parse(foods);
+            foodToLog.grams = grams,
+            console.log(foodToLog, 'CAM LOG')
             foods.push(foodToLog);
             await AsyncStorage.setItem('foods', JSON.stringify(foods));
         } catch (err) {
@@ -87,6 +89,7 @@ const CalorieCam = ({ navigation }) => {
             setTotalNutrients(null);
             setFoodLabel(null);
             setGrams(100);
+            setShowMicros(false);
 
             dispatch({ type: 'ADD_FOOD_TO_LOG', data: foodToLog });
 
@@ -101,11 +104,6 @@ const CalorieCam = ({ navigation }) => {
         setHasPermission(status === 'granted');
         })();
     }, []);
-  
-    // to reset micros display
-    useEffect(() => {
-        return () => setShowMicros(false)
-    });
 
     // TODO handle no camera permsision granted
 
@@ -121,7 +119,8 @@ const CalorieCam = ({ navigation }) => {
                         <View>
                             <TextInput 
                                 style={styles.input} 
-                                value={String(grams)}
+                                value={!grams ? '' :String(grams)}
+                                onFocus={() => setGrams(null)}
                                 onChangeText={grams => {
                                     const gramsToNumber = Number(grams);
                                     if (!gramsToNumber && grams !== '') {
@@ -284,9 +283,10 @@ const CalorieCam = ({ navigation }) => {
                                 onPress={() => {
                                     const foodToLog = { 
                                         label: foodLabel,
+                                        
                                      }
                                     Object.keys(totalNutrients).forEach(key => {
-                                         const labelToLog = totalNutrients[key].label.toLowerCase()
+                                        const labelToLog = totalNutrients[key].label.toLowerCase()
                                         foodToLog[labelToLog] = { quantity: totalNutrients[key].quantity * grams, unit: totalNutrients[key].unit }
 
                                         addFoodToLog(foodToLog);

@@ -23,8 +23,8 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
         try {
             let foods = await AsyncStorage.getItem('foods') || '[]';
             foods = JSON.parse(foods);
+			foodToLog.grams = grams,
             foods.push(foodToLog);
-			console.log(foodToLog, 'FOOD TO LOG')
             await AsyncStorage.setItem('foods', JSON.stringify(foods));
         } catch (err) {
             console.log(err);
@@ -37,8 +37,8 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
         try {
             // TODO implement 'exact' match
             const data = await axios.get(`https://api.edamam.com/api/food-database/parser?app_id=${edamamId}&app_key=${edamamKey}&ingr=${userInput}`);
-            const foodId = data.data.hints[0].food.foodId;
-			const foodLabel = data.data.hints[0].food.label;
+            const foodId = data?.data?.hints[0]?.food?.foodId;
+			const foodLabel = data?.data?.hints[0]?.food?.label;
             setFoodLabel(foodLabel);
 
             const nutrients = await axios.post(
@@ -63,7 +63,18 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
 
 	useEffect(() => {
 		if (totalNutrients) {
+			const obj = {}
+			Object.keys(totalNutrients).forEach(nutrient => {
+
+				obj[totalNutrients[nutrient].label.toLowerCase()] = {
+					quantity: totalNutrients[nutrient].quantity * grams, 
+					unit: totalNutrients[nutrient].unit 
+				}
+			})
+
 			setNutrientsObj({
+				...nutrientObj,
+				...obj,
 				label: foodLabel,
 				energy: { quantity: String(Math.round(totalNutrients['ENERC_KCAL']?.quantity * grams)), unit:'kcal' } ,
 				carbs: { quantity: String(Math.round(totalNutrients['CHOCDF']?.quantity * grams)), unit: 'g' },
