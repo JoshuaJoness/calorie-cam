@@ -11,7 +11,6 @@ import ActivityLevel from './components/activityLevel';
 import Results from './components/results';
 import Log from './components/log';
 import Goal from './components/goal';
-import Predicts from './components/Predicts';
 import CalorieCam from './components/camera';
 
 import { StateProvider } from './store.js';

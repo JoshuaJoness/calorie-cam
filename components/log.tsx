@@ -13,11 +13,34 @@ const Log = () => {
   const [loggedFoods, setLoggedFoods] = useState([]);
   const [foodToLog, setFoodToLog] = useState({ });
   const [modalVisible, setModalVisible] = useState(false);
+  const [totalDailyCalorieNeeds, setTotalDailyCalorieNeeds] = useState(null);
+  const [weight, setWeight] = useState(null);
 
   const globalState = useContext(store);
 	const { state } = globalState;
   const { foods: foodsFromState } = state;
 
+  // to get log on inital render
+  useEffect(() => {
+    const getData = async () => {
+      const test = await AsyncStorage.getItem('foods');
+      const parse = JSON.parse(test);
+      console.log(parse)
+      await setLoggedFoods(parse);
+
+      const calorieNeeds = await AsyncStorage.getItem('totalDailyCalorieNeeds');
+      const parsedCalorieNeeds = JSON.parse(calorieNeeds);
+      await setTotalDailyCalorieNeeds(parsedCalorieNeeds);
+
+      const weight = await AsyncStorage.getItem('weight');
+      const parsedWeight = JSON.parse(weight);
+      await setWeight(parsedWeight);
+    }
+    getData();
+
+  }, []);
+
+  // to get log when a new food is added to async storage
   useEffect(() => {
     const getData = async () => {
       const test = await AsyncStorage.getItem('foods');
@@ -36,10 +59,10 @@ const Log = () => {
       let protein = 0;
       let fat = 0;
       loggedFoods.forEach(food => {
-          energy += Number(food.energy.quantity)
-          carbs += Number(food.carbs.quantity)
-          protein += Number(food.protein.quantity)
-          fat += Number(food.fat.quantity)
+          energy += Number(food.energy?.quantity ? food.energy?.quantity : 0)
+          carbs += Number(food.carbs?.quantity ? food.carbs?.quantity : 0)
+          protein += Number(food.protein?.quantity ? food.protein?.quantity : 0)
+          fat += Number(food.fat?.quantity ? food.fat?.quantity : 0)
       });
       setTotalCalories(energy);
       setTotalCarbs(carbs);
@@ -48,43 +71,63 @@ const Log = () => {
   }, [loggedFoods]);
 
   const clearLog = () => {
-    AsyncStorage.removeItem('foods');
-    setLoggedFoods([])
-    setTotalCalories(0)
-    setTotalCarbs(0)
-    setTotalProtein(0)
-    setTotalFat(0)
-}
+      AsyncStorage.removeItem('foods');
+      setLoggedFoods([])
+      setTotalCalories(0)
+      setTotalCarbs(0)
+      setTotalProtein(0)
+      setTotalFat(0)
+  };
+
+
+  // useEffect(() => {
+  //   console.log(foodToLog, 'FOOD TO LOG')
+  // }, [foodToLog])
 
   return(
     <View style={styles.container}>
       <Text style={styles.title}>Daily Log</Text>
-      <View style={styles.box}>
-        <View style={{ display:'flex', flexDirection:'row', padding:10, borderBottomWidth: 1, borderColor:'#6b705c' }} >
-          <Text style={{ ...styles.label, color:'#6b705c' }}>Food</Text>
-          <Text style={styles.label}>Calories</Text>
-          <Text style={styles.label}>Carbs</Text>
-          <Text style={styles.label}>Protein</Text>
-          <Text style={styles.label}>Fat</Text>
+      <View style= {{ height: '65%' }}>
+        <View style={styles.labelsBox}>
+          <View style={{ display:'flex', flexDirection:'row', padding:10, borderBottomWidth: 1, borderColor:'#6b705c' }} >
+            <Text style={{ ...styles.label, color:'#6b705c' }}>Food</Text>
+            <Text style={styles.label}>Calories</Text>
+            <Text style={styles.label}>Carbs</Text>
+            <Text style={styles.label}>Protein</Text>
+            <Text style={styles.label}>Fat</Text>
+          </View>
         </View>
 
-        {loggedFoods.map((food,i) => <View style={{ display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6', borderBottomWidth: i === loggedFoods.length - 1 ? 0 : 1 }} key={i}>
-            <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food.label}</Text>
-            <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{Math.round(food.energy.quantity)}</Text>
-            <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{Math.round(food.carbs.quantity)}</Text>
-            <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{Math.round(food.protein.quantity)}</Text>
-            <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{Math.round(food.fat.quantity)}</Text>
-          </View>
-        )}
+        <ScrollView style={styles.box}>    
+          {loggedFoods.map((food,i) => <View style={{ height: 50, display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6', borderBottomWidth: i === loggedFoods.length - 1 ? 0 : 1 }} key={i}>
+              <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food.label}</Text>
+              <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food?.energy?.quantity ? Math.round(food.energy?.quantity)  : '-'}</Text>
+              <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food?.carbs?.quantity ? Math.round(food.carbs?.quantity) : '-'}</Text>
+              <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food?.protein?.quantity ? Math.round(food.protein?.quantity) : '-'}</Text>
+              <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food?.fat?.quantity ? Math.round(food.fat?.quantity) : '-'}</Text>
+            </View>
+          )}
+        </ScrollView>
 
-          <View style={{display:'flex', flexDirection:'row', padding:10, borderTopWidth: '1px', borderColor:'black'}}>
+        <View style={styles.totalsBox}>
+            <View style={{ display:'flex', flexDirection:'row', padding:10, borderTopWidth: 1, borderColor:'black' }}>
             <Text style={{ ...styles.label, color:'#6b705c' }}>Totals:</Text>
-            <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalCalories)} kcal</Text>
+            <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalCalories)} /</Text>
             <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalCarbs)} g</Text>
             <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalProtein)} g</Text>
             <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalFat)} g</Text>
+        </View>
+
+        <View style={{ display:'flex', flexDirection:'row', padding:10, borderTopWidth: 1, borderColor:'black', backgroundColor: '#6b705c' }}>
+            <Text style={{ ...styles.label, color:'#ffe8d6' }}>Goals:</Text>
+            <Text style={{ ...styles.label, color:'#ffe8d6' }}>{Math.round(totalDailyCalorieNeeds)} kcal</Text>
+            <Text style={{ ...styles.label, color:'#ffe8d6' }}></Text>
+            <Text style={{ ...styles.label, color:'#ffe8d6' }}>{Math.round(weight)} g</Text>
+            <Text style={{ ...styles.label, color:'#ffe8d6' }}></Text>
           </View>
         </View>
+      </View>
+
 
         <Modal
           animationType="fade"
@@ -101,7 +144,7 @@ const Log = () => {
           />
         </Modal>
 
-        <View style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto', marginRight: 'auto', padding: 10  }}>
+        <View style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto', marginRight: 'auto', padding: 10, marginTop: 30  }}>
             <CutomButton text='Log Item' onPress={() => setModalVisible(!modalVisible)} style={{ width: 100, height: 30, backgroundColor: '#a5a58d', marginRight: 5 }} />
             <CutomButton text='Clear Log' onPress={clearLog} style={{ width: 100, height: 30, marginLeft: 5 }} />
         </View>
@@ -121,8 +164,28 @@ const styles = StyleSheet.create ({
     width: '90%',
     marginLeft: 'auto', 
     marginRight: 'auto', 
+    borderLeftWidth: 1,
+    borderRightWidth: 1, 
+    backgroundColor: '#ddbea9',
+    height: '10%'
+  },
+  totalsBox: {
+    width: '90%',
+    marginLeft: 'auto', 
+    marginRight: 'auto', 
     borderColor: 'black', 
-    borderWidth: 1, 
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    backgroundColor: '#ddbea9'
+  },
+  labelsBox: {
+    width: '90%',
+    marginLeft: 'auto', 
+    marginRight: 'auto', 
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderTopWidth: 1,
     backgroundColor: '#ddbea9'
   },
   title: {

@@ -1,19 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, AsyncStorage, StyleSheet, Modal, TextInput } from 'react-native';
 import { useFonts } from 'expo-font';
 import CutomButton from './button';
 
 const AddItemModal = ({ setModalVisible, modalVisible, setFoodToLog, foodToLog }) => {
-    const [loaded] = useFonts({
-        Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
-        MontserratLight: require('../assets/fonts/Montserrat-Light.ttf'),
-        MontserratMedium: require('../assets/fonts/Montserrat-Medium.ttf'),
-        MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf')
-    })
-
-    // const [foodToLog, setFoodToLog] = useState({ });
-
-
     const addItemToLog = async () => {
         try {
             let foods = await AsyncStorage.getItem('foods') || '[]';
@@ -25,9 +15,8 @@ const AddItemModal = ({ setModalVisible, modalVisible, setFoodToLog, foodToLog }
             console.log(err);
         }
     };
-  
-    if (!loaded)
-        return null
+
+
 
     return(
         <View style={{ height: '100%', backgroundColor: '#ffe8d6' }}>
