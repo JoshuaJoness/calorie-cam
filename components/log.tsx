@@ -11,7 +11,7 @@ const Log = () => {
   const [totalProtein, setTotalProtein] = useState(0);
   const [totalFat, setTotalFat] = useState(0);
   const [loggedFoods, setLoggedFoods] = useState([]);
-  const [foodToLog, setFoodToLog] = useState({ });
+  const [foodToLog, setFoodToLog] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [totalDailyCalorieNeeds, setTotalDailyCalorieNeeds] = useState(null);
   const [weight, setWeight] = useState(null);
@@ -20,7 +20,7 @@ const Log = () => {
 	const { state } = globalState;
   const { foods: foodsFromState } = state;
 
-  // to get log on inital render
+  // to get log on initial render
   useEffect(() => {
     const getData = async () => {
       const test = await AsyncStorage.getItem('foods');
@@ -36,8 +36,8 @@ const Log = () => {
       const parsedWeight = JSON.parse(weight);
       await setWeight(parsedWeight);
     }
-    getData();
 
+    getData();
   }, []);
 
   // to get log when a new food is added to async storage
@@ -48,26 +48,28 @@ const Log = () => {
       console.log(parse)
       await setLoggedFoods(parse);
     }
-    getData();
 
+    getData();
   }, [foodsFromState]);
 
   // set nutritient totals
   useEffect(() => {
-      let energy = 0;
-      let carbs = 0;
-      let protein = 0;
-      let fat = 0;
-      loggedFoods.forEach(food => {
-          energy += Number(food.energy?.quantity ? food.energy?.quantity : 0)
-          carbs += Number(food.carbs?.quantity ? food.carbs?.quantity : 0)
-          protein += Number(food.protein?.quantity ? food.protein?.quantity : 0)
-          fat += Number(food.fat?.quantity ? food.fat?.quantity : 0)
-      });
-      setTotalCalories(energy);
-      setTotalCarbs(carbs);
-      setTotalProtein(protein);
-      setTotalFat(fat);
+      if (loggedFoods) {
+        let energy = 0;
+        let carbs = 0;
+        let protein = 0;
+        let fat = 0;
+        loggedFoods?.forEach(food => {
+            energy += Number(food?.energy?.quantity ? food.energy?.quantity : 0)
+            carbs += Number(food?.carbs?.quantity ? food.carbs?.quantity : 0)
+            protein += Number(food?.protein?.quantity ? food.protein?.quantity : 0)
+            fat += Number(food?.fat?.quantity ? food.fat?.quantity : 0)
+        });
+        setTotalCalories(energy);
+        setTotalCarbs(carbs);
+        setTotalProtein(protein);
+        setTotalFat(fat);
+      }
   }, [loggedFoods]);
 
   const clearLog = () => {
@@ -77,12 +79,7 @@ const Log = () => {
       setTotalCarbs(0)
       setTotalProtein(0)
       setTotalFat(0)
-  };
-
-
-  // useEffect(() => {
-  //   console.log(foodToLog, 'FOOD TO LOG')
-  // }, [foodToLog])
+  };  
 
   return(
     <View style={styles.container}>
@@ -99,14 +96,14 @@ const Log = () => {
         </View>
 
         <ScrollView style={styles.box}>    
-          {loggedFoods.map((food,i) => <View style={{ height: 50, display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6', borderBottomWidth: i === loggedFoods.length - 1 ? 0 : 1 }} key={i}>
-              <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food.label}</Text>
-              <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food?.energy?.quantity ? Math.round(food.energy?.quantity)  : '-'}</Text>
-              <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food?.carbs?.quantity ? Math.round(food.carbs?.quantity) : '-'}</Text>
-              <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food?.protein?.quantity ? Math.round(food.protein?.quantity) : '-'}</Text>
-              <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food?.fat?.quantity ? Math.round(food.fat?.quantity) : '-'}</Text>
+          {loggedFoods?.length > 0 ? loggedFoods?.map((food,i) => <View style={{ height: 50, display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6', borderBottomWidth: 1 /*i === loggedFoods?.length - 1 ? 0 : 1 */ }} key={i}>
+              <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food?.label}</Text>
+              <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food?.energy?.quantity ? Math.round(food?.energy?.quantity)  : '-'}</Text>
+              <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food?.carbs?.quantity ? Math.round(food?.carbs?.quantity) : '-'}</Text>
+              <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food?.protein?.quantity ? Math.round(food?.protein?.quantity) : '-'}</Text>
+              <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food?.fat?.quantity ? Math.round(food?.fat?.quantity) : '-'}</Text>
             </View>
-          )}
+          ) : null}
         </ScrollView>
 
         <View style={styles.totalsBox}>
@@ -166,7 +163,7 @@ const styles = StyleSheet.create ({
     marginRight: 'auto', 
     borderLeftWidth: 1,
     borderRightWidth: 1, 
-    backgroundColor: '#ddbea9',
+    backgroundColor: '#ffe8d6',
     height: '10%'
   },
   totalsBox: {
