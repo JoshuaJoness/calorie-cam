@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, AsyncStorage, StyleSheet, Modal, TextInput } from 'react-native';
+import { View, Text, AsyncStorage, StyleSheet, Modal, TextInput, Alert } from 'react-native';
 import { useFonts } from 'expo-font';
 import CutomButton from './button';
 import axios from 'axios';
@@ -14,6 +14,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
 	const [foodToLog, setFoodToLog] = useState(null);
 	const [nutrientObj, setNutrientsObj] = useState(null);
 	const [foodLabel, setFoodLabel] = useState(null);
+	const [grams, setGrams] = useState<number>(100);
 
 	const globalState = useContext(store);
 	const { dispatch } = globalState;
@@ -28,10 +29,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
         } catch (err) {
             console.log(err);
         } finally {
-
             dispatch({ type: 'ADD_FOOD_TO_LOG', data: foodToLog });
-
-            // navigation.navigate('Log');
         }
     };
 
@@ -67,10 +65,10 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
 		if (totalNutrients) {
 			setNutrientsObj({
 				label: foodLabel,
-				energy: { quantity: String(Math.round(totalNutrients['ENERC_KCAL'].quantity * 100)), unit:'kcal' } ,
-				carbs: { quantity: String(Math.round(totalNutrients['CHOCDF'].quantity * 100)), unit: 'g' },
-				protein: { quantity: String(Math.round(totalNutrients['PROCNT'].quantity * 100)), unit: 'g' },
-				fat: { quantity: String(Math.round(totalNutrients['FAT'].quantity * 100)), unit: 'g' },
+				energy: { quantity: String(Math.round(totalNutrients['ENERC_KCAL']?.quantity * grams)), unit:'kcal' } ,
+				carbs: { quantity: String(Math.round(totalNutrients['CHOCDF']?.quantity * grams)), unit: 'g' },
+				protein: { quantity: String(Math.round(totalNutrients['PROCNT']?.quantity * grams)), unit: 'g' },
+				fat: { quantity: String(Math.round(totalNutrients['FAT']?.quantity * grams)), unit: 'g' },
 			});
 		};	
 	}, [totalNutrients]);
@@ -78,83 +76,94 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
 	useEffect(() => {
 		if (nutrientObj)
 			setFoodToLog(nutrientObj);
-	}, [nutrientObj])
-
-	// "label": "Coffee",
-    // "magnesium": Object {
-    //   "quantity": 3,
-    //   "unit": "mg",
-    // },
+	}, [nutrientObj]);
 
     return(
         <View style={{ height: '100%', backgroundColor: '#ffe8d6' }}>
-			<View style={{ ...styles.box, marginTop: 'auto', marginBottom: 'auto',  }}>
+			<View style={{ ...styles.box, marginTop: '40%'  }}>
 				<View>
-				<Text style={{ fontWeight: 'bold', color:'#6b705c', marginTop: 10, marginLeft: 'auto', marginRight: 'auto', marginBottom: 20, fontSize: 18 }}>Enter a food item below: </Text>
+				<Text style={{ fontWeight: 'bold', color:'#6b705c', marginTop: 10, marginLeft: 'auto', marginRight: 'auto', marginBottom: 10, fontSize: 18 }}>Enter a food item below: </Text>
+				<Text style={{ fontWeight: 'bold', color:'#6b705c', marginLeft: 'auto', marginRight: 'auto', marginBottom: 20, fontSize: 15 }}>(Results are per 100 g)</Text>
 				<View style={{ display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6' }}>
 					<Text style={{ ...styles.label, color:'#6b705c' }}>Item Name: </Text> 
 					<TextInput
 						style={{ ...styles.input }}
 						placeholder="Banana..."
-						// value={foodToLog['label']}
 						onChangeText={(label) => {
 							setFoodToLog({ ...foodToLog, label});
 							setUserInput(label);
 						}}
-						onEndEditing={() => getCaloriesFromPrediction(userInput)}
+						onSubmitEditing={() => getCaloriesFromPrediction(userInput)}
 					/>
               	</View>
 				<View style={{ display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6' }}>
 					<Text style={{ ...styles.label, color:'#6b705c' }}>Calories: </Text> 
 					<TextInput
-					style={{ ...styles.input, flex: 1 }}
-					placeholder="200"
-					keyboardType="numeric"
-					value={nutrientObj ? nutrientObj['energy']?.quantity : null}
-					onChangeText={(energy) => {
-						setFoodToLog({ ...foodToLog, energy: { quantity: energy, unit: 'kcal' } });
-					}}
+						style={{ ...styles.input, flex: 1 }}
+						placeholder="200"
+						keyboardType="numeric"
+						value={nutrientObj ? nutrientObj['energy']?.quantity : null}
+						onChangeText={(energy) => {
+							setNutrientsObj({ ...foodToLog, energy: { quantity: energy, unit: 'kcal' } });
+						}}
 					/>
 				</View>
 				<View style={{ display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6' }}>
 					<Text style={{ ...styles.label, color:'#6b705c' }}>Carbs (g): </Text> 
 					<TextInput
-					style={{ ...styles.input, flex: 1 }}
-					placeholder="60"
-					keyboardType="numeric"
-					//   value={foodToLog['carbs']}
-					value={nutrientObj ? nutrientObj['carbs']?.quantity : null}
-					onChangeText={(carbs) => {
-						setFoodToLog({ ...foodToLog, carbs: { quantity: carbs, unit: 'g' } });
-					}}
+						style={{ ...styles.input, flex: 1 }}
+						placeholder="60"
+						keyboardType="numeric"
+						value={nutrientObj ? nutrientObj['carbs']?.quantity : null}
+						onChangeText={(carbs) => {
+							setNutrientsObj({ ...foodToLog, carbs: { quantity: carbs, unit: 'g' } });
+						}}
 					/>
 				</View>
 				<View style={{ display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6' }}>
 					<Text style={{ ...styles.label, color:'#6b705c' }}>Protein (g): </Text> 
 					<TextInput
-					style={{ ...styles.input, flex: 1 }}
-					placeholder="20"
-					keyboardType="numeric"
-					//   value={foodToLog['protein']}
-					value={nutrientObj ? nutrientObj['protein']?.quantity : null}
-					onChangeText={(protein) => {
-						setFoodToLog({ ...foodToLog, protein: { quantity: protein, unit: 'g' } });
-					}}
+						style={{ ...styles.input, flex: 1 }}
+						placeholder="20"
+						keyboardType="numeric"
+						value={nutrientObj ? nutrientObj['protein']?.quantity : null}
+						onChangeText={(protein) => {
+							setNutrientsObj({ ...foodToLog, protein: { quantity: protein, unit: 'g' } });
+						}}
 					/>
 				</View>
 				<View style={{ display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6' }}>
 					<Text style={{ ...styles.label, color:'#6b705c' }}>Fat (g): </Text> 
 					<TextInput
-					style={{ ...styles.input, flex: 1 }}
-					placeholder="2"
-					keyboardType="numeric"
-					//   value={foodToLog['fat']}
-					value={nutrientObj ? nutrientObj['fat']?.quantity : null}
-					onChangeText={(fat) => {
-						setFoodToLog({ ...foodToLog, fat: { quantity: fat, unit: 'g' } });
-					}}
+						style={{ ...styles.input, flex: 1 }}
+						placeholder="2"
+						keyboardType="numeric"
+						value={nutrientObj ? nutrientObj['fat']?.quantity : null}
+						onChangeText={(fat) => {
+							setNutrientsObj({ ...foodToLog, fat: { quantity: fat, unit: 'g' } });
+						}}
 					/>
 				</View>
+				{/* <View style={{ display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6' }}>
+					
+					<Text style={{ ...styles.label, color:'#6b705c' }}>Quantity: </Text> 
+		
+					<View style={{ display: 'flex' }}>
+						<TextInput 
+							style={{ ...styles.input }} 
+							value={String(grams)}
+							keyboardType="numeric"
+							onChangeText={grams => {
+								const gramsToNumber = Number(grams);
+		
+									setGrams(gramsToNumber)
+	
+							}}
+						/> 
+						<Text style={{ alignSelf:'center', paddingTop: 5, color: '#6b705c' }}>(Change me)</Text>
+					</View>
+
+              	</View> */}
 				</View>
 				<View style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto', marginRight: 'auto', padding: 10  }}>
 				<CutomButton 
