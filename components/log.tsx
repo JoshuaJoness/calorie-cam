@@ -5,117 +5,56 @@ import CutomButton from './button';
 import AddItemModal from './addItemModal';
 import { store } from '../store';
 
-const Log = (props) => {
-  const globalState = useContext(store);
-	const { state } = globalState;
-
-  const [triggerRerender, setTriggerRerender] = useState('')
-  // TODO remove above, need to figure out hwo to trigger re-render
-
-  useEffect(() => {
-    // console.log(Object.keys(state)[0], 'STATE')
-    setTriggerRerender(Object.keys(state)[0]);
-  }, [])
-
-  const [loaded] = useFonts({
-    Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
-    MontserratLight: require('../assets/fonts/Montserrat-Light.ttf'),
-    MontserratMedium: require('../assets/fonts/Montserrat-Medium.ttf'),
-    MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf')
-  })
-
+const Log = () => {
   const [totalCalories, setTotalCalories] = useState(0);
   const [totalCarbs, setTotalCarbs] = useState(0);
   const [totalProtein, setTotalProtein] = useState(0);
   const [totalFat, setTotalFat] = useState(0);
   const [loggedFoods, setLoggedFoods] = useState([]);
-
   const [foodToLog, setFoodToLog] = useState({ });
-
   const [modalVisible, setModalVisible] = useState(false);
 
-  let total = 0;
-  let total1 = 0;
-  let total2 = 0;
-  let total3 = 0;
-
-  // {/* Need to call getAsync on componentWillMount, then set variable to array OR access AsyncStorage directly */}
-    useEffect(() => {
-      getFoods()
-      // setTotals()
-    },[props, foodToLog])
-
-  // const setTotals = async () => {
-  //   await getFoods;
-  //   if (loggedFoods.length > 0) {
-  //     const valuesAsNumbers: any = loggedFoods.map(({label, calories, carbs, protein ,fat }) => ({ label, calories: Number(calories), carbs: Number(carbs), protein: Number(protein), fat: Number(fat) }))
-
-  //     const totalCalories = valuesAsNumbers.reduce((a,b) => {
-  //       return a + b.calories;
-  //     }, 0);
-  //     setTotalCalories(totalCalories);
-
-  //     const totalCarbs = valuesAsNumbers.reduce((a,b) => {
-  //       return a + b.carbs;
-  //     }, 0);
-  //     setTotalCarbs(totalCarbs);
-
-  //     const totalProtein = valuesAsNumbers.reduce((a,b) => {
-  //       return a + b.protein;
-  //     }, 0);
-  //     setTotalProtein(totalProtein);
-
-  //     const totalFat = valuesAsNumbers.reduce((a,b) => {
-  //       return a + b.fat;
-  //     }, 0);
-  //     setTotalFat(totalFat);
-  //   } 
-  // }
-
-  const getFoods = async () => { 
-    try {
-      const value = await AsyncStorage.getItem('foods');
-      if (value !== null) {
-        let parsed = JSON.parse(value)
-        await setLoggedFoods(parsed)
-      }
-    } catch (err) {
-      console.log(err)
-    }
-  };
-
-  const clearLog = () => {
-      AsyncStorage.removeItem('foods');
-      setLoggedFoods([])
-      setTotalCalories(0)
-      setTotalCarbs(0)
-      setTotalProtein(0)
-      setTotalFat(0)
-      total = 0
-      total1 = 0
-      total2 = 0
-      total3 = 0
-  }
+  const globalState = useContext(store);
+	const { state } = globalState;
+  const { foods: foodsFromState } = state;
 
   useEffect(() => {
-    let energy = 0;
-    let carbs = 0;
-    let protein = 0;
-    let fat = 0;
-    loggedFoods.forEach(food => {
-      energy += Number(food.energy.quantity)
-      carbs += Number(food.carbs.quantity)
-      protein += Number(food.protein.quantity)
-      fat += Number(food.fat.quantity)
-    });
-    setTotalCalories(energy);
-    setTotalCarbs(carbs);
-    setTotalProtein(protein);
-    setTotalFat(fat);
-  }, [loggedFoods])
-  
-  if (!loaded)
-    return null
+    const getData = async () => {
+      const test = await AsyncStorage.getItem('foods');
+      const parse = JSON.parse(test);
+      console.log(parse)
+      await setLoggedFoods(parse);
+    }
+    getData();
+
+  }, [foodsFromState]);
+
+  // set nutritient totals
+  useEffect(() => {
+      let energy = 0;
+      let carbs = 0;
+      let protein = 0;
+      let fat = 0;
+      loggedFoods.forEach(food => {
+          energy += Number(food.energy.quantity)
+          carbs += Number(food.carbs.quantity)
+          protein += Number(food.protein.quantity)
+          fat += Number(food.fat.quantity)
+      });
+      setTotalCalories(energy);
+      setTotalCarbs(carbs);
+      setTotalProtein(protein);
+      setTotalFat(fat);
+  }, [loggedFoods]);
+
+  const clearLog = () => {
+    AsyncStorage.removeItem('foods');
+    setLoggedFoods([])
+    setTotalCalories(0)
+    setTotalCarbs(0)
+    setTotalProtein(0)
+    setTotalFat(0)
+}
 
   return(
     <View style={styles.container}>
@@ -166,7 +105,6 @@ const Log = (props) => {
             <CutomButton text='Log Item' onPress={() => setModalVisible(!modalVisible)} style={{ width: 100, height: 30, backgroundColor: '#a5a58d', marginRight: 5 }} />
             <CutomButton text='Clear Log' onPress={clearLog} style={{ width: 100, height: 30, marginLeft: 5 }} />
         </View>
-        <Text style={{ display: 'none' }}>{triggerRerender}</Text>
     </View>
     )
   }
