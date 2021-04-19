@@ -6,7 +6,7 @@ import AddItemModal from './addItemModal';
 import { store } from '../store';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-const Log = () => {
+const Micros = () => {
   const [totalCalories, setTotalCalories] = useState(0);
   const [totalCarbs, setTotalCarbs] = useState(0);
   const [totalProtein, setTotalProtein] = useState(0);
@@ -84,7 +84,27 @@ const Log = () => {
       setTotalCarbs(0)
       setTotalProtein(0)
       setTotalFat(0)
-  };  
+  };   
+
+  const newObj = {}
+
+  useEffect(() => {
+    loggedFoods.forEach(food => {
+        Object.keys(food).forEach(t => {
+            loggedFoods.forEach(f => {
+                if (f[t]?.quantity && f[t]?.unit) {
+                    const keys = Object.keys(newObj);
+                    if (!keys.includes(t)) {
+                        newObj[t] = { quantity: f[t].quantity, unit: f[t]?.unit }
+                    } else {
+                        newObj[t]['quantity'] += f[t]?.quantity;
+                    }
+                }
+            })
+        })
+    })
+    console.log(newObj, 'NEW')
+  }, [loggedFoods])
 
   return(
     <View style={styles.container}>
@@ -100,51 +120,23 @@ const Log = () => {
             </View>
           </View>
 
-          {!showMicros ? <ScrollView style={styles.box}>    
-            {loggedFoods?.length > 0 ? loggedFoods?.map((food,i) => <View style={{ height: 50, display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6', borderBottomWidth: 1 /*i === loggedFoods?.length - 1 ? 0 : 1 */ }} key={i}>
-                <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }} numberOfLines={1}>{food?.label}</Text>
-                {/* <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>({food?.grams} g)</Text> */}
-                <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c', textAlign: 'center' }}>{food?.energy?.quantity ? Math.round(food?.energy?.quantity)  : '-'}</Text>
-                <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c', textAlign: 'center' }}>{food?.carbs?.quantity ? Math.round(food?.carbs?.quantity) : '-'}</Text>
-                <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c', textAlign: 'center' }}>{food?.protein?.quantity ? Math.round(food?.protein?.quantity) : '-'}</Text>
-                <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c', textAlign: 'center' }}>{food?.fat?.quantity ? Math.round(food?.fat?.quantity) : '-'}</Text>
-              </View>
+        <ScrollView style={styles.box}>    
+            {loggedFoods?.length > 0 ? loggedFoods?.map((food,i) => {
+                const nutrientsArr = Object.keys(food);
+                return nutrientsArr
+                    .filter(nutrient => nutrient !== 'grams' && nutrient !== 'label' && nutrient !== 'energy' && nutrient !== 'carbs' && nutrient !== 'protein' && nutrient !== 'fat' && nutrient !== 'saturated' && nutrient !== 'trans')
+                    .map(nutri => {
+                        return (
+                            <View style={{ height: 50, display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6', borderBottomWidth: 1 /*i === loggedFoods?.length - 1 ? 0 : 1 */ }} key={`${nutri}${i}`}>
+                                <Text>{nutri}</Text>
+                                <Text>{food[nutri].quantity}</Text>
+                                <Text>{food[nutri].unit}</Text>
+                            </View>
+                        )
+                    })
+              }
             ) : null}
-          </ScrollView> : null}
-
-          {/* <TouchableOpacity style={{ alignSelf: 'center', padding: 5, borderLeftWidth: 1, borderRightWidth: 1, width: '90%' }} onPress={() => loggedFoods ? setShowMicros(!showMicros) : null}>
-            <Text style={{ ...styles.microsLabel, textDecorationLine: 'underline', textAlign: 'center' }}>{!showMicros ? 'View micros' : 'hide micros'}</Text>
-          </TouchableOpacity>  */}
-
-{/*          
-          {showMicros ?  <ScrollView>
-            {loggedFoods?.map(food => {
-              return Object.keys(food)
-                .filter(nutrient => nutrient !== 'grams' && nutrient !== 'label' && nutrient !== 'energy' && nutrient !== 'carbs' && nutrient !== 'protein' && nutrient !== 'fat' && nutrient !== 'saturated' && nutrient !== 'trans')
-                .map(nutri => {
-                  console.log(loggedFoods, '****')
-                  return <View 
-                  style={{
-                    display:'flex', 
-                    flexDirection:'row', 
-                    padding:10, 
-                    borderWidth: 1,
-                    // borderBottomWidth: i === Object.keys(totalNutrients).length - 1 ? 1 : 0,
-                    borderColor:'black', 
-                    backgroundColor: '#ffe8d6', 
-                    width: '90%', 
-                    alignSelf: 'center',
-                  }}
-                  key={nutri}
-              >
-                <View style={{ display: 'flex', flexDirection: 'row', alignContent:'space-between'}}>
-                    <Text style={{ ...styles.microsLabel, alignSelf:'flex-start' }}>{nutri}</Text>
-                    <Text style={{ ...styles.microsLabel, alignSelf:'center' }}>{food[nutri].quantity.toFixed(2) * food.grams || 0}</Text>
-                    <Text style={{ ...styles.microsLabel, alignSelf: 'flex-end' }}>{food[nutri].unit || ''}</Text>
-                </View>
-              </View>
-                })
-            }) }</ScrollView>: null}   */}
+          </ScrollView>
             
 
           <View style={styles.totalsBox}>
@@ -196,7 +188,7 @@ const Log = () => {
     )
   }
 
-export default Log
+export default Micros
 
 const styles = StyleSheet.create ({
 	container:{

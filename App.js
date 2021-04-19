@@ -12,6 +12,7 @@ import Results from './components/results';
 import Log from './components/log';
 import Goal from './components/goal';
 import CalorieCam from './components/camera';
+import Micros from './components/micros';
 
 import { StateProvider } from './store.js';
 
@@ -35,6 +36,7 @@ function Home() {
       <Tab.Screen name="Goal" component={Goal} />
       <Tab.Screen name="Camera" component={CalorieCam} />
       <Tab.Screen name="Log" component={Log} />
+      <Tab.Screen name="Micros" component={Micros} />
     </Tab.Navigator>
   );
 }

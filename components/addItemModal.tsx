@@ -15,6 +15,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
 	const [nutrientObj, setNutrientsObj] = useState(null);
 	const [foodLabel, setFoodLabel] = useState(null);
 	const [grams, setGrams] = useState<number>(100);
+	const [dailyNutrientReqs, setDailyNutrientReqs] = useState(null);
 
 	const globalState = useContext(store);
 	const { dispatch } = globalState;
@@ -26,6 +27,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
 			foodToLog.grams = grams,
             foods.push(foodToLog);
             await AsyncStorage.setItem('foods', JSON.stringify(foods));
+			await AsyncStorage.setItem('dailyReqs', JSON.stringify(dailyNutrientReqs));
         } catch (err) {
             console.log(err);
         } finally {
@@ -55,6 +57,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
             )
             const totalDailyPercentages = nutrients.data.totalDaily;
             const totalNutrients = nutrients.data.totalNutrients;
+			setDailyNutrientReqs(totalDailyPercentages);
             setTotalNutrients(totalNutrients);
         } catch (err) {
             console.log(err);
