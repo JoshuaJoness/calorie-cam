@@ -8,7 +8,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 
 
 const Age = ({ navigation }) => {
-	AsyncStorage.getItem('age').then(data => setAge(data)) 
+	// AsyncStorage.getItem('age').then(data => setAge(data)) 
 	
 	const [age, setAge] = React.useState(null);
 	const [fadeAnim, setFadeAnim] = React.useState(new Animated.Value(0.1))

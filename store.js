@@ -19,6 +19,12 @@ const StateProvider = ( { children } ) => {
       case 'CALORIE_NEEDS_UPDATED': {
         return { ...state, totalDailyCalorieNeeds: action.data }
       }
+      case 'CLEAR_MICROS': {
+        return { ...state, clearMicros: true }
+      }
+      case 'ADD_MICROS': {
+        return { ...state, clearMicros: false }
+      }
       default:
         break;
     };

@@ -32,6 +32,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
             console.log(err);
         } finally {
             dispatch({ type: 'ADD_FOOD_TO_LOG', data: foodToLog });
+			dispatch({ type: 'ADD_MICROS' });
         }
     };
 

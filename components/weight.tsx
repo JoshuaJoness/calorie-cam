@@ -6,7 +6,7 @@ import CustomButton from './button'
 
 
 const Weight = ({ navigation }) => {
-	AsyncStorage.getItem('weight').then(data => setWeight(data)) 
+	// AsyncStorage.getItem('weight').then(data => setWeight(data)) 
 	const [weight, setWeight] = React.useState(null);
 	const [fadeAnim, setFadeAnim] = React.useState(new Animated.Value(0.1))
 	const [fadeAnimTwo] = React.useState(new Animated.Value(0))
@@ -59,7 +59,7 @@ const Weight = ({ navigation }) => {
 			</View >
 
 			<Animated.Text style={{ ...styles.subText, opacity: fadeAnim }}>Enter your
-				<Text style={styles.boldText}> weight </Text>
+				<Text style={styles.boldText}> weight (lbs) </Text>
 			</Animated.Text>
             
             <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>  

@@ -21,7 +21,7 @@ const Micros = () => {
 
     const globalState = useContext(store);
     const { state } = globalState;
-    const { foods: foodsFromState } = state;
+    const { foods: foodsFromState, clearMicros } = state;
 
     // to get log on initial render
     useEffect(() => {
@@ -77,13 +77,13 @@ const Micros = () => {
         }
     }, [loggedFoods]);
 
-    const [obj, setOjb] = useState(null)
+    const [obj, setObj] = useState(null)
     const newObj = {}
 
     useEffect(() => {
-        loggedFoods.forEach(food => {
-            Object.keys(food).forEach(t => {
-                loggedFoods.forEach(f => {
+        loggedFoods?.forEach(food => {
+            Object.keys(food)?.forEach(t => {
+                loggedFoods?.forEach(f => {
                     if (f[t]?.quantity && f[t]?.unit) {
                         const keys = Object.keys(newObj);
                         if (!keys.includes(t)) {
@@ -95,13 +95,13 @@ const Micros = () => {
                 })
             })
         })
-        setOjb(newObj);
+        setObj(newObj);
     }, []);
 
     useEffect(() => {
-        loggedFoods.forEach(food => {
-            Object.keys(food).forEach(t => {
-                loggedFoods.forEach(f => {
+        loggedFoods?.forEach(food => {
+            Object.keys(food)?.forEach(t => {
+                loggedFoods?.forEach(f => {
                     if (f[t]?.quantity && f[t]?.unit) {
                         const keys = Object.keys(newObj);
                         if (!keys.includes(t)) {
@@ -113,10 +113,14 @@ const Micros = () => {
                 })
             })
         })
-        setOjb(newObj);
+        setObj(newObj);
     }, [loggedFoods]);
  
-  
+  useEffect(() => {
+    if (clearMicros) {
+        setObj(null);
+    }
+  }, [state, loggedFoods, clearMicros])
 
   return(
     <View style={styles.container}>

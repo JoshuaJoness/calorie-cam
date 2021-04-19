@@ -60,7 +60,7 @@ const Goal = ({ route, navigation }) => {
         </Text>
 
         <CustomButton
-            style={{ marginTop: '15%' }}
+            style={{ marginTop: '10%' }}
             text="Update Your Goals" 
             onPress={() => {
                 navigation.navigate('GetStarted');

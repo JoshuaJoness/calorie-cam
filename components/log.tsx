@@ -18,9 +18,10 @@ const Log = () => {
   const [weight, setWeight] = useState(null);
   const [showMicros, setShowMicros] = useState(null);
   const [reqs, setReqs] = useState(null);
+  const [goal, setGoal] = useState(null);
 
   const globalState = useContext(store);
-	const { state } = globalState;
+	const { state, dispatch } = globalState;
   const { foods: foodsFromState } = state;
 
   // to get log on initial render
@@ -41,6 +42,10 @@ const Log = () => {
       const reqs = await AsyncStorage.getItem('dailyReqs');
       const parsedReqs = JSON.parse(reqs);
       await setReqs(parsedReqs);
+
+      const goal = await AsyncStorage.getItem('goal');
+      const parsedGoal = JSON.parse(goal);
+      await setGoal(parsedGoal);
     }
 
     getData();
@@ -84,7 +89,19 @@ const Log = () => {
       setTotalCarbs(0)
       setTotalProtein(0)
       setTotalFat(0)
+
+      dispatch({ type: 'CLEAR_MICROS' })
   };  
+
+  const calorieGoals = () => {
+    if (goal === 'maintainWeight') {
+      return totalDailyCalorieNeeds;
+    } else if (goal === 'loseWeight') {
+      return Math.round(totalDailyCalorieNeeds - 500);
+    } else {
+      return Math.round(totalDailyCalorieNeeds + 500);
+    }
+  }
 
   return(
     <View style={styles.container}>
@@ -158,7 +175,7 @@ const Log = () => {
 
           <View style={{ display:'flex', flexDirection:'row', padding:10, borderTopWidth: 1, borderColor:'black', backgroundColor: '#6b705c' }}>
               <Text style={{ ...styles.label, color:'#ffe8d6' }}>Goals:</Text>
-              <Text style={{ ...styles.label, color:'#ffe8d6', textAlign: 'center' }}>{Math.round(totalDailyCalorieNeeds)} kcal</Text>
+              <Text style={{ ...styles.label, color:'#ffe8d6', textAlign: 'center' }}>{calorieGoals()} kcal</Text>
               <Text style={{ ...styles.label, color:'#ffe8d6', textAlign: 'center' }}></Text>
               <Text style={{ ...styles.label, color:'#ffe8d6', textAlign: 'center' }}>{Math.round(weight)} g</Text>
               <Text style={{ ...styles.label, color:'#ffe8d6', textAlign: 'center' }}></Text>
