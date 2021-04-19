@@ -1,80 +1,161 @@
-import React, { useState, useEffect} from 'react';
-import { StyleSheet, Button, TextInput, Text, View, ImageBackground, ScrollView } from 'react-native';
-import axios from 'axios'
-import * as Font from 'expo-font';
-import Welcome from './components/Welcome'
-import Predicts from './components/Predicts'
-import Log from './components/Log'
+import React, { useState, useContext, useEffect } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import Welcome from './components/Welcome';
+import GetStarted from './components/getStarted';
+import Age from './components/age';
+import Gender from './components/gender';
+import Height from './components/height';
+import Weight from './components/weight';
+import ActivityLevel from './components/activityLevel';
+import Results from './components/results';
+import Log from './components/log';
+import Goal from './components/goal';
+import CalorieCam from './components/camera';
+import Micros from './components/micros';
 
-import { ApplicationProvider } from '@ui-kitten/components';
-import { mapping, light as lightTheme } from '@eva-design/eva';
+import { StateProvider } from './store.js';
 
-import {createAppContainer} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { createBottomTabNavigator } from 'react-navigation-tabs'
+import { AsyncStorage, TouchableOpacity, Text } from 'react-native'
 
-import { Ionicons } from '@expo/vector-icons';
+import { store } from './store';
+import { useFonts } from 'expo-font';
 
-const BottomNav = createAppContainer(createBottomTabNavigator({
-	Welcome: {screen: Welcome,
-		navigationOptions: ({ navigation }) => ({
-			title: 'Welcome'
-		})
-	},
 
-	Search: {screen: Predicts,
-		navigationOptions: ({ navigation }) => ({
-			title: '',
-			tabBarIcon: ({ tintColor }) => (
-				<Ionicons name="md-camera" size={72} color={tintColor} style={{position:'absolute', marginBottom:10}} />
-			)
-		})
-	},
 
-	Log: {screen: Log},
 
-	},
+const Tab = createBottomTabNavigator();
 
-	{
-  	initialRouteName: 'Welcome',
-    tabBarOptions: {
-			showIcon: true,
-      style: {
-        height: 55,
-        backgroundColor: '#356859',
-			},
-			inactiveTintColor: '#FD5523',
-			activeTintColor: '#B9E4C9'
-      }
-		}
-	))
 
-const RoutedApp = createAppContainer(createStackNavigator({
-	Welcome: {screen: Welcome},
-	Search: {screen: Predicts},
-	Log: {screen: Log},
-}));
 
-export default class App extends React.Component {
-	render() {
-		state = {
-			active: false
-		}
-		
-		return(
-			<ApplicationProvider mapping={mapping} theme={lightTheme}>
-		    <BottomNav style={{zIndex:1000}}/>
-		  </ApplicationProvider>
-		)
-	}
+function Home() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Goal" component={Goal} />
+      <Tab.Screen name="Camera" component={CalorieCam} />
+      <Tab.Screen name="Log" component={Log} />
+      <Tab.Screen name="Micros" component={Micros} />
+    </Tab.Navigator>
+  );
 }
 
-// Code for TabBarLabel (i.e. to change tab bar navigation font size)
-{/*
-	Welcome: {screen: Welcome,
-		navigationOptions: ({ navigation }) => ({
-			tabBarLabel: <Text style={{ fontSize: 18, fontWeight: 'bold' }}> Welcome </Text>
-		})
-	},
-*/}
+const Stack = createStackNavigator();
+
+function App() {
+  const [loaded] = useFonts({
+    Pacifico: require('./assets/fonts/Pacifico-Regular.ttf'),
+    MontserratLight: require('./assets/fonts/Montserrat-Light.ttf'),
+    MontserratMedium: require('./assets/fonts/Montserrat-Medium.ttf'),
+    MontserratRegular: require('./assets/fonts/Montserrat-Regular.ttf')
+  });
+
+
+  const [goal, setGoal] = useState(null);
+  AsyncStorage.getItem('goal').then(data => setGoal(data));
+
+  useEffect(() => {
+    AsyncStorage.getItem('goal').then(data => {setGoal(data)});
+  }, []);
+
+
+  if (!goal)
+    return null
+
+  if (!loaded)
+    return null
+
+  return (
+      <StateProvider>
+          <NavigationContainer>
+              <Stack.Navigator initialRouteName={goal ? "Home" : "GetStarted"}>
+                  <Stack.Screen name="Welcome" component={Welcome} />
+                  <Stack.Screen 
+                    name="GetStarted" 
+                    component={GetStarted} 
+                    options={{
+                      title: '',
+                      headerStyle: {
+                        backgroundColor: '#ffe8d6'
+                      }
+                    }}/>
+                  <Stack.Screen 
+                    name="Age" 
+                    component={Age} 
+                    options={{
+                      title: '',
+                      headerStyle: {
+                        backgroundColor: '#ffe8d6'
+                      }
+                    }}/>
+                    <Stack.Screen 
+                      name="Gender" 
+                      component={Gender} 
+                      options={{
+                        title: '',
+                        headerStyle: {
+                          backgroundColor: '#ffe8d6'
+                        }
+                    }}/>
+                    <Stack.Screen 
+                      name="Height" 
+                      component={Height} 
+                      options={{
+                        title: '',
+                        headerStyle: {
+                          backgroundColor: '#ffe8d6'
+                        }
+                    }}/>
+                    <Stack.Screen 
+                      name="Weight" 
+                      component={Weight} 
+                      options={{
+                        title: '',
+                        headerStyle: {
+                          backgroundColor: '#ffe8d6'
+                        }
+                    }}/>
+                    <Stack.Screen 
+                      name="ActivityLevel" 
+                      component={ActivityLevel} 
+                      options={{
+                        title: '',
+                        headerStyle: {
+                          backgroundColor: '#ffe8d6'
+                        }
+                    }}/>
+                    <Stack.Screen 
+                      name="Results" 
+                      component={Results} 
+                      options={{
+                        title: '',
+                        headerStyle: {
+                          backgroundColor: '#ffe8d6'
+                        }
+                    }}/>
+                    <Stack.Screen 
+                      name="Log" 
+                      component={Log} 
+                      options={{
+                        title: '',
+                        headerStyle: {
+                          backgroundColor: '#ffe8d6'
+                        }
+                    }}/>
+                    <Stack.Screen 
+                      name="Home" 
+                      component={Home} 
+                      options={{
+                        title: '',
+                        headerStyle: {
+                          backgroundColor: '#ffe8d6'
+                        }
+                    }}/>
+              </Stack.Navigator> 
+          </NavigationContainer>
+      </StateProvider>
+  );
+}
+
+export default App;
