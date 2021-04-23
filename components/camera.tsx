@@ -152,11 +152,11 @@ const CalorieCam = ({ navigation }) => {
                         <View style={{ display: 'flex', flexDirection: 'row', width: '90%', alignSelf: 'center' }}>
                             <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
                                 <Text style={styles.value}>{Math.round(totalNutrients?.ENERC_KCAL?.quantity * grams) || 0}</Text>
-                                <Text style={styles.value}>{totalNutrients?.ENERC_KCAL.unit || ''}</Text>
+                                <Text style={styles.value}>{totalNutrients?.ENERC_KCAL?.unit || ''}</Text>
                             </View>
                             <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
                                 <Text style={styles.value}>{Math.round(totalNutrients?.CHOCDF?.quantity * grams) || 0}</Text>
-                                <Text style={styles.value}>{totalNutrients.CHOCDF.unit || ''}</Text>
+                                <Text style={styles.value}>{totalNutrients?.CHOCDF?.unit || ''}</Text>
                             </View>
                             <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
                                 <Text style={styles.value}>{Math.round(totalNutrients?.PROCNT?.quantity * grams) || ''}</Text>
@@ -164,7 +164,7 @@ const CalorieCam = ({ navigation }) => {
                             </View>
                             <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
                                 <Text style={styles.value}>{Math.round(totalNutrients?.FAT?.quantity * grams) || 0}</Text>
-                                <Text style={styles.value}>{totalNutrients?.FAT.unit || ''}</Text>
+                                <Text style={styles.value}>{totalNutrients?.FAT?.unit || ''}</Text>
                             </View>    
                         </View>
                     : null}

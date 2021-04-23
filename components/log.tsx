@@ -49,6 +49,10 @@ const Log = ({ navigation }) => {
     getData();
   }, []);
 
+  useEffect(() => {
+    console.log(loggedFoods, 'loggedFoods')
+  }, [loggedFoods])
+
   // to get log when a new food is added to async storage
   useEffect(() => {
     const getData = async () => {
@@ -100,6 +104,10 @@ const Log = ({ navigation }) => {
       return Math.round(totalDailyCalorieNeeds + 500);
     }
   }
+
+  // useEffect(() => {
+  //   console.log(loggedFoods, 'LOOGED FOOD')
+  // }, [loggedFoods])
 
   return(
     <View style={styles.container}>

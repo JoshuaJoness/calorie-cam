@@ -14,10 +14,16 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 	const [userInput, setUserInput] = useState(null);
 	const [totalNutrients, setTotalNutrients] = useState(null);
 	const [foodToLog, setFoodToLog] = useState(null);
-	const [nutrientObj, setNutrientsObj] = useState(null);
+	// const [nutrientObj, setNutrientsObj] = useState(null);
 	const [foodLabel, setFoodLabel] = useState(null);
-	// const [grams, setGrams] = useState<number>(100);
 	const [dailyNutrientReqs, setDailyNutrientReqs] = useState(null);
+
+	const [submitted, setSubmitted] = useState(false);
+	const [result, setResult] = useState(null);
+	const [foodQty, setFoodQty] = useState(null);
+	const [selectedItem, setSelectedItem] = useState(null);
+	const [measurementUri, setMeasurementUri] = useState(null);
+	const [obj, setObj] = useState(null);
 
 	const globalState = useContext(store);
 	const { dispatch } = globalState;
@@ -26,7 +32,6 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
         try {
             let foods = await AsyncStorage.getItem('foods') || '[]';
             foods = JSON.parse(foods);
-			foodToLog.grams = grams,
             foods.push(foodToLog);
             await AsyncStorage.setItem('foods', JSON.stringify(foods));
 			await AsyncStorage.setItem('dailyReqs', JSON.stringify(dailyNutrientReqs));
@@ -38,44 +43,17 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
         }
     };
 
-
-	const [obj, setObj] = useState(null);
 	const getInitialFoodOptions = async (userInput) => {
         try {
-            // TODO implement 'exact' match
-			// TODO multiple options from first API call below
             const data = await axios.get(`https://api.edamam.com/api/food-database/parser?app_id=${edamamId}&app_key=${edamamKey}&ingr=${userInput}&nutrition-type=logging`);
-			// data?.data?.hints[0]?.food?.measures?.map(m => console.log(m.label, m.uri))
-			// data?.data?.hints?.forEach(h => console.log(h?.food))
-
-			// console.log(data.data, 'DATa')
 			const obj = {};
 			data?.data?.hints.forEach(hint => obj[hint.food.label] = { foodId: hint.food.foodId, measures: hint.measures, nutrients: hint.food.nutrients });
-			// console.log(data?.data?.hints, '*****')
 			setObj(obj);
-			// console.log(obj, ' LOOK HExRE  ');
-			// TODO implement measure selection
-            // const foodId = data?.data?.hints[0]?.food?.foodId;
-			// const foodLabel = data?.data?.hints[0]?.food?.label;
-            // setFoodLabel(foodLabel); 
-
-			// TODO show image
+			// TODO show image (?)
         } catch (err) {
             console.log(err);
         }
     };
-
-	// useEffect(() => {
-	// 	console.log(obj, 'OBJ')
-	// }, [obj])
-
-
-
-// I GET THE TOTAL DAILY WITH MEASUREMENT
-
-	const [submitted, setSubmitted] = useState(false);
-	const [result, setResult] = useState(null);
-	const [foodQty, setFoodQty] = useState(null);
 
 	const getSelectedItemsNutrients = async () => {
 		setSubmitted(true);
@@ -126,17 +104,16 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 	// 	};	
 	// }, [totalNutrients]);
 
-	useEffect(() => {
-		if (nutrientObj)
-			setFoodToLog(nutrientObj);
-	}, [nutrientObj]);
+	const [selectedItemIndex, setSelectedItemIndex] = useState(null);
 
 	useEffect(() => {
-		console.log(userInput, 'uInput')
-	}, [userInput])
-
-	const [selectedItem, setSelectedItem] = useState(null)
-	const [measurementUri, setMeasurementUri] = useState(null)
+		if (obj && selectedItemIndex && foodQty && measurementUri && totalNutrients) {
+			const label = Object.keys(obj)[selectedItemIndex]
+			const measureUnit = measurementUri.split('_')[1];
+			const foodToLog = { ...totalNutrients, label, quantity: foodQty, measureUnit };
+			setFoodToLog(foodToLog);
+		}
+	}, [selectedItem, measurementUri, totalNutrients, selectedItemIndex, foodQty]);
 
     return (
 		<View style={styles.container}>	
@@ -150,7 +127,7 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 					value={userInput} 	
 					placeholder={'Banana'}
 					onChangeText={(label) => {
-						setFoodToLog({ ...foodToLog, label});
+						// setFoodToLog({ ...foodToLog, label});
 						setUserInput(label);
 					}}
 					onSubmitEditing={() => getInitialFoodOptions(userInput)}
@@ -164,9 +141,12 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 						selectedValue={selectedItem}
 						// style={{ height: 40 }}
 						itemStyle={{ height: 105, width: '100%', alignSelf: 'center' }}
-						onValueChange={(itemValue, itemIndex) => setSelectedItem(itemValue)}
+						onValueChange={(itemValue, itemIndex) => {
+							setSelectedItem(itemValue);
+							setSelectedItemIndex(itemIndex);
+						}}
 					>
-						{Object.keys(obj).map(key => <Picker.Item label={key} value={obj[key].foodId} key={key} />)}
+						{obj ? Object.keys(obj)?.map(key => <Picker.Item label={key} value={obj[key].foodId} key={key} />) : null}
 					</Picker> 
 				</View>
 				: null}
@@ -222,16 +202,10 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 			<CustomButton 
 				text="LOG ITEM" 
 				onPress={() => {
-					if (!selectedItem) {
-						Alert.alert('Please select an item from the picker');
-					} else if (!measurementUri) {
-						Alert.alert('Please select a unit of measurement');
-					} else {
-						getSelectedItemsNutrients();
-					}
+					addFoodToLog();
+					setModalVisible(!modalVisible);
 				}} 
 				style={{ backgroundColor: '#6b705c', padding: 10, width: 150, marginLeft: 5 }}
-				// disabled={!selectedItem && !measurementUri}
 			/>
 			}
 		</View>
