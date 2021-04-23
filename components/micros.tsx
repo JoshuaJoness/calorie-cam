@@ -11,16 +11,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 const Micros = () => {
-    const [totalCalories, setTotalCalories] = useState(0);
-    const [totalCarbs, setTotalCarbs] = useState(0);
-    const [totalProtein, setTotalProtein] = useState(0);
-    const [totalFat, setTotalFat] = useState(0);
     const [loggedFoods, setLoggedFoods] = useState([]);
-    const [foodToLog, setFoodToLog] = useState(null);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [totalDailyCalorieNeeds, setTotalDailyCalorieNeeds] = useState(null);
-    const [weight, setWeight] = useState(null);
-    const [showMicros, setShowMicros] = useState(null);
     const [reqs, setReqs] = useState(null);
 
     const globalState = useContext(store);
@@ -33,14 +24,6 @@ const Micros = () => {
         const test = await AsyncStorage.getItem('foods');
         const parse = JSON.parse(test);
         await setLoggedFoods(parse);
-
-        const calorieNeeds = await AsyncStorage.getItem('totalDailyCalorieNeeds');
-        const parsedCalorieNeeds = JSON.parse(calorieNeeds);
-        await setTotalDailyCalorieNeeds(parsedCalorieNeeds);
-
-        const weight = await AsyncStorage.getItem('weight');
-        const parsedWeight = JSON.parse(weight);
-        await setWeight(parsedWeight);
 
         const reqs = await AsyncStorage.getItem('dailyReqs');
         const parsedReqs = JSON.parse(reqs);
@@ -61,68 +44,34 @@ const Micros = () => {
         getData();
     }, [foodsFromState]);
 
-    // set nutritient totals
-    useEffect(() => {
-        if (loggedFoods) {
-            let energy = 0;
-            let carbs = 0;
-            let protein = 0;
-            let fat = 0;
-            loggedFoods?.forEach(food => {
-                energy += Number(food?.energy?.quantity ? food.energy?.quantity : 0)
-                carbs += Number(food?.carbs?.quantity ? food.carbs?.quantity : 0)
-                protein += Number(food?.protein?.quantity ? food.protein?.quantity : 0)
-                fat += Number(food?.fat?.quantity ? food.fat?.quantity : 0)
-            });
-            setTotalCalories(energy);
-            setTotalCarbs(carbs);
-            setTotalProtein(protein);
-            setTotalFat(fat);
-        }
-    }, [loggedFoods]);
-
     const [obj, setObj] = useState(null)
     const newObj = {}
 
     useEffect(() => {
         loggedFoods?.forEach(food => {
-            Object.keys(food)?.forEach(t => {
-                loggedFoods?.forEach(f => {
-                    if (f[t]?.quantity && f[t]?.unit) {
-                        const keys = Object.keys(newObj);
-                        if (!keys.includes(t)) {
-                            newObj[t] = { quantity: f[t].quantity, unit: f[t]?.unit }
-                        } else {
-                            newObj[t]['quantity'] += f[t]?.quantity;
-                        }
-                    }
-                })
+          if (food) {
+            Object.keys(food).forEach(nutrient => {
+              if (newObj[nutrient]) {
+                newObj[nutrient].quantity += food[nutrient].quantity;
+              } else {
+                newObj[nutrient] = { 
+                  label: food[nutrient]?.label,
+                  quantity: food[nutrient]?.quantity,
+                  unit: food[nutrient]?.unit,    
+                }
+              }
             })
+          }
         })
-        setObj(newObj);
-    }, []);
 
-    useEffect(() => {
-        loggedFoods?.forEach(food => {
-            Object.keys(food)?.forEach(t => {
-                loggedFoods?.forEach(f => {
-                    if (f[t]?.quantity && f[t]?.unit) {
-                        const keys = Object.keys(newObj);
-                        if (!keys.includes(t)) {
-                            newObj[t] = { quantity: f[t].quantity, unit: f[t]?.unit }
-                        } else {
-                            newObj[t]['quantity'] += f[t]?.quantity;
-                        }
-                    }
-                })
-            })
-        })
         setObj(newObj);
     }, [loggedFoods]);
- 
+
   useEffect(() => {
     if (clearMicros) {
         setObj(null);
+        setLoggedFoods(null);
+        setReqs(null);
     }
   }, [state, loggedFoods, clearMicros])
 
@@ -138,12 +87,15 @@ const Micros = () => {
 
         <ScrollView style={styles.box}>    
             {obj ? Object.keys(obj)
-                .filter(nutrient => nutrient !== 'grams' && nutrient !== 'label' && nutrient !== 'energy' && nutrient !== 'carbs' && nutrient !== 'protein' && nutrient !== 'fat' && nutrient !== 'saturated' && nutrient !== 'trans')
+                .filter(nutrient => nutrient !== 'ENERC_KCAL' && nutrient !== 'CHOCDF' && nutrient !== 'PROCNT' && nutrient !== 'FAT' && obj[nutrient].label)
                 .map((nutri,i) => {
+                  console.log(nutri, 'NUTRI')
+                  // console.log(obj, 'OBJ')
+                  // console.log(obj[nutri].label, 'LOOK')
                     return (
                         <View key={`${nutri}_micro`}>
                             <View style={{ borderWidth: 1, borderColor: 'black', height: 40, display: 'flex', flexDirection: 'row', backgroundColor: '#b7b7a4' }}>
-                                <Text style={{ padding: 10 }}>{nutri}</Text>
+                                <Text style={{ padding: 10 }}>{obj[nutri].label}</Text>
                                 <View style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto', padding: 10 }}>
                                     <Text style={{ paddingRight: 5 }}>{Math.round(obj[nutri].quantity)}</Text>
                                     <Text >{obj[nutri].unit}</Text>
@@ -161,7 +113,7 @@ const Micros = () => {
           <View style={styles.totalsBox}>
 
             <View style={{ display:'flex', flexDirection:'row', padding:10, borderTopWidth: 1, borderColor:'black', backgroundColor: '#6b705c' }}>
-                <Text style={{ ...styles.label, color:'#ffe8d6' }}></Text>
+                <Text style={{ ...styles.label, color:'#ffe8d6' }} onPress={() => console.log(newObj, 'newObj')}> CLICK ME </Text>
             </View>
         </View>
       </View>

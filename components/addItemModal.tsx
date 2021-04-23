@@ -110,6 +110,8 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 		if (obj && selectedItemIndex && foodQty && measurementUri && totalNutrients) {
 			const label = Object.keys(obj)[selectedItemIndex]
 			const measureUnit = measurementUri.split('_')[1];
+			const newNutrientObj = {}
+			Object.keys(totalNutrients).forEach(nutrient => totalNutrients[nutrient].quantity = totalNutrients[nutrient].quantity *= foodQty);
 			const foodToLog = { ...totalNutrients, label, quantity: foodQty, measureUnit };
 			setFoodToLog(foodToLog);
 		}

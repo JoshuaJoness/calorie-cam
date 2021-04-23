@@ -49,9 +49,9 @@ const Log = ({ navigation }) => {
     getData();
   }, []);
 
-  useEffect(() => {
-    console.log(loggedFoods, 'loggedFoods')
-  }, [loggedFoods])
+  // useEffect(() => {
+  //   console.log(loggedFoods, 'loggedFoods')
+  // }, [loggedFoods])
 
   // to get log when a new food is added to async storage
   useEffect(() => {
@@ -72,10 +72,10 @@ const Log = ({ navigation }) => {
         let protein = 0;
         let fat = 0;
         loggedFoods?.forEach(food => {
-            energy += Number(food?.energy?.quantity ? food.energy?.quantity : 0)
-            carbs += Number(food?.carbs?.quantity ? food.carbs?.quantity : 0)
-            protein += Number(food?.protein?.quantity ? food.protein?.quantity : 0)
-            fat += Number(food?.fat?.quantity ? food.fat?.quantity : 0)
+            energy += Number(food?.ENERC_KCAL?.quantity ? food.ENERC_KCAL?.quantity : 0)
+            carbs += Number(food?.CHOCDF?.quantity ? food.CHOCDF?.quantity : 0)
+            protein += Number(food?.PROCNT?.quantity ? food.PROCNT?.quantity : 0)
+            fat += Number(food?.FAT?.quantity ? food.FAT?.quantity : 0)
         });
         setTotalCalories(energy);
         setTotalCarbs(carbs);
@@ -122,15 +122,20 @@ const Log = ({ navigation }) => {
               <Text style={{ ...styles.label, textAlign: 'center' }}>Fat</Text>
             </View>
           </View>
+{/* 
+          energy += Number(food?.ENERC_KCAL?.quantity ? food.ENERC_KCAL?.quantity : 0)
+            carbs += Number(food?.CHOCDF?.quantity ? food.CHOCDF?.quantity : 0)
+            protein += Number(food?.PROCNT?.quantity ? food.PROCNT?.quantity : 0)
+            fat += Number(food?.FAT?.quantity ? food.FAT?.quantity : 0) */}
 
           <ScrollView style={styles.box}>    
             {loggedFoods?.length > 0 ? loggedFoods?.map((food,i) => <View style={{ height: 50, display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6', borderBottomWidth: 1 /*i === loggedFoods?.length - 1 ? 0 : 1 */ }} key={i}>
                 <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }} numberOfLines={1}>{food?.label}</Text>
                 {/* <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>({food?.grams} g)</Text> */}
-                <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c', textAlign: 'center' }}>{food?.energy?.quantity ? Math.round(food?.energy?.quantity)  : '-'}</Text>
-                <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c', textAlign: 'center' }}>{food?.carbs?.quantity ? Math.round(food?.carbs?.quantity) : '-'}</Text>
-                <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c', textAlign: 'center' }}>{food?.protein?.quantity ? Math.round(food?.protein?.quantity) : '-'}</Text>
-                <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c', textAlign: 'center' }}>{food?.fat?.quantity ? Math.round(food?.fat?.quantity) : '-'}</Text>
+                <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c', textAlign: 'center' }}>{food?.ENERC_KCAL?.quantity ? Math.round(food?.ENERC_KCAL?.quantity)  : '-'}</Text>
+                <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c', textAlign: 'center' }}>{food?.CHOCDF?.quantity ? Math.round(food?.CHOCDF?.quantity) : '-'}</Text>
+                <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c', textAlign: 'center' }}>{food?.PROCNT?.quantity ? Math.round(food?.PROCNT?.quantity) : '-'}</Text>
+                <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c', textAlign: 'center' }}>{food?.FAT?.quantity ? Math.round(food?.FAT?.quantity) : '-'}</Text>
               </View>
             ) : null}
           </ScrollView>            
