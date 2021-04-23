@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, AsyncStorage, StyleSheet, Modal, TextInput, Alert } from 'react-native';
+import { View, Text, AsyncStorage, StyleSheet, Modal, TextInput, Alert, Picker } from 'react-native';
 import { useFonts } from 'expo-font';
 import CutomButton from './button';
 import axios from 'axios';
 import { store }  from '../store';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const edamamId = '7ff1ee7e';
 const edamamKey = 'aa4824adda205d7ff601301c08816573';
@@ -36,34 +37,58 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
         }
     };
 
-	const getCaloriesFromPrediction = async (userInput) => {
+
+	const [obj, setObj] = useState({default:{}});
+	const getInitialFoodOptions = async (userInput) => {
         try {
             // TODO implement 'exact' match
-            const data = await axios.get(`https://api.edamam.com/api/food-database/parser?app_id=${edamamId}&app_key=${edamamKey}&ingr=${userInput}`);
-            const foodId = data?.data?.hints[0]?.food?.foodId;
-			const foodLabel = data?.data?.hints[0]?.food?.label;
-            setFoodLabel(foodLabel);
+			// TODO multiple options from first API call below
+            const data = await axios.get(`https://api.edamam.com/api/food-database/parser?app_id=${edamamId}&app_key=${edamamKey}&ingr=${userInput}&nutrition-type=logging`);
+			// data?.data?.hints[0]?.food?.measures?.map(m => console.log(m.label, m.uri))
+			// data?.data?.hints?.forEach(h => console.log(h?.food))
+			const obj = {};
+			data?.data?.hints.forEach(hint => obj[hint.food.label] = { foodId: hint.food.foodId, measures: hint.measures, nutrients: hint.food.nutrients });
+			// console.log(data?.data?.hints, '*****')
+			setObj(obj);
+			// console.log(obj, ' LOOK HExRE  ');
+			// TODO implement measure selection
+            // const foodId = data?.data?.hints[0]?.food?.foodId;
+			// const foodLabel = data?.data?.hints[0]?.food?.label;
+            // setFoodLabel(foodLabel); 
 
-            const nutrients = await axios.post(
-                `https://api.edamam.com/api/food-database/v2/nutrients?app_id=${edamamId}&app_key=${edamamKey}`,
-                {
-                    "ingredients": [
-                        {
-                            "quantity": 1,
-                            "measureURI": "http://www.edamam.com/ontologies/edamam.owl#Measure_gram",
-                            "foodId": foodId
-                        }
-                        ]
-                }
-            )
-            const totalDailyPercentages = nutrients.data.totalDaily;
-            const totalNutrients = nutrients.data.totalNutrients;
-			setDailyNutrientReqs(totalDailyPercentages);
-            setTotalNutrients(totalNutrients);
+			// TODO show image
         } catch (err) {
             console.log(err);
         }
     };
+
+	const getSelectedItemsNutrients = async () => {
+		console.log(selectedItem, "ITEM")
+
+		console.log(obj, "OBJ")
+		// const nutrients = await axios.post(
+		// 	`https://api.edamam.com/api/food-database/v2/nutrients?app_id=${edamamId}&app_key=${edamamKey}`,
+		// 	{
+		// 		"ingredients": [
+		// 			{
+		// 				"quantity": 1,
+		// 				"measureURI": "http://www.edamam.com/ontologies/edamam.owl#Measure_gram",
+		// 				"foodId": foodId
+		// 			}
+		// 			]
+		// 	}
+		// )
+
+
+		// 	// console.log(nutrients, 'NUTRIENTS')
+		// 	// split this method,
+		// 	// call nutrients ONLY after best option has been selected .. .
+
+		// const totalDailyPercentages = nutrients.data.totalDaily;
+		// const totalNutrients = nutrients.data.totalNutrients;
+		// setDailyNutrientReqs(totalDailyPercentages);
+		// setTotalNutrients(totalNutrients);
+	}
 
 	useEffect(() => {
 		if (totalNutrients) {
@@ -93,112 +118,47 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
 			setFoodToLog(nutrientObj);
 	}, [nutrientObj]);
 
-    return(
-        <View style={{ height: '100%', backgroundColor: '#ffe8d6' }}>
-			<View style={{ ...styles.box, marginTop: '40%'  }}>
-				<View>
-				<Text style={{ fontWeight: 'bold', color:'#6b705c', marginTop: 10, marginLeft: 'auto', marginRight: 'auto', marginBottom: 10, fontSize: 18 }}>Enter a food item below: </Text>
-				<Text style={{ fontWeight: 'bold', color:'#6b705c', marginLeft: 'auto', marginRight: 'auto', marginBottom: 20, fontSize: 15 }}>(Results are per 100 g)</Text>
-				<View style={{ display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6' }}>
-					<Text style={{ ...styles.label, color:'#6b705c' }}>Item Name: </Text> 
-					<TextInput
-						style={{ ...styles.input }}
-						placeholder="Banana..."
-						onChangeText={(label) => {
-							setFoodToLog({ ...foodToLog, label});
-							setUserInput(label);
-						}}
-						onSubmitEditing={() => getCaloriesFromPrediction(userInput)}
-					/>
-              	</View>
-				<View style={{ display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6' }}>
-					<Text style={{ ...styles.label, color:'#6b705c' }}>Calories: </Text> 
-					<TextInput
-						style={{ ...styles.input, flex: 1 }}
-						placeholder="200"
-						keyboardType="numeric"
-						value={nutrientObj ? nutrientObj['energy']?.quantity : null}
-						onChangeText={(energy) => {
-							setNutrientsObj({ ...foodToLog, energy: { quantity: energy, unit: 'kcal' } });
-						}}
-					/>
-				</View>
-				<View style={{ display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6' }}>
-					<Text style={{ ...styles.label, color:'#6b705c' }}>Carbs (g): </Text> 
-					<TextInput
-						style={{ ...styles.input, flex: 1 }}
-						placeholder="60"
-						keyboardType="numeric"
-						value={nutrientObj ? nutrientObj['carbs']?.quantity : null}
-						onChangeText={(carbs) => {
-							setNutrientsObj({ ...foodToLog, carbs: { quantity: carbs, unit: 'g' } });
-						}}
-					/>
-				</View>
-				<View style={{ display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6' }}>
-					<Text style={{ ...styles.label, color:'#6b705c' }}>Protein (g): </Text> 
-					<TextInput
-						style={{ ...styles.input, flex: 1 }}
-						placeholder="20"
-						keyboardType="numeric"
-						value={nutrientObj ? nutrientObj['protein']?.quantity : null}
-						onChangeText={(protein) => {
-							setNutrientsObj({ ...foodToLog, protein: { quantity: protein, unit: 'g' } });
-						}}
-					/>
-				</View>
-				<View style={{ display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6' }}>
-					<Text style={{ ...styles.label, color:'#6b705c' }}>Fat (g): </Text> 
-					<TextInput
-						style={{ ...styles.input, flex: 1 }}
-						placeholder="2"
-						keyboardType="numeric"
-						value={nutrientObj ? nutrientObj['fat']?.quantity : null}
-						onChangeText={(fat) => {
-							setNutrientsObj({ ...foodToLog, fat: { quantity: fat, unit: 'g' } });
-						}}
-					/>
-				</View>
-				{/* <View style={{ display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6' }}>
-					
-					<Text style={{ ...styles.label, color:'#6b705c' }}>Quantity: </Text> 
-		
-					<View style={{ display: 'flex' }}>
-						<TextInput 
-							style={{ ...styles.input }} 
-							value={String(grams)}
-							keyboardType="numeric"
-							onChangeText={grams => {
-								const gramsToNumber = Number(grams);
-		
-									setGrams(gramsToNumber)
-	
-							}}
-						/> 
-						<Text style={{ alignSelf:'center', paddingTop: 5, color: '#6b705c' }}>(Change me)</Text>
-					</View>
+	const [selectedItem, setSelectedItem] = useState(null)
+	const [measurementUri, setMeasurementUri] = useState(null)
 
-              	</View> */}
+    return (
+		<View style={styles.container}>
+			<View style={{ backgroundColor:'#ddbea9', width: '95%', height: 600, marginTop: 75, alignItems: 'center', paddingTop: 20 }}>
+				<Text style={styles.text}>Enter food below</Text>
+				<TextInput 
+					style={{ ...styles.input, marginTop: 50, fontSize: 25 }} 
+					value={userInput} 	
+					placeholder={'Banana'}
+					onChangeText={(label) => {
+						setFoodToLog({ ...foodToLog, label});
+						setUserInput(label);
+					}}
+					onSubmitEditing={() => getInitialFoodOptions(userInput)}
+				/>
+				{
+				userInput ? 
+				<View style={{ marginTop: 75 }}>
+					<Text style={styles.text}>Select best match</Text>
+					<Picker
+						selectedValue={selectedItem}
+						style={styles.picker}
+						onValueChange={(itemValue, itemIndex) => setSelectedItem(itemValue)}
+					>
+						{Object.keys(obj).map(key => <Picker.Item label={key} value={obj[key].foodId} key={key} />)}
+					</Picker> 
 				</View>
-				<View style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto', marginRight: 'auto', padding: 10  }}>
-				<CutomButton 
-					text='Log Item' 
-					onPress={() => {
-					addFoodToLog();
-					setModalVisible(!modalVisible);
-					}} 
-					style={{ width: 100, height: 30, backgroundColor: '#a5a58d', marginRight: 5 }} 
-				/>
-				<CutomButton 
-					text='Cancel' 
-					onPress={() => setModalVisible(!modalVisible)} 
-					style={{ width: 100, height: 30, marginLeft: 5 }} 
-				/>
-			</View>      
+				:
+				null
+			}
+
+			<CutomButton text="SUBMIT" onPress={() => getSelectedItemsNutrients()} style={{ backgroundColor: '#6b705c', padding: 10, width: 150 }} />
 			</View>
-      </View>
-    )
-  }
+			
+		
+		</View>
+
+	)
+}
 
 export default AddItemModal
 
@@ -206,8 +166,25 @@ const styles = StyleSheet.create ({
 	container:{
 		backgroundColor: '#ffe8d6',
 		height: '100%',
-		paddingTop: '5%'
+		paddingTop: 50,
+		display:'flex', 
+		alignItems: 'center'
+		// flexDirection:'column', 
+		// alignItems: 'flex-end',
+		// marginLeft: 'auto', 
+		// marginRight: 'auto',
+		// marginTop: 25,
+		// paddingBottom: 50, // TODO this is a temp fix for white space at bottom
 	},
+	text: {
+        fontFamily: 'MontserratMedium',
+        color: '#6b705c',
+        fontSize: 25,
+        paddingLeft: '10%',
+        paddingRight: '10%',
+        textAlign: 'center',
+        fontWeight: 'bold',
+    },
   box: {
     width: '90%',
     marginLeft: 'auto', 
@@ -241,6 +218,7 @@ const styles = StyleSheet.create ({
     },
 	input: {
     borderColor: '#6b705c', 
+	fontFamily: 'MontserratMedium',
     borderBottomWidth: 2,
     marginLeft: 5,
     marginRight: 5,
@@ -249,3 +227,19 @@ const styles = StyleSheet.create ({
     width: 170
 	},
 })
+
+// {
+// 	selectedItem && obj[selectedItem] ?
+// 	<View>
+// 	{/* <TouchableOpacity onPress={() => console.log(obj[selectedItem].map({label}), 'selectedItem')}><Text>TEST</Text></TouchableOpacity> */}
+// 	<Text style={styles.text}>Now select your unit of measurment</Text>
+// 	<Picker
+// 			selectedValue={measurementUri}
+// 			style={styles.picker}
+// 			onValueChange={(itemValue, itemIndex) => setMeasurementUri(itemValue)}
+// 		>
+// 			{obj[selectedItem].measures.map(({label, uri}) => <Picker.Item label={label} value={uri} key={label} />)}
+// 		</Picker> 
+// </View>
+// :
+// null}

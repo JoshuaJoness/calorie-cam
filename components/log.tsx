@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { ScrollView, View, Text, AsyncStorage, Image, StyleSheet, Modal, TextInput } from 'react-native';
-import { useFonts } from 'expo-font';
 import CutomButton from './button';
 import AddItemModal from './addItemModal';
 import { store } from '../store';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const Log = () => {
   const [totalCalories, setTotalCalories] = useState(0);
@@ -117,7 +115,7 @@ const Log = () => {
             </View>
           </View>
 
-          {!showMicros ? <ScrollView style={styles.box}>    
+          <ScrollView style={styles.box}>    
             {loggedFoods?.length > 0 ? loggedFoods?.map((food,i) => <View style={{ height: 50, display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6', borderBottomWidth: 1 /*i === loggedFoods?.length - 1 ? 0 : 1 */ }} key={i}>
                 <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }} numberOfLines={1}>{food?.label}</Text>
                 {/* <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>({food?.grams} g)</Text> */}
@@ -127,42 +125,7 @@ const Log = () => {
                 <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c', textAlign: 'center' }}>{food?.fat?.quantity ? Math.round(food?.fat?.quantity) : '-'}</Text>
               </View>
             ) : null}
-          </ScrollView> : null}
-
-          {/* <TouchableOpacity style={{ alignSelf: 'center', padding: 5, borderLeftWidth: 1, borderRightWidth: 1, width: '90%' }} onPress={() => loggedFoods ? setShowMicros(!showMicros) : null}>
-            <Text style={{ ...styles.microsLabel, textDecorationLine: 'underline', textAlign: 'center' }}>{!showMicros ? 'View micros' : 'hide micros'}</Text>
-          </TouchableOpacity>  */}
-
-{/*          
-          {showMicros ?  <ScrollView>
-            {loggedFoods?.map(food => {
-              return Object.keys(food)
-                .filter(nutrient => nutrient !== 'grams' && nutrient !== 'label' && nutrient !== 'energy' && nutrient !== 'carbs' && nutrient !== 'protein' && nutrient !== 'fat' && nutrient !== 'saturated' && nutrient !== 'trans')
-                .map(nutri => {
-                  console.log(loggedFoods, '****')
-                  return <View 
-                  style={{
-                    display:'flex', 
-                    flexDirection:'row', 
-                    padding:10, 
-                    borderWidth: 1,
-                    // borderBottomWidth: i === Object.keys(totalNutrients).length - 1 ? 1 : 0,
-                    borderColor:'black', 
-                    backgroundColor: '#ffe8d6', 
-                    width: '90%', 
-                    alignSelf: 'center',
-                  }}
-                  key={nutri}
-              >
-                <View style={{ display: 'flex', flexDirection: 'row', alignContent:'space-between'}}>
-                    <Text style={{ ...styles.microsLabel, alignSelf:'flex-start' }}>{nutri}</Text>
-                    <Text style={{ ...styles.microsLabel, alignSelf:'center' }}>{food[nutri].quantity.toFixed(2) * food.grams || 0}</Text>
-                    <Text style={{ ...styles.microsLabel, alignSelf: 'flex-end' }}>{food[nutri].unit || ''}</Text>
-                </View>
-              </View>
-                })
-            }) }</ScrollView>: null}   */}
-            
+          </ScrollView>            
 
           <View style={styles.totalsBox}>
               <View style={{ display:'flex', flexDirection:'row', padding:10, borderTopWidth: 1, borderColor:'black' }}>
@@ -180,15 +143,7 @@ const Log = () => {
               <Text style={{ ...styles.label, color:'#ffe8d6', textAlign: 'center' }}>{Math.round(weight)} g</Text>
               <Text style={{ ...styles.label, color:'#ffe8d6', textAlign: 'center' }}></Text>
           </View>
-
-
-
         </View>
-{/* 
-        <TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', marginBottom: '2%' }} onPress={() => loggedFoods ? setShowMicros(!showMicros) : null}>
-            <Text style={{ ...styles.microsLabel, textDecorationLine: 'underline' }}>{!showMicros ? 'View micros' : 'hide micros'}</Text>
-        </TouchableOpacity> 
-         */}
       </View>
         <Modal
           animationType="fade"
@@ -219,7 +174,6 @@ const styles = StyleSheet.create ({
 	container:{
 		backgroundColor: '#ffe8d6',
 		height: '100%',
-		// paddingTop: '5%'
 	},
   box: {
     width: '90%',
@@ -264,11 +218,11 @@ const styles = StyleSheet.create ({
     flex: 1,
   },
     boldText: {
-        fontFamily: 'MontserratMedium',
+    fontFamily: 'MontserratMedium',
 		color: '#6b705c',
 		fontSize: 25,
-        marginTop: '5%',
-        paddingLeft: '10%',
+    marginTop: '5%',
+    paddingLeft: '10%',
 		paddingRight: '10%',
 		textAlign: 'center',
     },

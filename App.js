@@ -53,15 +53,21 @@ function App() {
 
 
   const [goal, setGoal] = useState(null);
-  AsyncStorage.getItem('goal').then(data => setGoal(data));
+  // AsyncStorage.getItem('goal').then(data => setGoal(data));
 
   useEffect(() => {
-    AsyncStorage.getItem('goal').then(data => {setGoal(data)});
+    const getData = async () => {
+      try {
+        const goal = await AsyncStorage.getItem('goal');
+        if (goal)
+          await setGoal(goal);
+      } catch (err) {
+        console.log(err);
+      }
+    } 
+
+    getData()
   }, []);
-
-
-  if (!goal)
-    return null
 
   if (!loaded)
     return null

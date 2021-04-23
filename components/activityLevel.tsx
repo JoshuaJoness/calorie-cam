@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Picker, Animated, AsyncStorage } from 'react-na
 import { useFonts } from 'expo-font'
 import Pilates from './svgs/pilates'
 import CustomButton from './button'
+import { styles } from '../styles/global';
 
 
 const ACTIVITY_LEVELS = [
@@ -103,53 +104,46 @@ const ActivityLevel = ({ navigation }) => {
 
 export default ActivityLevel
 
-const styles = StyleSheet.create ({
-	container:{
-		backgroundColor: '#ffe8d6',
-		height: '100%',
-		paddingTop: '5%'
-	},
-	imgender: {
-		height:150,
-		width:150,
-		marginLeft:'auto',
-		marginRight:'auto',
-
-	},
-	text: {
-		fontFamily: 'Pacifico',
-		color: '#6b705c',
-		fontSize: 35,
-		paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-	},
-    subText: {
-		fontFamily: 'MontserratLight',
-		color: '#6b705c',
-		fontSize: 25,
-        marginTop: '5%',
-        paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-	},
-    boldText: {
-        fontFamily: 'MontserratMedium',
-		color: '#6b705c',
-		fontSize: 25,
-        marginTop: '5%',
-        paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-    },
-	picker: {
-		backgroundColor: '#ffe8d6',
-		opacity: 1,
-        height: 45,
-        width: 200,
-        marginTop: '5%',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-		textAlign: 'center'
-	  },
-})
+// const styles = StyleSheet.create ({
+// 	container:{
+// 		backgroundColor: '#ffe8d6',
+// 		height: '100%',
+// 		paddingTop: '5%'
+// 	},
+// 	text: {
+// 		fontFamily: 'Pacifico',
+// 		color: '#6b705c',
+// 		fontSize: 35,
+// 		paddingLeft: '10%',
+// 		paddingRight: '10%',
+// 		textAlign: 'center',
+// 	},
+//     subText: {
+// 		fontFamily: 'MontserratLight',
+// 		color: '#6b705c',
+// 		fontSize: 25,
+//         marginTop: '5%',
+//         paddingLeft: '10%',
+// 		paddingRight: '10%',
+// 		textAlign: 'center',
+// 	},
+//     boldText: {
+//         fontFamily: 'MontserratMedium',
+// 		color: '#6b705c',
+// 		fontSize: 25,
+//         marginTop: '5%',
+//         paddingLeft: '10%',
+// 		paddingRight: '10%',
+// 		textAlign: 'center',
+//     },
+// 	picker: {
+// 		backgroundColor: '#ffe8d6',
+// 		opacity: 1,
+//         height: 45,
+//         width: 200,
+//         marginTop: '5%',
+//         marginLeft: 'auto',
+//         marginRight: 'auto',
+// 		textAlign: 'center'
+// 	  },
+// })

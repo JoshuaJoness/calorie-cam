@@ -6,6 +6,10 @@ import AddItemModal from './addItemModal';
 import { store } from '../store';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+// TODO correct import for AsyncStorage
+
+
+
 const Micros = () => {
     const [totalCalories, setTotalCalories] = useState(0);
     const [totalCarbs, setTotalCarbs] = useState(0);
