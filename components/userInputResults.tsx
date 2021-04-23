@@ -1,34 +1,35 @@
-import React from 'react';
-import { ScrollView, View, Text, TextInput, Picker, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, View, Text, TextInput, Alert, TouchableOpacity, StyleSheet } from 'react-native';
 
-const UserInputResults = () => {
+const UserInputResults = ({ foodQty, setFoodQty, result, totalNutrients }) => {
     
-    return (
-        <>
-            <ScrollView>
-                <View style={{ display: 'flex', flexDirection: 'row', paddingTop: '5%', paddingBottom: '5%' }}>
-                    <Text style={{ ...styles.text, textAlign: 'left' }}>Per </Text>
-                    <View>
-                        <TextInput 
-                            style={styles.input} 
-                            value={!grams ? '' :String(grams)}
-                            onFocus={() => setGrams(null)}
-                            onChangeText={grams => {
-                                const gramsToNumber = Number(grams);
-                                if (!gramsToNumber && grams !== '') {
-                                    Alert.alert('Please enter numbers only.');
-                                    setGrams(null);
-                                } else {
-                                    setGrams(gramsToNumber)
-                                }
-                            }}
-                        /> 
-                    </View>
-                    <Text style={styles.text}>grams</Text>
-                </View>
-                <Text style={{ ...styles.text, textAlign: 'left' }}>{foodLabel} contains:</Text>
+	const [showMicros, setShowMicros] = useState(false);
 
-                {totalNutrients ? 
+    const hidePlural = foodQty === '1' || !foodQty || result?.measure === 'whole';
+
+    return (
+        <View>
+				<Text style={styles.formText}>Per </Text>
+				<View>
+					<TextInput 
+						style={styles.input} 
+						value={String(foodQty)}
+						// onFocus={() => setGrams(null)}
+						onChangeText={qty => {
+							const qtyToNumber = Number(qty);
+							if (!qtyToNumber && qty !== '') {
+								Alert.alert('Please enter numbers only.');
+							} else {
+								setFoodQty(qty);
+							}
+						}}
+						// onSubmitEditing={e => console.log(e, '@@')}
+					/> 
+				</View>
+				<Text style={styles.formText}>{result.measure}{hidePlural ? '' : 's'}</Text>
+				<Text style={{ ...styles.formText ,textTransform: 'capitalize' }}>{result.food}</Text>
+				<Text style={{ ...styles.formText ,textTransform: 'capitalize' }}>contains: </Text>
+				{totalNutrients ? 
                 <>
                     <View style={{ display:'flex', flexDirection: 'row', padding:10, borderBottomWidth: 1, borderColor:'#6b705c', width: '90%', alignSelf:'center', marginTop: '5%' }} >
                         {/* <Text style={{ ...styles.label, color:'#6b705c' }}>Food</Text> */}
@@ -42,33 +43,35 @@ const UserInputResults = () => {
                 
                     <View style={{ display: 'flex', flexDirection: 'row', width: '90%', alignSelf: 'center' }}>
                         <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
-                            <Text style={styles.value}>{Math.round(totalNutrients.ENERC_KCAL?.quantity * grams) || 0}</Text>
+                            <Text style={styles.value}>{Math.round(totalNutrients.ENERC_KCAL?.quantity * foodQty) || 0}</Text>
                             <Text style={styles.value}>{totalNutrients.ENERC_KCAL.unit || ''}</Text>
                         </View>
                         <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
-                            <Text style={styles.value}>{Math.round(totalNutrients.CHOCDF?.quantity * grams) || 0}</Text>
+                            <Text style={styles.value}>{Math.round(totalNutrients.CHOCDF?.quantity * foodQty) || 0}</Text>
                             <Text style={styles.value}>{totalNutrients.CHOCDF.unit || ''}</Text>
                         </View>
                         <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
-                            <Text style={styles.value}>{Math.round(totalNutrients.PROCNT?.quantity * grams) || ''}</Text>
+                            <Text style={styles.value}>{Math.round(totalNutrients.PROCNT?.quantity * foodQty) || ''}</Text>
                             <Text style={styles.value}>{totalNutrients.PROCNT?.unit}</Text>
                         </View>
                         <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
-                            <Text style={styles.value}>{Math.round(totalNutrients.FAT?.quantity * grams) || 0}</Text>
+                            <Text style={styles.value}>{Math.round(totalNutrients.FAT?.quantity * foodQty) || 0}</Text>
                             <Text style={styles.value}>{totalNutrients.FAT.unit || ''}</Text>
                         </View>    
                     </View>
-                    </>
-                : null}
 
-                <TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', marginBottom: '2%' }} onPress={() => setShowMicros(!showMicros)}>
+					<TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', marginBottom: '2%' }} onPress={() => setShowMicros(!showMicros)}>
                     <Text style={{ ...styles.value, textDecorationLine: 'underline' }}>{!showMicros ? 'View micros' : 'hide micros'}</Text>
                 </TouchableOpacity>
 
-                {/* {showMicros ? 
-                    Object.keys(totalNutrients)
+					
+                {showMicros ? 
+				<ScrollView style={{ marginBottom: 20 }}>
+					{
+						Object.keys(totalNutrients)
                         .filter(key => key !== 'ENERC_KCAL' && key !== 'CHOCDF' && key !== 'PROCNT' && key !== 'FAT')
                         .map((key, i) => {
+							const newArrLength = Object.keys(totalNutrients).filter(key => key !== 'ENERC_KCAL' && key !== 'CHOCDF' && key !== 'PROCNT' && key !== 'FAT');
                             return (
                                 // <View style={{display:'flex', flexDirection:'row', padding:10, borderTopWidth: '1px', borderColor:'black'}}>
                                 //     <Text style={{ ...styles.label, color:'#6b705c' }}>Totals:</Text>
@@ -83,7 +86,7 @@ const UserInputResults = () => {
                                 flexDirection:'row', 
                                 padding:10, 
                                 borderWidth: 1,
-                                borderBottomWidth: i === Object.keys(totalNutrients).length - 1 ? 1 : 0,
+                                borderBottomWidth: i === newArrLength.length - 1 ? 1 : 0,
                                 borderColor:'black', 
                                 backgroundColor: '#ffe8d6', 
                                 width: '90%', 
@@ -92,55 +95,45 @@ const UserInputResults = () => {
                         >
                             <Text style={{ ...styles.value, flex: 1.5 }}>{totalNutrients[key].label}</Text>
                             <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
-                                <Text style={styles.value}>{(totalNutrients[key]?.quantity * grams).toFixed(2) || 0}</Text>
+                                <Text style={styles.value}>{(totalNutrients[key]?.quantity * foodQty).toFixed(2) || 0}</Text>
                                 <Text style={styles.value}>{totalNutrients[key]?.unit || ''}</Text>
                             </View>
                         </View>
                         )
-                    })  
-                : null}              */}
-            </ScrollView>
-        </>
+                    }) 
+					}
+				</ScrollView>
+                     
+                : null}              
+                    </>
+                : null}
+
+
+				
+			</View>
     )
 }
 
 export default UserInputResults
 
-const styles = StyleSheet.create({
-    buttonContainer: { 
-      display:'flex', 
-      flexDirection:'column', 
-      alignItems: 'flex-end',
-      marginLeft: 'auto', 
-      marginRight: 'auto',
-      marginTop: 25,
-      paddingBottom: 50, // TODO this is a temp fix for white space at bottom
-    },
-    title: {
-        fontFamily: 'Pacifico',
-		color: '#6b705c',
-		fontSize: 35,
-		paddingLeft: '10%',
-		paddingRight: '10%',
-        marginBottom: 30,
-		textAlign: 'center',
-    },
-    image: { 
-        width: '100%', 
-        height: 400, 
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        backgroundColor: '#ECECEC', 
-        borderBottomLeftRadius: 5, 
-        borderBottomRightRadius: 5, 
-        borderTopLeftRadius: 5, 
-        borderTopRightRadius: 5 },
-    container:{
-        backgroundColor: '#ffe8d6',
-        paddingTop: '5%',
-        alignItems: 'center',
-    },
-    text: {
+
+
+
+const styles = StyleSheet.create ({
+	container:{
+		backgroundColor: '#ffe8d6',
+		height: '100%',
+		paddingTop: 50,
+		display:'flex', 
+		alignItems: 'center'
+		// flexDirection:'column', 
+		// alignItems: 'flex-end',
+		// marginLeft: 'auto', 
+		// marginRight: 'auto',
+		// marginTop: 25,
+		// paddingBottom: 50, // TODO this is a temp fix for white space at bottom
+	},
+	formText: {
         fontFamily: 'MontserratMedium',
         color: '#6b705c',
         fontSize: 25,
@@ -148,30 +141,52 @@ const styles = StyleSheet.create({
         paddingRight: '10%',
         textAlign: 'center',
         fontWeight: 'bold',
+		width: '100%'
     },
-    input: {
-		backgroundColor: '#ddbea9',
-		opacity: 1,
-		borderBottomColor: '#6B705C',
-		borderBottomWidth: 2,
-		borderRadius: 4,
-        // height: 45,
-        width: 50,
-        // marginTop: '5%',
-        fontSize: 25,
-        color: '#a5a58d',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-		textAlign: 'center'
-	  },
-      label: {
-        color: '#cb997e',
-        fontWeight: 'bold',
-        flex: 1,
-      },
-      value: {
+  box: {
+    width: '90%',
+    marginLeft: 'auto', 
+    marginRight: 'auto', 
+    borderColor: 'black', 
+    borderWidth: 1, 
+    backgroundColor: '#ddbea9'
+  },
+  title: {
+    fontFamily: 'Pacifico',
+    color: '#6b705c',
+    fontSize: 35,
+    paddingLeft: '10%',
+    paddingRight: '10%',
+    marginBottom: 30,
+    textAlign: 'center',
+  },
+  label: {
+    color: '#cb997e',
+    fontWeight: 'bold',
+    flex: 1,
+  },
+    boldText: {
+        fontFamily: 'MontserratMedium',
+		color: '#6b705c',
+		fontSize: 25,
+        marginTop: '5%',
+        paddingLeft: '10%',
+		paddingRight: '10%',
+		textAlign: 'center',
+    },
+	input: {
+    borderColor: '#6b705c', 
+	fontFamily: 'MontserratMedium',
+    borderBottomWidth: 2,
+    marginLeft: 5,
+    marginRight: 5,
+    textAlign: 'center',
+    fontSize: 17,
+    width: 170
+	},
+	value: {
         color: '#6b705c',
         fontWeight: 'bold',
         marginLeft: 2,
       },
-});
+})

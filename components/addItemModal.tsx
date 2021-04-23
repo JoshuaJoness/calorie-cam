@@ -5,6 +5,7 @@ import CustomButton from './button';
 import axios from 'axios';
 import { store }  from '../store';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import UserInputResults from './userInputResults';
 
 const edamamId = '7ff1ee7e';
 const edamamKey = 'aa4824adda205d7ff601301c08816573';
@@ -130,18 +131,12 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 			setFoodToLog(nutrientObj);
 	}, [nutrientObj]);
 
+	useEffect(() => {
+		console.log(userInput, 'uInput')
+	}, [userInput])
+
 	const [selectedItem, setSelectedItem] = useState(null)
 	const [measurementUri, setMeasurementUri] = useState(null)
-
-
-	// useEffect(() => {
-	// 	console.log(foodQty, 'foodQty')
-	// 	console.log(result.measure, 'result.measure')
-	// }, [foodQty])
-
-	const hidePlural = foodQty === '1' || !foodQty || result?.measure === 'whole';
-
-	const [showMicros, setShowMicros] = useState(false);
 
     return (
 		<View style={styles.container}>	
@@ -192,116 +187,11 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 								.find(item => item.foodId === selectedItem)?.measures
 								?.map(({label, uri}) => <Picker.Item label={label} value={uri} key={label} />)}
 						</Picker> 
-				</View> : null}
-	
-
-				
+				</View> : null}			
 			</>
 			:
 			result ?
-			<View>
-				<Text style={styles.formText}>Per </Text>
-				<View>
-					<TextInput 
-						style={styles.input} 
-						value={String(foodQty)}
-						// onFocus={() => setGrams(null)}
-						onChangeText={qty => {
-							const qtyToNumber = Number(qty);
-							if (!qtyToNumber && qty !== '') {
-								Alert.alert('Please enter numbers only.');
-							} else {
-								setFoodQty(qty);
-							}
-						}}
-						// onSubmitEditing={e => console.log(e, '@@')}
-					/> 
-				</View>
-				<Text style={styles.formText}>{result.measure}{hidePlural ? '' : 's'}</Text>
-				<Text style={{ ...styles.formText ,textTransform: 'capitalize' }}>{result.food}</Text>
-				<Text style={{ ...styles.formText ,textTransform: 'capitalize' }}>contains: </Text>
-				{totalNutrients ? 
-                <>
-                    <View style={{ display:'flex', flexDirection: 'row', padding:10, borderBottomWidth: 1, borderColor:'#6b705c', width: '90%', alignSelf:'center', marginTop: '5%' }} >
-                        {/* <Text style={{ ...styles.label, color:'#6b705c' }}>Food</Text> */}
-                        <Text style={styles.label}>Calories</Text>
-                        <Text style={styles.label}>Carbs</Text>
-                        <Text style={styles.label}>Protein</Text>
-                        <Text style={styles.label}>Fat</Text>
-                    </View> 
-                
-
-                
-                    <View style={{ display: 'flex', flexDirection: 'row', width: '90%', alignSelf: 'center' }}>
-                        <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
-                            <Text style={styles.value}>{Math.round(totalNutrients.ENERC_KCAL?.quantity * foodQty) || 0}</Text>
-                            <Text style={styles.value}>{totalNutrients.ENERC_KCAL.unit || ''}</Text>
-                        </View>
-                        <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
-                            <Text style={styles.value}>{Math.round(totalNutrients.CHOCDF?.quantity * foodQty) || 0}</Text>
-                            <Text style={styles.value}>{totalNutrients.CHOCDF.unit || ''}</Text>
-                        </View>
-                        <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
-                            <Text style={styles.value}>{Math.round(totalNutrients.PROCNT?.quantity * foodQty) || ''}</Text>
-                            <Text style={styles.value}>{totalNutrients.PROCNT?.unit}</Text>
-                        </View>
-                        <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
-                            <Text style={styles.value}>{Math.round(totalNutrients.FAT?.quantity * foodQty) || 0}</Text>
-                            <Text style={styles.value}>{totalNutrients.FAT.unit || ''}</Text>
-                        </View>    
-                    </View>
-
-					<TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', marginBottom: '2%' }} onPress={() => setShowMicros(!showMicros)}>
-                    <Text style={{ ...styles.value, textDecorationLine: 'underline' }}>{!showMicros ? 'View micros' : 'hide micros'}</Text>
-                </TouchableOpacity>
-
-					
-                {showMicros ? 
-				<ScrollView style={{ marginBottom: 20 }}>
-					{
-						Object.keys(totalNutrients)
-                        .filter(key => key !== 'ENERC_KCAL' && key !== 'CHOCDF' && key !== 'PROCNT' && key !== 'FAT')
-                        .map((key, i) => {
-							const newArrLength = Object.keys(totalNutrients).filter(key => key !== 'ENERC_KCAL' && key !== 'CHOCDF' && key !== 'PROCNT' && key !== 'FAT');
-                            return (
-                                // <View style={{display:'flex', flexDirection:'row', padding:10, borderTopWidth: '1px', borderColor:'black'}}>
-                                //     <Text style={{ ...styles.label, color:'#6b705c' }}>Totals:</Text>
-                                //     <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalCalories)}</Text>
-                                //     <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalCarbs)} g</Text>
-                                //     <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalProtein)} g</Text>
-                                //     <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalFat)} g</Text>
-                                // </View>
-                        <View 
-                            style={{
-                                display:'flex', 
-                                flexDirection:'row', 
-                                padding:10, 
-                                borderWidth: 1,
-                                borderBottomWidth: i === newArrLength.length - 1 ? 1 : 0,
-                                borderColor:'black', 
-                                backgroundColor: '#ffe8d6', 
-                                width: '90%', 
-                                alignSelf: 'center',
-                            }}
-                        >
-                            <Text style={{ ...styles.value, flex: 1.5 }}>{totalNutrients[key].label}</Text>
-                            <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
-                                <Text style={styles.value}>{(totalNutrients[key]?.quantity * foodQty).toFixed(2) || 0}</Text>
-                                <Text style={styles.value}>{totalNutrients[key]?.unit || ''}</Text>
-                            </View>
-                        </View>
-                        )
-                    }) 
-					}
-				</ScrollView>
-                     
-                : null}              
-                    </>
-                : null}
-
-
-				
-			</View> : null
+			<UserInputResults foodQty={foodQty} setFoodQty={setFoodQty} result={result} totalNutrients={totalNutrients} /> : null
 			}
 		</View>
 			
@@ -309,16 +199,10 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 			<CustomButton 
 				text="CANCEL" 
 				onPress={() => {
-					// setFoodToLog(null)
-					// setUserInput(null)
-					// setSelectedItem(null)
-					// setMeasurementUri(null)
-					// navigation.navigate('Goal');
 					setModalVisible(!modalVisible)
 				}} 
 				style={{ backgroundColor: '#cb997e', padding: 10, width: 150, marginRight: 5 }}
 			/>
-
 			<CustomButton 
 				text="SUBMIT" 
 				onPress={() => {
@@ -333,11 +217,8 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 				style={{ backgroundColor: '#6b705c', padding: 10, width: 150, marginLeft: 5 }}
 				// disabled={!selectedItem && !measurementUri}
 			/>
-			
 		</View>
-		{
-				selectedItem && measurementUri && !submitted ? <Text style={{ ...styles.formText, position: 'absolute', bottom: 50 }}>Looks good, submit</Text> : null
-			} 
+		{selectedItem && measurementUri && !submitted ? <Text style={{ ...styles.formText, position: 'absolute', bottom: 50 }}>Looks good, submit</Text> : null} 
 		</View>
 
 	)
