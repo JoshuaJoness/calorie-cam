@@ -42,8 +42,8 @@ const Log = ({ navigation }) => {
       await setReqs(parsedReqs);
 
       const goal = await AsyncStorage.getItem('goal');
-      const parsedGoal = JSON.parse(goal);
-      await setGoal(parsedGoal);
+      // const parsedGoal = JSON.parse(goal);
+      await setGoal(goal);
     }
 
     getData();

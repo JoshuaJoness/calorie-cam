@@ -4,7 +4,7 @@ import { useFonts } from 'expo-font';
 import CustomButton from './button';
 import axios from 'axios';
 import { store }  from '../store';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 
 const edamamId = '7ff1ee7e';
 const edamamKey = 'aa4824adda205d7ff601301c08816573';
@@ -15,7 +15,7 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 	const [foodToLog, setFoodToLog] = useState(null);
 	const [nutrientObj, setNutrientsObj] = useState(null);
 	const [foodLabel, setFoodLabel] = useState(null);
-	const [grams, setGrams] = useState<number>(100);
+	// const [grams, setGrams] = useState<number>(100);
 	const [dailyNutrientReqs, setDailyNutrientReqs] = useState(null);
 
 	const globalState = useContext(store);
@@ -92,44 +92,38 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 			}
 		);
 
-
-		// console.log(nutrients.data, 'LOOK')
-
 		const result = nutrients.data.ingredients[0].parsed.map(({ food, foodContentsLabel, measure, quantity }) => ({ food, foodContentsLabel, measure, quantity }))[0];
 		setResult(result);
 		setFoodQty(result.quantity);
-		
-		// console.log(nutrients.data.ingredidents[0].parsed, 'NUTRIENTS')
 
-
-		// const totalDailyPercentages = nutrients.data.totalDaily;
-		// const totalNutrients = nutrients.data.totalNutrients;
-		// setDailyNutrientReqs(totalDailyPercentages);
-		// setTotalNutrients(totalNutrients);
+		const totalDailyPercentages = nutrients.data.totalDaily;
+		const totalNutrients = nutrients.data.totalNutrients;
+		setDailyNutrientReqs(totalDailyPercentages);
+		setTotalNutrients(totalNutrients);
 	}
 
-	useEffect(() => {
-		if (totalNutrients) {
-			const obj = {}
-			Object.keys(totalNutrients).forEach(nutrient => {
+	// useEffect(() => {
+	// 	if (totalNutrients) {
+	// 		const obj = {}
+	// 		Object.keys(totalNutrients).forEach(nutrient => {
 
-				obj[totalNutrients[nutrient].label.toLowerCase()] = {
-					quantity: totalNutrients[nutrient].quantity * grams, 
-					unit: totalNutrients[nutrient].unit 
-				}
-			})
+	// 			obj[totalNutrients[nutrient].label.toLowerCase()] = {
+	// 				quantity: totalNutrients[nutrient].quantity * grams, 
+	// 				unit: totalNutrients[nutrient].unit 
+	// 			}
+	// 		})
 
-			setNutrientsObj({
-				...nutrientObj,
-				...obj,
-				label: foodLabel,
-				energy: { quantity: String(Math.round(totalNutrients['ENERC_KCAL']?.quantity * grams)), unit:'kcal' } ,
-				carbs: { quantity: String(Math.round(totalNutrients['CHOCDF']?.quantity * grams)), unit: 'g' },
-				protein: { quantity: String(Math.round(totalNutrients['PROCNT']?.quantity * grams)), unit: 'g' },
-				fat: { quantity: String(Math.round(totalNutrients['FAT']?.quantity * grams)), unit: 'g' },
-			});
-		};	
-	}, [totalNutrients]);
+	// 		setNutrientsObj({
+	// 			...nutrientObj,
+	// 			...obj,
+	// 			label: foodLabel,
+	// 			energy: { quantity: String(Math.round(totalNutrients['ENERC_KCAL']?.quantity * grams)), unit:'kcal' } ,
+	// 			carbs: { quantity: String(Math.round(totalNutrients['CHOCDF']?.quantity * grams)), unit: 'g' },
+	// 			protein: { quantity: String(Math.round(totalNutrients['PROCNT']?.quantity * grams)), unit: 'g' },
+	// 			fat: { quantity: String(Math.round(totalNutrients['FAT']?.quantity * grams)), unit: 'g' },
+	// 		});
+	// 	};	
+	// }, [totalNutrients]);
 
 	useEffect(() => {
 		if (nutrientObj)
@@ -142,8 +136,12 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 
 	// useEffect(() => {
 	// 	console.log(foodQty, 'foodQty')
+	// 	console.log(result.measure, 'result.measure')
 	// }, [foodQty])
 
+	const hidePlural = foodQty === '1' || !foodQty || result?.measure === 'whole';
+
+	const [showMicros, setShowMicros] = useState(false);
 
     return (
 		<View style={styles.container}>	
@@ -219,8 +217,90 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 						// onSubmitEditing={e => console.log(e, '@@')}
 					/> 
 				</View>
-				<Text style={styles.formText}>{result.measure}</Text>
+				<Text style={styles.formText}>{result.measure}{hidePlural ? '' : 's'}</Text>
 				<Text style={{ ...styles.formText ,textTransform: 'capitalize' }}>{result.food}</Text>
+				<Text style={{ ...styles.formText ,textTransform: 'capitalize' }}>contains: </Text>
+				{totalNutrients ? 
+                <>
+                    <View style={{ display:'flex', flexDirection: 'row', padding:10, borderBottomWidth: 1, borderColor:'#6b705c', width: '90%', alignSelf:'center', marginTop: '5%' }} >
+                        {/* <Text style={{ ...styles.label, color:'#6b705c' }}>Food</Text> */}
+                        <Text style={styles.label}>Calories</Text>
+                        <Text style={styles.label}>Carbs</Text>
+                        <Text style={styles.label}>Protein</Text>
+                        <Text style={styles.label}>Fat</Text>
+                    </View> 
+                
+
+                
+                    <View style={{ display: 'flex', flexDirection: 'row', width: '90%', alignSelf: 'center' }}>
+                        <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
+                            <Text style={styles.value}>{Math.round(totalNutrients.ENERC_KCAL?.quantity * foodQty) || 0}</Text>
+                            <Text style={styles.value}>{totalNutrients.ENERC_KCAL.unit || ''}</Text>
+                        </View>
+                        <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
+                            <Text style={styles.value}>{Math.round(totalNutrients.CHOCDF?.quantity * foodQty) || 0}</Text>
+                            <Text style={styles.value}>{totalNutrients.CHOCDF.unit || ''}</Text>
+                        </View>
+                        <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
+                            <Text style={styles.value}>{Math.round(totalNutrients.PROCNT?.quantity * foodQty) || ''}</Text>
+                            <Text style={styles.value}>{totalNutrients.PROCNT?.unit}</Text>
+                        </View>
+                        <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
+                            <Text style={styles.value}>{Math.round(totalNutrients.FAT?.quantity * foodQty) || 0}</Text>
+                            <Text style={styles.value}>{totalNutrients.FAT.unit || ''}</Text>
+                        </View>    
+                    </View>
+
+					<TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', marginBottom: '2%' }} onPress={() => setShowMicros(!showMicros)}>
+                    <Text style={{ ...styles.value, textDecorationLine: 'underline' }}>{!showMicros ? 'View micros' : 'hide micros'}</Text>
+                </TouchableOpacity>
+
+					
+                {showMicros ? 
+				<ScrollView style={{ marginBottom: 20 }}>
+					{
+						Object.keys(totalNutrients)
+                        .filter(key => key !== 'ENERC_KCAL' && key !== 'CHOCDF' && key !== 'PROCNT' && key !== 'FAT')
+                        .map((key, i) => {
+							const newArrLength = Object.keys(totalNutrients).filter(key => key !== 'ENERC_KCAL' && key !== 'CHOCDF' && key !== 'PROCNT' && key !== 'FAT');
+                            return (
+                                // <View style={{display:'flex', flexDirection:'row', padding:10, borderTopWidth: '1px', borderColor:'black'}}>
+                                //     <Text style={{ ...styles.label, color:'#6b705c' }}>Totals:</Text>
+                                //     <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalCalories)}</Text>
+                                //     <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalCarbs)} g</Text>
+                                //     <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalProtein)} g</Text>
+                                //     <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalFat)} g</Text>
+                                // </View>
+                        <View 
+                            style={{
+                                display:'flex', 
+                                flexDirection:'row', 
+                                padding:10, 
+                                borderWidth: 1,
+                                borderBottomWidth: i === newArrLength.length - 1 ? 1 : 0,
+                                borderColor:'black', 
+                                backgroundColor: '#ffe8d6', 
+                                width: '90%', 
+                                alignSelf: 'center',
+                            }}
+                        >
+                            <Text style={{ ...styles.value, flex: 1.5 }}>{totalNutrients[key].label}</Text>
+                            <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
+                                <Text style={styles.value}>{(totalNutrients[key]?.quantity * foodQty).toFixed(2) || 0}</Text>
+                                <Text style={styles.value}>{totalNutrients[key]?.unit || ''}</Text>
+                            </View>
+                        </View>
+                        )
+                    }) 
+					}
+				</ScrollView>
+                     
+                : null}              
+                    </>
+                : null}
+
+
+				
 			</View> : null
 			}
 		</View>
@@ -330,4 +410,9 @@ const styles = StyleSheet.create ({
     fontSize: 17,
     width: 170
 	},
+	value: {
+        color: '#6b705c',
+        fontWeight: 'bold',
+        marginLeft: 2,
+      },
 })

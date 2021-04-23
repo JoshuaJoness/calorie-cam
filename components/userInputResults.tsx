@@ -29,6 +29,7 @@ const UserInputResults = () => {
                 <Text style={{ ...styles.text, textAlign: 'left' }}>{foodLabel} contains:</Text>
 
                 {totalNutrients ? 
+                <>
                     <View style={{ display:'flex', flexDirection: 'row', padding:10, borderBottomWidth: 1, borderColor:'#6b705c', width: '90%', alignSelf:'center', marginTop: '5%' }} >
                         {/* <Text style={{ ...styles.label, color:'#6b705c' }}>Food</Text> */}
                         <Text style={styles.label}>Calories</Text>
@@ -36,9 +37,9 @@ const UserInputResults = () => {
                         <Text style={styles.label}>Protein</Text>
                         <Text style={styles.label}>Fat</Text>
                     </View> 
-                : null}
+                
 
-                {totalNutrients ? 
+                
                     <View style={{ display: 'flex', flexDirection: 'row', width: '90%', alignSelf: 'center' }}>
                         <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
                             <Text style={styles.value}>{Math.round(totalNutrients.ENERC_KCAL?.quantity * grams) || 0}</Text>
@@ -57,6 +58,7 @@ const UserInputResults = () => {
                             <Text style={styles.value}>{totalNutrients.FAT.unit || ''}</Text>
                         </View>    
                     </View>
+                    </>
                 : null}
 
                 <TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', marginBottom: '2%' }} onPress={() => setShowMicros(!showMicros)}>
