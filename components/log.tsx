@@ -157,7 +157,6 @@ const Log = ({ navigation }) => {
             setModalVisible={setModalVisible}
             setFoodToLog={setFoodToLog}
             foodToLog={foodToLog}
-            navigation={navigation}
           />
         </Modal>
 

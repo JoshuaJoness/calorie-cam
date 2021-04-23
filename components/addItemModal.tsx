@@ -9,7 +9,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 const edamamId = '7ff1ee7e';
 const edamamKey = 'aa4824adda205d7ff601301c08816573';
 
-const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
+const AddItemModal = ({ setModalVisible, modalVisible }) => {
 	const [userInput, setUserInput] = useState(null);
 	const [totalNutrients, setTotalNutrients] = useState(null);
 	const [foodToLog, setFoodToLog] = useState(null);
@@ -20,8 +20,6 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
 
 	const globalState = useContext(store);
 	const { dispatch } = globalState;
-
-	console.log(navigation, 'navigation')
 
 	const addFoodToLog = async () => {
         try {
@@ -48,6 +46,8 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
             const data = await axios.get(`https://api.edamam.com/api/food-database/parser?app_id=${edamamId}&app_key=${edamamKey}&ingr=${userInput}&nutrition-type=logging`);
 			// data?.data?.hints[0]?.food?.measures?.map(m => console.log(m.label, m.uri))
 			// data?.data?.hints?.forEach(h => console.log(h?.food))
+
+			// console.log(data.data, 'DATa')
 			const obj = {};
 			data?.data?.hints.forEach(hint => obj[hint.food.label] = { foodId: hint.food.foodId, measures: hint.measures, nutrients: hint.food.nutrients });
 			// console.log(data?.data?.hints, '*****')
@@ -64,34 +64,43 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
         }
     };
 
+	// useEffect(() => {
+	// 	console.log(obj, 'OBJ')
+	// }, [obj])
+
+
+
+// I GET THE TOTAL DAILY WITH MEASUREMENT
+
 	const [submitted, setSubmitted] = useState(false);
+	const [result, setResult] = useState(null);
+	const [foodQty, setFoodQty] = useState(null);
 
 	const getSelectedItemsNutrients = async () => {
-		// setSubmitted(true);
-		// console.log(selectedItem, "ITEM")
+		setSubmitted(true);
 
-		// console.log(Object.keys(obj).map(key => obj[key]).find(item => item.foodId === selectedItem), "OBJ")
-
-		console.log(measurementUri, 'measurementUri')
-
-
-		// const nutrients = await axios.post(
-		// 	`https://api.edamam.com/api/food-database/v2/nutrients?app_id=${edamamId}&app_key=${edamamKey}`,
-		// 	{
-		// 		"ingredients": [
-		// 			{
-		// 				"quantity": 1,
-		// 				"measureURI": "http://www.edamam.com/ontologies/edamam.owl#Measure_gram",
-		// 				"foodId": selectedItem
-		// 			}
-		// 			]
-		// 	}
-		// )
+		const nutrients = await axios.post(
+			`https://api.edamam.com/api/food-database/v2/nutrients?app_id=${edamamId}&app_key=${edamamKey}`,
+			{
+				"ingredients": [
+					{
+						"quantity": 1,
+						"measureURI": measurementUri,
+						"foodId": selectedItem
+					}
+					]
+			}
+		);
 
 
-			// console.log(nutrients, 'NUTRIENTS')
-		// 	// split this method,
-		// 	// call nutrients ONLY after best option has been selected .. .
+		// console.log(nutrients.data, 'LOOK')
+
+		const result = nutrients.data.ingredients[0].parsed.map(({ food, foodContentsLabel, measure, quantity }) => ({ food, foodContentsLabel, measure, quantity }))[0];
+		setResult(result);
+		setFoodQty(result.quantity);
+		
+		// console.log(nutrients.data.ingredidents[0].parsed, 'NUTRIENTS')
+
 
 		// const totalDailyPercentages = nutrients.data.totalDaily;
 		// const totalNutrients = nutrients.data.totalNutrients;
@@ -129,6 +138,12 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
 
 	const [selectedItem, setSelectedItem] = useState(null)
 	const [measurementUri, setMeasurementUri] = useState(null)
+
+
+	// useEffect(() => {
+	// 	console.log(foodQty, 'foodQty')
+	// }, [foodQty])
+
 
     return (
 		<View style={styles.container}>	
@@ -176,7 +191,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
 							{Object
 								.keys(obj)
 								.map(key => obj[key])
-								.find(item => item.foodId === selectedItem).measures
+								.find(item => item.foodId === selectedItem)?.measures
 								?.map(({label, uri}) => <Picker.Item label={label} value={uri} key={label} />)}
 						</Picker> 
 				</View> : null}
@@ -185,9 +200,28 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
 				
 			</>
 			:
+			result ?
 			<View>
-				<Text>submitted</Text>
-			</View>
+				<Text style={styles.formText}>Per </Text>
+				<View>
+					<TextInput 
+						style={styles.input} 
+						value={String(foodQty)}
+						// onFocus={() => setGrams(null)}
+						onChangeText={qty => {
+							const qtyToNumber = Number(qty);
+							if (!qtyToNumber && qty !== '') {
+								Alert.alert('Please enter numbers only.');
+							} else {
+								setFoodQty(qty);
+							}
+						}}
+						// onSubmitEditing={e => console.log(e, '@@')}
+					/> 
+				</View>
+				<Text style={styles.formText}>{result.measure}</Text>
+				<Text style={{ ...styles.formText ,textTransform: 'capitalize' }}>{result.food}</Text>
+			</View> : null
 			}
 		</View>
 			
@@ -222,7 +256,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
 			
 		</View>
 		{
-				selectedItem && measurementUri ? <Text style={{ ...styles.formText, position: 'absolute', bottom: 50 }}>Looks good, submit</Text> : null
+				selectedItem && measurementUri && !submitted ? <Text style={{ ...styles.formText, position: 'absolute', bottom: 50 }}>Looks good, submit</Text> : null
 			} 
 		</View>
 
@@ -297,4 +331,3 @@ const styles = StyleSheet.create ({
     width: 170
 	},
 })
-
