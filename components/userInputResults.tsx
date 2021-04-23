@@ -9,62 +9,59 @@ const UserInputResults = ({ foodQty, setFoodQty, result, totalNutrients }) => {
 
     return (
         <View>
-				<Text style={styles.formText}>Per </Text>
-				<View>
-					<TextInput 
-						style={styles.input} 
-						value={String(foodQty)}
-						// onFocus={() => setGrams(null)}
-						onChangeText={qty => {
-							const qtyToNumber = Number(qty);
-							if (!qtyToNumber && qty !== '') {
-								Alert.alert('Please enter numbers only.');
-							} else {
-								setFoodQty(qty);
-							}
-						}}
-						// onSubmitEditing={e => console.log(e, '@@')}
-					/> 
-				</View>
-				<Text style={styles.formText}>{result.measure}{hidePlural ? '' : 's'}</Text>
-				<Text style={{ ...styles.formText ,textTransform: 'capitalize' }}>{result.food}</Text>
-				<Text style={{ ...styles.formText ,textTransform: 'capitalize' }}>contains: </Text>
-				{totalNutrients ? 
-                <>
-                    <View style={{ display:'flex', flexDirection: 'row', padding:10, borderBottomWidth: 1, borderColor:'#6b705c', width: '90%', alignSelf:'center', marginTop: '5%' }} >
-                        {/* <Text style={{ ...styles.label, color:'#6b705c' }}>Food</Text> */}
-                        <Text style={styles.label}>Calories</Text>
-                        <Text style={styles.label}>Carbs</Text>
-                        <Text style={styles.label}>Protein</Text>
-                        <Text style={styles.label}>Fat</Text>
-                    </View> 
-                
-
-                
-                    <View style={{ display: 'flex', flexDirection: 'row', width: '90%', alignSelf: 'center' }}>
-                        <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
-                            <Text style={styles.value}>{Math.round(totalNutrients.ENERC_KCAL?.quantity * foodQty) || 0}</Text>
-                            <Text style={styles.value}>{totalNutrients.ENERC_KCAL.unit || ''}</Text>
-                        </View>
-                        <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
-                            <Text style={styles.value}>{Math.round(totalNutrients.CHOCDF?.quantity * foodQty) || 0}</Text>
-                            <Text style={styles.value}>{totalNutrients.CHOCDF.unit || ''}</Text>
-                        </View>
-                        <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
-                            <Text style={styles.value}>{Math.round(totalNutrients.PROCNT?.quantity * foodQty) || ''}</Text>
-                            <Text style={styles.value}>{totalNutrients.PROCNT?.unit}</Text>
-                        </View>
-                        <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
-                            <Text style={styles.value}>{Math.round(totalNutrients.FAT?.quantity * foodQty) || 0}</Text>
-                            <Text style={styles.value}>{totalNutrients.FAT.unit || ''}</Text>
-                        </View>    
+            <View style={{ display: 'flex', flexDirection: 'row', marginTop: 20, width: '80%', alignSelf: 'center' }}>
+                <Text style={styles.formTextDisplay}>Per </Text>
+                <TextInput 
+                    style={{ ...styles.input, width: '25%', fontSize: 25, fontFamily: 'MontserratMedium' }} 
+                    value={String(foodQty)}
+                    // onFocus={() => setGrams(null)}
+                    onChangeText={qty => {
+                        const qtyToNumber = Number(qty);
+                        if (!qtyToNumber && qty !== '') {
+                            Alert.alert('Please enter numbers only.');
+                        } else {
+                            setFoodQty(qty);
+                        }
+                    }}
+                /> 
+                <Text style={styles.formTextDisplay}>{result.measure}(s)</Text>
+            </View>
+            
+            <Text style={{ ...styles.formTextDisplay ,textTransform: 'capitalize', marginTop: 40, marginBottom: 30, width: '80%', alignSelf: 'center' }}>{result.food}</Text>
+            
+            {totalNutrients ? 
+            <>
+                <View style={{ display:'flex', flexDirection: 'row', padding:10, borderBottomWidth: 1, borderColor:'#6b705c', width: '90%', alignSelf:'center', marginTop: '5%' }} >
+                    {/* <Text style={{ ...styles.label, color:'#6b705c' }}>Food</Text> */}
+                    <Text style={styles.label}>Calories</Text>
+                    <Text style={styles.label}>Carbs</Text>
+                    <Text style={styles.label}>Protein</Text>
+                    <Text style={styles.label}>Fat</Text>
+                </View> 
+            
+                <View style={{ display: 'flex', flexDirection: 'row', width: '90%', alignSelf: 'center' }}>
+                    <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
+                        <Text style={styles.value}>{Math.round(totalNutrients.ENERC_KCAL?.quantity * foodQty) || 0}</Text>
+                        <Text style={styles.value}>{totalNutrients.ENERC_KCAL.unit || ''}</Text>
                     </View>
+                    <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
+                        <Text style={styles.value}>{Math.round(totalNutrients.CHOCDF?.quantity * foodQty) || 0}</Text>
+                        <Text style={styles.value}>{totalNutrients.CHOCDF.unit || ''}</Text>
+                    </View>
+                    <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
+                        <Text style={styles.value}>{Math.round(totalNutrients.PROCNT?.quantity * foodQty) || ''}</Text>
+                        <Text style={styles.value}>{totalNutrients.PROCNT?.unit}</Text>
+                    </View>
+                    <View style={{ margin:10, flex: 1, display: 'flex', flexDirection: 'row' }}>
+                        <Text style={styles.value}>{Math.round(totalNutrients.FAT?.quantity * foodQty) || 0}</Text>
+                        <Text style={styles.value}>{totalNutrients.FAT.unit || ''}</Text>
+                    </View>    
+                </View>
 
-					<TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', marginBottom: '2%' }} onPress={() => setShowMicros(!showMicros)}>
+                <TouchableOpacity style={{ alignSelf: 'center', marginTop: '5%', marginBottom: '2%' }} onPress={() => setShowMicros(!showMicros)}>
                     <Text style={{ ...styles.value, textDecorationLine: 'underline' }}>{!showMicros ? 'View micros' : 'hide micros'}</Text>
                 </TouchableOpacity>
-
-					
+			
                 {showMicros ? 
 				<ScrollView style={{ marginBottom: 20 }}>
 					{
@@ -101,16 +98,10 @@ const UserInputResults = ({ foodQty, setFoodQty, result, totalNutrients }) => {
                         </View>
                         )
                     }) 
-					}
-				</ScrollView>
-                     
-                : null}              
-                    </>
-                : null}
-
-
-				
-			</View>
+				}
+				</ScrollView> : null}              
+            </> : null}		
+		</View>
     )
 }
 
@@ -142,6 +133,15 @@ const styles = StyleSheet.create ({
         textAlign: 'center',
         fontWeight: 'bold',
 		width: '100%'
+    },
+    formTextDisplay: {
+        fontFamily: 'MontserratMedium',
+        color: '#6b705c',
+        fontSize: 25,
+        paddingLeft: '10%',
+        paddingRight: '10%',
+        textAlign: 'center',
+        fontWeight: 'bold',
     },
   box: {
     width: '90%',

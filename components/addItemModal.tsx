@@ -203,6 +203,7 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 				}} 
 				style={{ backgroundColor: '#cb997e', padding: 10, width: 150, marginRight: 5 }}
 			/>
+			{!submitted ? 
 			<CustomButton 
 				text="SUBMIT" 
 				onPress={() => {
@@ -217,6 +218,22 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 				style={{ backgroundColor: '#6b705c', padding: 10, width: 150, marginLeft: 5 }}
 				// disabled={!selectedItem && !measurementUri}
 			/>
+			:
+			<CustomButton 
+				text="LOG ITEM" 
+				onPress={() => {
+					if (!selectedItem) {
+						Alert.alert('Please select an item from the picker');
+					} else if (!measurementUri) {
+						Alert.alert('Please select a unit of measurement');
+					} else {
+						getSelectedItemsNutrients();
+					}
+				}} 
+				style={{ backgroundColor: '#6b705c', padding: 10, width: 150, marginLeft: 5 }}
+				// disabled={!selectedItem && !measurementUri}
+			/>
+			}
 		</View>
 		{selectedItem && measurementUri && !submitted ? <Text style={{ ...styles.formText, position: 'absolute', bottom: 50 }}>Looks good, submit</Text> : null} 
 		</View>
