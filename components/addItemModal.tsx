@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, AsyncStorage, StyleSheet, Modal, TextInput, Alert, Picker } from 'react-native';
 import { useFonts } from 'expo-font';
-import CutomButton from './button';
+import CustomButton from './button';
 import axios from 'axios';
 import { store }  from '../store';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -21,6 +21,8 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
 	const globalState = useContext(store);
 	const { dispatch } = globalState;
 
+	console.log(navigation, 'navigation')
+
 	const addFoodToLog = async () => {
         try {
             let foods = await AsyncStorage.getItem('foods') || '[]';
@@ -38,7 +40,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
     };
 
 
-	const [obj, setObj] = useState({default:{}});
+	const [obj, setObj] = useState(null);
 	const getInitialFoodOptions = async (userInput) => {
         try {
             // TODO implement 'exact' match
@@ -62,10 +64,17 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
         }
     };
 
-	const getSelectedItemsNutrients = async () => {
-		console.log(selectedItem, "ITEM")
+	const [submitted, setSubmitted] = useState(false);
 
-		console.log(obj, "OBJ")
+	const getSelectedItemsNutrients = async () => {
+		// setSubmitted(true);
+		// console.log(selectedItem, "ITEM")
+
+		// console.log(Object.keys(obj).map(key => obj[key]).find(item => item.foodId === selectedItem), "OBJ")
+
+		console.log(measurementUri, 'measurementUri')
+
+
 		// const nutrients = await axios.post(
 		// 	`https://api.edamam.com/api/food-database/v2/nutrients?app_id=${edamamId}&app_key=${edamamKey}`,
 		// 	{
@@ -73,14 +82,14 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
 		// 			{
 		// 				"quantity": 1,
 		// 				"measureURI": "http://www.edamam.com/ontologies/edamam.owl#Measure_gram",
-		// 				"foodId": foodId
+		// 				"foodId": selectedItem
 		// 			}
 		// 			]
 		// 	}
 		// )
 
 
-		// 	// console.log(nutrients, 'NUTRIENTS')
+			// console.log(nutrients, 'NUTRIENTS')
 		// 	// split this method,
 		// 	// call nutrients ONLY after best option has been selected .. .
 
@@ -122,9 +131,12 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
 	const [measurementUri, setMeasurementUri] = useState(null)
 
     return (
-		<View style={styles.container}>
-			<View style={{ backgroundColor:'#ddbea9', width: '95%', height: 600, marginTop: 75, alignItems: 'center', paddingTop: 20 }}>
-				<Text style={styles.text}>Enter food below</Text>
+		<View style={styles.container}>	
+			<View style={{ backgroundColor:'#ddbea9', width: '95%', height: 650, marginTop: 5, alignItems: 'center', paddingTop: 20 }}>
+			{
+			!submitted ?
+			<>
+				<Text style={styles.formText}>Enter food below</Text>
 				<TextInput 
 					style={{ ...styles.input, marginTop: 50, fontSize: 25 }} 
 					value={userInput} 	
@@ -135,26 +147,83 @@ const AddItemModal = ({ setModalVisible, modalVisible, navigation }) => {
 					}}
 					onSubmitEditing={() => getInitialFoodOptions(userInput)}
 				/>
-				{
-				userInput ? 
-				<View style={{ marginTop: 75 }}>
-					<Text style={styles.text}>Select best match</Text>
+
+				{/* best match picker */}
+				{userInput && obj ? 
+				<View style={{ marginTop: 50 }}>
+					<Text style={styles.formText}>Select best match</Text>
 					<Picker
 						selectedValue={selectedItem}
-						style={styles.picker}
+						// style={{ height: 40 }}
+						itemStyle={{ height: 105, width: '100%', alignSelf: 'center' }}
 						onValueChange={(itemValue, itemIndex) => setSelectedItem(itemValue)}
 					>
 						{Object.keys(obj).map(key => <Picker.Item label={key} value={obj[key].foodId} key={key} />)}
 					</Picker> 
 				</View>
-				:
-				null
-			}
+				: null}
 
-			<CutomButton text="SUBMIT" onPress={() => getSelectedItemsNutrients()} style={{ backgroundColor: '#6b705c', padding: 10, width: 150 }} />
+				{/* measurement picker */}
+				{selectedItem ?
+				<View style={{ marginTop: 50 }}>
+					<Text style={styles.formText}>Select unit of measurment</Text>
+					<Picker
+							selectedValue={measurementUri}
+							// style={{ height: 40}}
+							itemStyle={{ height: 105, width: '90%', alignSelf: 'center' }}
+							onValueChange={(itemValue, itemIndex) => setMeasurementUri(itemValue)}
+						>
+							{Object
+								.keys(obj)
+								.map(key => obj[key])
+								.find(item => item.foodId === selectedItem).measures
+								?.map(({label, uri}) => <Picker.Item label={label} value={uri} key={label} />)}
+						</Picker> 
+				</View> : null}
+	
+
+				
+			</>
+			:
+			<View>
+				<Text>submitted</Text>
 			</View>
+			}
+		</View>
 			
-		
+		<View style={{ display: 'flex', flexDirection: 'row', marginTop: 20 }}>
+			<CustomButton 
+				text="CANCEL" 
+				onPress={() => {
+					// setFoodToLog(null)
+					// setUserInput(null)
+					// setSelectedItem(null)
+					// setMeasurementUri(null)
+					// navigation.navigate('Goal');
+					setModalVisible(!modalVisible)
+				}} 
+				style={{ backgroundColor: '#cb997e', padding: 10, width: 150, marginRight: 5 }}
+			/>
+
+			<CustomButton 
+				text="SUBMIT" 
+				onPress={() => {
+					if (!selectedItem) {
+						Alert.alert('Please select an item from the picker');
+					} else if (!measurementUri) {
+						Alert.alert('Please select a unit of measurement');
+					} else {
+						getSelectedItemsNutrients();
+					}
+				}} 
+				style={{ backgroundColor: '#6b705c', padding: 10, width: 150, marginLeft: 5 }}
+				// disabled={!selectedItem && !measurementUri}
+			/>
+			
+		</View>
+		{
+				selectedItem && measurementUri ? <Text style={{ ...styles.formText, position: 'absolute', bottom: 50 }}>Looks good, submit</Text> : null
+			} 
 		</View>
 
 	)
@@ -176,7 +245,7 @@ const styles = StyleSheet.create ({
 		// marginTop: 25,
 		// paddingBottom: 50, // TODO this is a temp fix for white space at bottom
 	},
-	text: {
+	formText: {
         fontFamily: 'MontserratMedium',
         color: '#6b705c',
         fontSize: 25,
@@ -184,6 +253,7 @@ const styles = StyleSheet.create ({
         paddingRight: '10%',
         textAlign: 'center',
         fontWeight: 'bold',
+		width: '100%'
     },
   box: {
     width: '90%',
@@ -228,18 +298,3 @@ const styles = StyleSheet.create ({
 	},
 })
 
-// {
-// 	selectedItem && obj[selectedItem] ?
-// 	<View>
-// 	{/* <TouchableOpacity onPress={() => console.log(obj[selectedItem].map({label}), 'selectedItem')}><Text>TEST</Text></TouchableOpacity> */}
-// 	<Text style={styles.text}>Now select your unit of measurment</Text>
-// 	<Picker
-// 			selectedValue={measurementUri}
-// 			style={styles.picker}
-// 			onValueChange={(itemValue, itemIndex) => setMeasurementUri(itemValue)}
-// 		>
-// 			{obj[selectedItem].measures.map(({label, uri}) => <Picker.Item label={label} value={uri} key={label} />)}
-// 		</Picker> 
-// </View>
-// :
-// null}

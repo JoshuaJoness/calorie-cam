@@ -12,7 +12,7 @@ interface IProps {
     style?: any;
 }
 
-const CutomButton = ({ text, onPress, disabled, style } : IProps) => {
+const CustomButton = ({ text, onPress, disabled, style } : IProps) => {
     const [sound, setSound] = useState()
 
 	const playSound = async () => {
@@ -20,6 +20,14 @@ const CutomButton = ({ text, onPress, disabled, style } : IProps) => {
 		// setSound(sound)
 		await sound.playAsync() 
 	}
+
+    // if (disabled) {
+    //     return <TouchableHighlight
+    //     style={style ? { ...styles.button, ...style, backgroundColor: '#ddbe89' } : styles.button}
+    //     >
+    //         <Text style={styles.text}>{text}</Text>
+    //     </TouchableHighlight>
+    // }
 
     return (
         <TouchableHighlight 
@@ -29,7 +37,7 @@ const CutomButton = ({ text, onPress, disabled, style } : IProps) => {
                 playSound();
                 onPress();
             }}
-            disabled={disabled}
+            // disabled={disabled}
         >
             <Text style={styles.text}>{text}</Text>
         </TouchableHighlight> 
@@ -57,4 +65,4 @@ const styles = StyleSheet.create ({
     }
 })
 
-export default CutomButton
+export default CustomButton

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { ScrollView, View, Text, AsyncStorage, Image, StyleSheet, Modal, TextInput } from 'react-native';
-import CutomButton from './button';
+import CustomButton from './button';
 import AddItemModal from './addItemModal';
 import { store } from '../store';
 
-const Log = () => {
+const Log = ({ navigation }) => {
   const [totalCalories, setTotalCalories] = useState(0);
   const [totalCarbs, setTotalCarbs] = useState(0);
   const [totalProtein, setTotalProtein] = useState(0);
@@ -157,12 +157,13 @@ const Log = () => {
             setModalVisible={setModalVisible}
             setFoodToLog={setFoodToLog}
             foodToLog={foodToLog}
+            navigation={navigation}
           />
         </Modal>
 
         <View style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto', marginRight: 'auto', padding: 10, marginTop: 30  }}>
-            <CutomButton text='Log Item' onPress={() => setModalVisible(!modalVisible)} style={{ width: 100, height: 30, backgroundColor: '#a5a58d', marginRight: 5 }} />
-            <CutomButton text='Clear Log' onPress={clearLog} style={{ width: 100, height: 30, marginLeft: 5 }} />
+            <CustomButton text='Log Item' onPress={() => setModalVisible(!modalVisible)} style={{ width: 100, height: 30, backgroundColor: '#a5a58d', marginRight: 5 }} />
+            <CustomButton text='Clear Log' onPress={clearLog} style={{ width: 100, height: 30, marginLeft: 5 }} />
         </View>
     </View>
     )

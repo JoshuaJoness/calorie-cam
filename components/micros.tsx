@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { ScrollView, View, Text, AsyncStorage, Image, StyleSheet, Modal, TextInput } from 'react-native';
 import { useFonts } from 'expo-font';
-import CutomButton from './button';
+import CustomButton from './button';
 import AddItemModal from './addItemModal';
 import { store } from '../store';
 import { TouchableOpacity } from 'react-native-gesture-handler';
