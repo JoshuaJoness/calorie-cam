@@ -32,6 +32,7 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
         try {
             let foods = await AsyncStorage.getItem('foods') || '[]';
             foods = JSON.parse(foods);
+			console.log(foodToLog, 'PRIOR to setting in local')
             foods.push(foodToLog);
             await AsyncStorage.setItem('foods', JSON.stringify(foods));
 			await AsyncStorage.setItem('dailyReqs', JSON.stringify(dailyNutrientReqs));
@@ -111,8 +112,18 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 			const label = Object.keys(obj)[selectedItemIndex]
 			const measureUnit = measurementUri.split('_')[1];
 			const newNutrientObj = {}
-			Object.keys(totalNutrients).forEach(nutrient => totalNutrients[nutrient].quantity = totalNutrients[nutrient].quantity *= foodQty);
-			const foodToLog = { ...totalNutrients, label, quantity: foodQty, measureUnit };
+			// Object.keys(totalNutrients).forEach(nutrient => totalNutrients[nutrient].quantity = totalNutrients[nutrient].quantity *= foodQty);
+
+			// TODO HERE , sorting micronutirnet alphabetically AND NOW trying to display correctly as well
+			const mappedNutrients = {};
+			Object.keys(totalNutrients).forEach(nutrient => {
+				mappedNutrients[totalNutrients[nutrient].label] = {
+					quantity: totalNutrients[nutrient].quantity * foodQty,
+					unit: totalNutrients[nutrient].unit,
+				}
+			});
+
+			const foodToLog = { ...mappedNutrients, label, quantity: foodQty, measureUnit };
 			setFoodToLog(foodToLog);
 		}
 	}, [selectedItem, measurementUri, totalNutrients, selectedItemIndex, foodQty]);

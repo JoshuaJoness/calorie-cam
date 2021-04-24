@@ -86,7 +86,7 @@ const UserInputResults = ({ foodQty, setFoodQty, result, totalNutrients }) => {
                                 >
                                     <Text style={{ ...styles.value, flex: 1.5 }}>{totalNutrients[key].label}</Text>
                                     <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
-                                        <Text style={styles.value}>{(totalNutrients[key]?.quantity).toFixed(2) || 0}</Text>
+                                        <Text style={styles.value}>{(totalNutrients[key]?.quantity * foodQty).toFixed(2) || 0}</Text>
                                         <Text style={styles.value}>{totalNutrients[key]?.unit || ''}</Text>
                                     </View>
                                 </View>

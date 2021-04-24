@@ -64,6 +64,8 @@ const Micros = () => {
           }
         })
 
+        // console.log(newObj, 'NEW OBJ')
+
         setObj(newObj);
     }, [loggedFoods]);
 
@@ -89,7 +91,7 @@ const Micros = () => {
             {obj ? Object.keys(obj)
                 .filter(nutrient => nutrient !== 'ENERC_KCAL' && nutrient !== 'CHOCDF' && nutrient !== 'PROCNT' && nutrient !== 'FAT' && obj[nutrient].label)
                 .map((nutri,i) => {
-                  console.log(nutri, 'NUTRI')
+                  // console.log(nutri, 'NUTRI')
                   // console.log(obj, 'OBJ')
                   // console.log(obj[nutri].label, 'LOOK')
                     return (
