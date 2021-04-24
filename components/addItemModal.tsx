@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, AsyncStorage, StyleSheet, Modal, TextInput, Alert, Picker } from 'react-native';
-import { useFonts } from 'expo-font';
 import CustomButton from './button';
 import axios from 'axios';
 import { store }  from '../store';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import UserInputResults from './userInputResults';
 
 const edamamId = '7ff1ee7e';
@@ -14,17 +12,14 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 	const [userInput, setUserInput] = useState(null);
 	const [totalNutrients, setTotalNutrients] = useState(null);
 	const [foodToLog, setFoodToLog] = useState(null);
-	// const [nutrientObj, setNutrientsObj] = useState(null);
-	const [foodLabel, setFoodLabel] = useState(null);
 	const [dailyNutrientReqs, setDailyNutrientReqs] = useState(null);
-
 	const [submitted, setSubmitted] = useState(false);
 	const [result, setResult] = useState(null);
 	const [foodQty, setFoodQty] = useState(null);
 	const [selectedItem, setSelectedItem] = useState(null);
 	const [measurementUri, setMeasurementUri] = useState(null);
 	const [obj, setObj] = useState(null);
-
+	const [selectedItemIndex, setSelectedItemIndex] = useState(null);
 	const globalState = useContext(store);
 	const { dispatch } = globalState;
 
@@ -32,7 +27,6 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
         try {
             let foods = await AsyncStorage.getItem('foods') || '[]';
             foods = JSON.parse(foods);
-			console.log(foodToLog, 'PRIOR to setting in local')
             foods.push(foodToLog);
             await AsyncStorage.setItem('foods', JSON.stringify(foods));
 			await AsyncStorage.setItem('dailyReqs', JSON.stringify(dailyNutrientReqs));
@@ -80,52 +74,23 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 		const totalNutrients = nutrients.data.totalNutrients;
 		setDailyNutrientReqs(totalDailyPercentages);
 		setTotalNutrients(totalNutrients);
-	}
-
-	// useEffect(() => {
-	// 	if (totalNutrients) {
-	// 		const obj = {}
-	// 		Object.keys(totalNutrients).forEach(nutrient => {
-
-	// 			obj[totalNutrients[nutrient].label.toLowerCase()] = {
-	// 				quantity: totalNutrients[nutrient].quantity * grams, 
-	// 				unit: totalNutrients[nutrient].unit 
-	// 			}
-	// 		})
-
-	// 		setNutrientsObj({
-	// 			...nutrientObj,
-	// 			...obj,
-	// 			label: foodLabel,
-	// 			energy: { quantity: String(Math.round(totalNutrients['ENERC_KCAL']?.quantity * grams)), unit:'kcal' } ,
-	// 			carbs: { quantity: String(Math.round(totalNutrients['CHOCDF']?.quantity * grams)), unit: 'g' },
-	// 			protein: { quantity: String(Math.round(totalNutrients['PROCNT']?.quantity * grams)), unit: 'g' },
-	// 			fat: { quantity: String(Math.round(totalNutrients['FAT']?.quantity * grams)), unit: 'g' },
-	// 		});
-	// 	};	
-	// }, [totalNutrients]);
-
-	const [selectedItemIndex, setSelectedItemIndex] = useState(null);
+	};
 
 	useEffect(() => {
-		if (obj && selectedItemIndex && foodQty && measurementUri && totalNutrients) {
-			const label = Object.keys(obj)[selectedItemIndex]
-			const measureUnit = measurementUri.split('_')[1];
-			const newNutrientObj = {}
-			// Object.keys(totalNutrients).forEach(nutrient => totalNutrients[nutrient].quantity = totalNutrients[nutrient].quantity *= foodQty);
+		const label = obj ? Object.keys(obj)[selectedItemIndex] : null;
+		const measureUnit = measurementUri?.split('_')[1];
+		const mappedNutrients = {};
 
-			// TODO HERE , sorting micronutirnet alphabetically AND NOW trying to display correctly as well
-			const mappedNutrients = {};
-			Object.keys(totalNutrients).forEach(nutrient => {
+		if (totalNutrients){
+			Object.keys(totalNutrients)?.forEach(nutrient => {
 				mappedNutrients[totalNutrients[nutrient].label] = {
 					quantity: totalNutrients[nutrient].quantity * foodQty,
 					unit: totalNutrients[nutrient].unit,
 				}
-			});
+			});}
 
-			const foodToLog = { ...mappedNutrients, label, quantity: foodQty, measureUnit };
-			setFoodToLog(foodToLog);
-		}
+		const foodToLog = { ...mappedNutrients, label, quantity: foodQty, measureUnit };
+		setFoodToLog(foodToLog);
 	}, [selectedItem, measurementUri, totalNutrients, selectedItemIndex, foodQty]);
 
     return (

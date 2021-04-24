@@ -49,9 +49,9 @@ const Log = ({ navigation }) => {
     getData();
   }, []); 
 
-  useEffect(() => {
-    console.log(loggedFoods, 'LOOG FOOD')
-  }, [loggedFoods])
+  // useEffect(() => {
+  //   console.log(loggedFoods, 'LOOG FOOD')
+  // }, [loggedFoods])
 
   // to get log when a new food is added to async storage
   useEffect(() => {
@@ -174,8 +174,8 @@ const Log = ({ navigation }) => {
         </Modal>
 
         <View style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto', marginRight: 'auto', padding: 10, marginTop: 30  }}>
-            <CustomButton text='Log Item' onPress={() => setModalVisible(!modalVisible)} style={{ width: 100, height: 30, backgroundColor: '#a5a58d', marginRight: 5 }} />
-            <CustomButton text='Clear Log' onPress={clearLog} style={{ width: 100, height: 30, marginLeft: 5 }} />
+            <CustomButton text='LOG ITEM' onPress={() => setModalVisible(!modalVisible)} style={{ width: 150, backgroundColor: '#6b705c', marginRight: 5 }} />
+            <CustomButton text='CLEAR LOG' onPress={clearLog} style={{ width: 150, marginLeft: 5 }} />
         </View>
     </View>
     )
