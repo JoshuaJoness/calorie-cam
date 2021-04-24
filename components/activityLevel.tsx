@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { View, Text, StyleSheet, Picker, Animated, AsyncStorage } from 'react-native'
 import { useFonts } from 'expo-font'
 import Pilates from './svgs/pilates'
 import CustomButton from './button'
 import { styles } from '../styles/global';
+import { store } from '../store'
 
 
 const ACTIVITY_LEVELS = [

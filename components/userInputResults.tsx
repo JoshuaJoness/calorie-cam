@@ -66,33 +66,34 @@ const UserInputResults = ({ foodQty, setFoodQty, result, totalNutrients }) => {
 				<ScrollView style={{ marginBottom: 20 }}>
 					{
 						Object.keys(totalNutrients)
-                        .filter(key => key !== 'ENERC_KCAL' && key !== 'CHOCDF' && key !== 'PROCNT' && key !== 'FAT')
-                        .map((key, i) => {
-							const newArrLength = Object.keys(totalNutrients).filter(key => key !== 'ENERC_KCAL' && key !== 'CHOCDF' && key !== 'PROCNT' && key !== 'FAT');
-                            return (
-                                <View 
-                                    style={{
-                                        display:'flex', 
-                                        flexDirection:'row', 
-                                        padding:10, 
-                                        borderWidth: 1,
-                                        borderBottomWidth: i === newArrLength.length - 1 ? 1 : 0,
-                                        borderColor:'black', 
-                                        backgroundColor: '#ffe8d6', 
-                                        width: '90%', 
-                                        alignSelf: 'center',
-                                    }}
-                                    key={key}
-                                >
-                                    <Text style={{ ...styles.value, flex: 1.5 }}>{totalNutrients[key].label}</Text>
-                                    <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
-                                        <Text style={styles.value}>{(totalNutrients[key]?.quantity * foodQty).toFixed(2) || 0}</Text>
-                                        <Text style={styles.value}>{totalNutrients[key]?.unit || ''}</Text>
+                            .sort((a, b) => a.localeCompare(b))
+                            .filter(key => key !== 'ENERC_KCAL' && key !== 'CHOCDF' && key !== 'PROCNT' && key !== 'FAT')
+                            .map((key, i) => {
+                                const newArrLength = Object.keys(totalNutrients).filter(key => key !== 'ENERC_KCAL' && key !== 'CHOCDF' && key !== 'PROCNT' && key !== 'FAT');
+                                return (
+                                    <View 
+                                        style={{
+                                            display:'flex', 
+                                            flexDirection:'row', 
+                                            padding:10, 
+                                            borderWidth: 1,
+                                            borderBottomWidth: i === newArrLength.length - 1 ? 1 : 0,
+                                            borderColor:'black', 
+                                            backgroundColor: '#ffe8d6', 
+                                            width: '90%', 
+                                            alignSelf: 'center',
+                                        }}
+                                        key={key}
+                                    >
+                                        <Text style={{ ...styles.value, flex: 1.5 }}>{totalNutrients[key].label}</Text>
+                                        <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
+                                            <Text style={styles.value}>{(totalNutrients[key]?.quantity * foodQty).toFixed(2) || 0}</Text>
+                                            <Text style={styles.value}>{totalNutrients[key]?.unit || ''}</Text>
+                                        </View>
                                     </View>
-                                </View>
-                        )
-                    }) 
-				}
+                            )
+                        }) 
+				    }
 				</ScrollView> : null}              
             </> : null}		
 		</View>

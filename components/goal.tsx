@@ -7,7 +7,7 @@ import { store } from '../store';
 
 const Goal = ({ route, navigation }) => {   
     const globalState = useContext(store);
-    const { state } = globalState;
+    const { state, dispatch } = globalState;
     const { totalDailyCalorieNeeds: tdcnFromState, goal: goalFromState } = state;
 
     const [goal, setGoal] = useState(null);
@@ -62,8 +62,10 @@ const Goal = ({ route, navigation }) => {
         <CustomButton
             style={{ marginTop: '10%' }}
             text="Update Your Goals" 
-            onPress={() => {
-                navigation.navigate('GetStarted');
+            onPress={async () => {
+                await AsyncStorage.removeItem('goal')
+                dispatch({ type: 'REMOVE_GOAL' })
+                // navigation.navigate('GetStarted');
             }} 
         />
               <View style={{ marginLeft:'auto', marginRight:'auto' }}>

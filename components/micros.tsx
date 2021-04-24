@@ -21,13 +21,13 @@ const Micros = () => {
     // to get log on initial render
     useEffect(() => {
         const getData = async () => {
-        const test = await AsyncStorage.getItem('foods');
-        const parse = JSON.parse(test);
-        await setLoggedFoods(parse);
+          const test = await AsyncStorage.getItem('foods');
+          const parse = JSON.parse(test);
+          await setLoggedFoods(parse);
 
-        const reqs = await AsyncStorage.getItem('dailyReqs');
-        const parsedReqs = JSON.parse(reqs);
-        await setReqs(parsedReqs);
+          const reqs = await AsyncStorage.getItem('dailyReqs');
+          const parsedReqs = JSON.parse(reqs);
+          await setReqs(parsedReqs);
         }
 
         getData();
@@ -44,34 +44,38 @@ const Micros = () => {
         getData();
     }, [foodsFromState]);
 
-    const [obj, setObj] = useState(null)
+    const [microsObj, setMicrosObj] = useState(null)
     const newObj = {}
 
-    useEffect(() => {
+    useEffect(() => { 
         loggedFoods?.forEach(food => {
           if (food) {
-            Object.keys(food).forEach(nutrient => {
-              if (newObj[nutrient]) {
-                newObj[nutrient].quantity += food[nutrient].quantity;
-              } else {
-                newObj[nutrient] = { 
-                  label: food[nutrient]?.label,
-                  quantity: food[nutrient]?.quantity,
-                  unit: food[nutrient]?.unit,    
+            Object.keys(food)
+              .filter(nutrient => nutrient !== 'Energy' && nutrient !== 'Carbs' && nutrient !== 'Protein' && nutrient !== 'Fat') // TODO eliminate nans
+              .forEach(nutrient => {
+                if (newObj[nutrient]) {
+                  newObj[nutrient].quantity += food[nutrient].quantity;
+                } else {
+                  newObj[nutrient] = { 
+                    label: food[nutrient]?.label,
+                    quantity: food[nutrient]?.quantity,
+                    unit: food[nutrient]?.unit,    
+                  }
                 }
-              }
-            })
+              })
           }
         })
 
-        // console.log(newObj, 'NEW OBJ')
-
-        setObj(newObj);
+        setMicrosObj(newObj);
     }, [loggedFoods]);
+
+  // useEffect(() => {
+  //   console.log(obj, 'OBJ')
+  // }, [obj])    
 
   useEffect(() => {
     if (clearMicros) {
-        setObj(null);
+        setMicrosObj(null);
         setLoggedFoods(null);
         setReqs(null);
     }
@@ -87,27 +91,25 @@ const Micros = () => {
             </View>
           </View>
 
-        <ScrollView style={styles.box}>    
-            {obj ? Object.keys(obj)
-                .filter(nutrient => nutrient !== 'ENERC_KCAL' && nutrient !== 'CHOCDF' && nutrient !== 'PROCNT' && nutrient !== 'FAT' && obj[nutrient].label)
+        <ScrollView style={styles.box}>
+
+            {microsObj ? Object.keys(microsObj)
+                .sort((a, b) => a.localeCompare(b)) // TODO read docs
+                .filter(nutrient => nutrient !== 'label' && nutrient !== 'quantity' && nutrient !== 'measureUnit')
                 .map((nutri,i) => {
-                  // console.log(nutri, 'NUTRI')
-                  // console.log(obj, 'OBJ')
-                  // console.log(obj[nutri].label, 'LOOK')
                     return (
                         <View key={`${nutri}_micro`}>
                             <View style={{ borderWidth: 1, borderColor: 'black', height: 40, display: 'flex', flexDirection: 'row', backgroundColor: '#b7b7a4' }}>
-                                <Text style={{ padding: 10 }}>{obj[nutri].label}</Text>
+                                <Text style={{ padding: 10 }}>{nutri}</Text>
                                 <View style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto', padding: 10 }}>
-                                    <Text style={{ paddingRight: 5 }}>{Math.round(obj[nutri].quantity)}</Text>
-                                    <Text >{obj[nutri].unit}</Text>
+                                    <Text style={{ paddingRight: 5 }}>{Math.round(microsObj[nutri].quantity)}</Text>
+                                    <Text >{microsObj[nutri].unit}</Text>
                                 </View>
                             </View>
                         </View>
                     )
                 }
-                ) 
-                : null
+              ) : null
             }
           </ScrollView>
             
@@ -115,7 +117,7 @@ const Micros = () => {
           <View style={styles.totalsBox}>
 
             <View style={{ display:'flex', flexDirection:'row', padding:10, borderTopWidth: 1, borderColor:'black', backgroundColor: '#6b705c' }}>
-                <Text style={{ ...styles.label, color:'#ffe8d6' }} onPress={() => console.log(newObj, 'newObj')}> CLICK ME </Text>
+                <Text style={{ ...styles.label, color:'#ffe8d6' }} onPress={() => console.log(microsObj, 'newObj')}> CLICK ME </Text>
             </View>
         </View>
       </View>

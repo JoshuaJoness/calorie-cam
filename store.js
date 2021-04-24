@@ -8,8 +8,12 @@ const { Provider } = store;
 const StateProvider = ( { children } ) => {
   const [state, dispatch] = useReducer((state, action) => {
     switch(action.type) {
-      case 'GOAL_UPDATED': {
+      case 'SET_GOAL': {
         return { ...state, goal: action.data }
+      } 
+      case 'REMOVE_GOAL': {
+        console.log('REMOVE_GOAL called')
+        return { ...state, goal: null }
       }
       case 'ADD_FOOD_TO_LOG': {
         const foods = initialState.foods || [];

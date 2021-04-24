@@ -47,10 +47,10 @@ const Log = ({ navigation }) => {
     }
 
     getData();
-  }, []);
+  }, []); 
 
   useEffect(() => {
-    console.log(loggedFoods, 'loggedFoods')
+    console.log(loggedFoods, 'LOOG FOOD')
   }, [loggedFoods])
 
   // to get log when a new food is added to async storage

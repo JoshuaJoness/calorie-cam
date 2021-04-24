@@ -55,19 +55,25 @@ function App() {
   const [goal, setGoal] = useState(null);
   // AsyncStorage.getItem('goal').then(data => setGoal(data));
 
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     try {
+  //       const goal = await AsyncStorage.getItem('goal');
+  //       if (goal)
+  //         await setGoal(goal);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   } 
+
+  //   getData()
+  // }, []);
   useEffect(() => {
     const getData = async () => {
-      try {
-        const goal = await AsyncStorage.getItem('goal');
-        if (goal)
-          await setGoal(goal);
-      } catch (err) {
-        console.log(err);
-      }
-    } 
-
-    getData()
-  }, []);
+        await AsyncStorage.getItem('goal').then(data => setGoal(data))
+    }
+    getData();
+}, []);
 
   if (!loaded)
     return null
@@ -140,7 +146,7 @@ function App() {
                           backgroundColor: '#ffe8d6'
                         }
                     }}/>
-                    <Stack.Screen 
+                    {/* <Stack.Screen 
                       name="Log" 
                       component={Log} 
                       options={{
@@ -148,7 +154,7 @@ function App() {
                         headerStyle: {
                           backgroundColor: '#ffe8d6'
                         }
-                    }}/>
+                    }}/> */}
                     <Stack.Screen 
                       name="Home" 
                       component={Home} 

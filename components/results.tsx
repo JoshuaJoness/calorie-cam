@@ -12,6 +12,9 @@ const Results = ({ navigation }) => {
 		MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf')
 	});
 
+    const globalState = useContext(store);
+	const { state, dispatch } = globalState;
+
     const [age, setAge] = useState(null);
     const [gender, setGender] = useState(null);
     const [feet, setFeet] = useState(null);
@@ -22,6 +25,8 @@ const Results = ({ navigation }) => {
     const [totalDailyCalorieNeeds, setTotalDailyCalorieNeeds] = useState(null);
 
     const [refresh, setRefresh] = useState(false);
+
+    
 
     useEffect(() => {
         const getData = async () => {
@@ -58,10 +63,6 @@ const Results = ({ navigation }) => {
         }
     }, [bmr]);
 
-
-    const globalState = useContext(store);
-	const { dispatch } = globalState;
-
     useEffect(() => {
         if (totalDailyCalorieNeeds)
             dispatch({
@@ -92,7 +93,7 @@ const Results = ({ navigation }) => {
                         try {
                             await AsyncStorage.setItem('goal', 'loseWeight');        
                             await AsyncStorage.setItem('totalDailyCalorieNeeds', JSON.stringify(totalDailyCalorieNeeds));        
-                            dispatch({ type: 'GOAL_UPDATED', data: 'loseWeight' });            
+                            dispatch({ type: 'SET_GOAL', data: 'loseWeight' });        
                         } catch (err) {
                             console.log(err)
                         }
@@ -106,7 +107,7 @@ const Results = ({ navigation }) => {
 
                             await AsyncStorage.setItem('goal', 'maintainWeight');
                             await AsyncStorage.setItem('totalDailyCalorieNeeds', JSON.stringify(totalDailyCalorieNeeds));     
-                            dispatch({ type: 'GOAL_UPDATED', data: 'maintainWeight' });
+                            dispatch({ type: 'SET_GOAL', data: 'maintainWeight' });
                         } catch (err) {
                             console.log(err)
                         }
@@ -120,7 +121,7 @@ const Results = ({ navigation }) => {
             
                             await AsyncStorage.setItem('goal', 'gainWeight');
                             await AsyncStorage.setItem('totalDailyCalorieNeeds', JSON.stringify(totalDailyCalorieNeeds));     
-                            dispatch({ type: 'GOAL_UPDATED', data: 'gainWeight' });
+                            dispatch({ type: 'SET_GOAL', data: 'gainWeight' });
                         } catch (err) {
                             console.log(err)
                         }
