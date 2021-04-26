@@ -1,5 +1,5 @@
-import React from 'react'
-import { View, Text, StyleSheet, TextInput, Animated, AsyncStorage, Alert } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, Text, StyleSheet, TextInput, Animated, AsyncStorage, Alert, Switch } from 'react-native'
 import { useFonts } from 'expo-font'
 import Pushup from './svgs/pushup'
 import CustomButton from './button'
@@ -12,24 +12,35 @@ const Weight = ({ navigation }) => {
 	const [fadeAnimTwo] = React.useState(new Animated.Value(0))
 	const [fadeAnimThree] = React.useState(new Animated.Value(0))
 
-    const [loaded] = useFonts({
-		Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
-		MontserratLight: require('../assets/fonts/Montserrat-Light.ttf'),
-		MontserratMedium: require('../assets/fonts/Montserrat-Medium.ttf'),
-		MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf')
-	  })
+    // const [loaded] = useFonts({
+	// 	Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
+	// 	MontserratLight: require('../assets/fonts/Montserrat-Light.ttf'),
+	// 	MontserratMedium: require('../assets/fonts/Montserrat-Medium.ttf'),
+	// 	MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf')
+	//   })
 
-	React.useEffect(() => {
-		Animated.timing(fadeAnim, {
-		  toValue: 1,
-		  duration: 500,
-		  useNativeDriver: false,
-		}).start()
+	  const [lbs, setLbs] = useState(true);
+	  const [kgs, setKgs] = useState(false);
 
-		setTimeout(() => {
-			setFadeAnim(1)
-		}, 1000)
-	  }, [])
+	  const [isEnabled, setIsEnabled] = useState(false);
+	  const toggleSwitch = () => {
+		  setLbs(!lbs);
+		  setKgs(!kgs);
+		  setWeight(null);
+		  setIsEnabled(previousState => !previousState)
+		};
+
+	// React.useEffect(() => {
+	// 	Animated.timing(fadeAnim, {
+	// 	  toValue: 1,
+	// 	  duration: 500,
+	// 	  useNativeDriver: false,
+	// 	}).start()
+
+	// 	setTimeout(() => {
+	// 		setFadeAnim(1)
+	// 	}, 1000)
+	//   }, [])
 
 	// React.useEffect(() => {
 	// 	if (fadeAnim === 1) {
@@ -49,8 +60,13 @@ const Weight = ({ navigation }) => {
 	// 	}
 	// }, [gender])
  
-    if (!loaded)
-      return null
+    // if (!loaded)
+    //   return null
+
+	useEffect(() => {
+		console.log(weight)
+	}, [weight])
+
 
 	return (
 		<View style={styles.container}>
@@ -58,8 +74,22 @@ const Weight = ({ navigation }) => {
 				<Pushup />
 			</View >
 
-			<Animated.Text style={{ ...styles.subText, opacity: fadeAnim }}>Enter your
-				<Text style={styles.boldText}> weight (lbs) </Text>
+			<View style={{ display: 'flex', flexDirection: 'row', alignSelf: 'center', alignItems: 'center', marginTop: 20, marginBottom: 50 }}>
+				<Text style={{ fontFamily: 'MontserratLight', fontSize: 25, color: '#6b705c', }}>Lbs</Text>
+				<Switch
+					trackColor={{ false: "#ffe8d6", true: "#a5a58d" }}
+					thumbColor={isEnabled ? "#ffe8d6" : "#a5a58d"}
+					ios_backgroundColor="#3e3e3e"
+					onValueChange={toggleSwitch}
+					value={isEnabled}
+					style={{ marginLeft: 20, marginRight: 20 }}
+				/>
+				<Text style={{ fontFamily: 'MontserratLight', fontSize: 25, color: '#6b705c', }}>Kg</Text>
+			</View>
+
+
+			<Animated.Text style={{ ...styles.subText, marginTop: 0 /*, opacity: fadeAnim */ }}>Enter your
+				<Text style={styles.boldText}> weight ({lbs ? 'lbs' : 'kg'}) </Text>
 			</Animated.Text>
             
             <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>  
@@ -72,10 +102,12 @@ const Weight = ({ navigation }) => {
                                 Alert.alert('Please enter numbers only.');
                                 setWeight(null);
                             } else {
-                                setWeight(weight)
+								const lbsToKgs = kgs ? Number(weight) * 2.20462 : null;
+								console.log(typeof weight)
+                                setWeight(lbsToKgs || weight);
                             }
                         }}
-                        placeholder={'180lbs'}
+                        placeholder={lbs ? '180lbs' : '60kg'}
                     />
                 </View>
             {weight ? <View style={{ marginTop: 50 }}>
@@ -83,7 +115,7 @@ const Weight = ({ navigation }) => {
                     text='Continue' 
                     onPress={async () => {
                         try {
-                            await AsyncStorage.setItem('weight', weight);
+                            await AsyncStorage.setItem('weight', JSON.stringify(weight));
                         } catch (err) {
                             console.log(err)
                         }
@@ -102,7 +134,7 @@ const styles = StyleSheet.create ({
 	container:{
 		backgroundColor: '#ffe8d6',
 		height: '100%',
-		paddingTop: '5%'
+		// paddingTop: '5%'
 	},
 	imgender: {
 		height:150,
@@ -148,6 +180,8 @@ const styles = StyleSheet.create ({
         marginTop: '5%',
         marginLeft: 'auto',
         marginRight: 'auto',
-		textAlign: 'center'
+		textAlign: 'center',
+		fontSize: 25,
+		fontFamily: 'MontserratRegular',
 	  },
 })

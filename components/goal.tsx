@@ -65,7 +65,7 @@ const Goal = ({ route, navigation }) => {
             onPress={async () => {
                 await AsyncStorage.removeItem('goal')
                 dispatch({ type: 'REMOVE_GOAL' })
-                // navigation.navigate('GetStarted');
+                navigation.navigate('GetStarted');
             }} 
         />
               <View style={{ marginLeft:'auto', marginRight:'auto' }}>
