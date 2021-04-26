@@ -122,11 +122,6 @@ const Log = ({ navigation }) => {
               <Text style={{ ...styles.label, textAlign: 'center' }}>Fat</Text>
             </View>
           </View>
-{/* 
-          energy += Number(food?.ENERC_KCAL?.quantity ? food.ENERC_KCAL?.quantity : 0)
-            carbs += Number(food?.CHOCDF?.quantity ? food.CHOCDF?.quantity : 0)
-            protein += Number(food?.PROCNT?.quantity ? food.PROCNT?.quantity : 0)
-            fat += Number(food?.FAT?.quantity ? food.FAT?.quantity : 0) */}
 
           <ScrollView style={styles.box}>    
             {loggedFoods?.length > 0 ? loggedFoods?.map((food,i) => <View style={{ height: 50, display:'flex', flexDirection:'row', padding:10, backgroundColor: '#ffe8d6', borderBottomWidth: 1 /*i === loggedFoods?.length - 1 ? 0 : 1 */ }} key={i}>

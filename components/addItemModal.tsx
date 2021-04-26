@@ -8,7 +8,7 @@ import UserInputResults from './userInputResults';
 const edamamId = '7ff1ee7e';
 const edamamKey = 'aa4824adda205d7ff601301c08816573';
 
-const AddItemModal = ({ setModalVisible, modalVisible }) => {
+const AddItemModal = ({ setModalVisible, modalVisible, cameraPrediction }) => {
 	const [userInput, setUserInput] = useState(null);
 	const [totalNutrients, setTotalNutrients] = useState(null);
 	const [foodToLog, setFoodToLog] = useState(null);
@@ -40,7 +40,7 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 
 	const getInitialFoodOptions = async (userInput) => {
         try {
-            const data = await axios.get(`https://api.edamam.com/api/food-database/parser?app_id=${edamamId}&app_key=${edamamKey}&ingr=${userInput}&nutrition-type=logging`);
+            const data = await axios.get(`https://api.edamam.com/api/food-database/parser?app_id=${edamamId}&app_key=${edamamKey}&ingr=${userInput || cameraPrediction}&nutrition-type=logging`);
 			const obj = {};
 			data?.data?.hints.forEach(hint => obj[hint.food.label] = { foodId: hint.food.foodId, measures: hint.measures, nutrients: hint.food.nutrients });
 			setObj(obj);
@@ -49,6 +49,8 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
             console.log(err);
         }
     };
+
+	console.log(obj, 'obj')
 
 	const getSelectedItemsNutrients = async () => {
 		setSubmitted(true);
@@ -93,6 +95,10 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 		setFoodToLog(foodToLog);
 	}, [selectedItem, measurementUri, totalNutrients, selectedItemIndex, foodQty]);
 
+	useEffect(() => {
+		getInitialFoodOptions(null)
+	}, [cameraPrediction]);
+
     return (
 		<View style={styles.container}>	
 			<View style={{ backgroundColor:'#ddbea9', width: '95%', height: 650, marginTop: 5, alignItems: 'center', paddingTop: 20 }}>
@@ -102,7 +108,7 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 				<Text style={styles.formText}>Enter food below</Text>
 				<TextInput 
 					style={{ ...styles.input, marginTop: 50, fontSize: 25 }} 
-					value={userInput} 	
+					value={userInput || cameraPrediction} 	
 					placeholder={'Banana'}
 					onChangeText={(label) => {
 						// setFoodToLog({ ...foodToLog, label});
@@ -112,7 +118,7 @@ const AddItemModal = ({ setModalVisible, modalVisible }) => {
 				/>
 
 				{/* best match picker */}
-				{userInput && obj ? 
+				{(userInput || cameraPrediction) && obj ? 
 				<View style={{ marginTop: 50 }}>
 					<Text style={styles.formText}>Select best match</Text>
 					<Picker

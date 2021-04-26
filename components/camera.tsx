@@ -1,11 +1,12 @@
 import React, { useState, useContext, useRef, useEffect } from 'react'
-import { StyleSheet, Text, Picker, View, Image, ScrollView, TextInput, AsyncStorage, Alert } from 'react-native'
+import { StyleSheet, Text, Picker, View, Image, ScrollView, TextInput, AsyncStorage, Alert, Modal } from 'react-native'
 import axios from 'axios'
 import moment from 'moment'
 import { Camera } from 'expo-camera';
 import CustomButton from './button';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { store }  from '../store';
+import AddItemModal from './addItemModal';
 
 
 const Clarifai = require('clarifai');
@@ -108,6 +109,13 @@ const CalorieCam = ({ navigation }) => {
     }, []);
 
     // TODO handle no camera permsision granted
+
+    const [modalVisible, setModalVisible] = useState(false);
+
+    useEffect(() => {
+        if (modalVisible)
+            navigation.navigate('Log');
+    }, [modalVisible]);
 
 	return(
 		<View style={styles.container}>
@@ -231,6 +239,21 @@ const CalorieCam = ({ navigation }) => {
                     /> 
                 }
             </View>
+
+            <Modal
+                animationType="fade"
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <AddItemModal 
+                    modalVisible={modalVisible}
+                    setModalVisible={setModalVisible}
+                    cameraPrediction={selectedItem}
+                />
+            </Modal>
+
             <View style={styles.buttonContainer}>
                     {
                     totalNutrients ? 
@@ -312,7 +335,7 @@ const CalorieCam = ({ navigation }) => {
                             foodPredictions.length > 0 ? 
                             <CustomButton 
                                 text='Get Calories'
-                                onPress={getCaloriesFromPrediction}
+                                onPress={() => setModalVisible(!modalVisible)}
                                 style={{ width: 250, backgroundColor: '#6b705c' }}
                             />
                             :
