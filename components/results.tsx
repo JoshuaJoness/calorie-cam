@@ -40,15 +40,19 @@ const Results = ({ navigation }) => {
         getData();
     }, []);
 
+    useEffect(() =>{
+        console.log(bmr, 'BMR')
+    }, [bmr])
+
     useEffect(() => {        
         if (age && gender && feet && inches && weight && activityLevel) {
             const feetToInches = feet * 12;
             const totalInches = Number(inches) + Number(feetToInches);
 
             if (gender === 'female') {
-                setBmr(655 + (4.35 * weight) + (4.7 * totalInches) - (4.7 * age))
+                setBmr(655 + (4.35 * JSON.parse(weight)) + (4.7 * totalInches) - (4.7 * age))
             } else {
-                setBmr(66 + (6.23 * weight) + (12.7 * totalInches) - (6.8 * age))
+                setBmr(66 + (6.23 * JSON.parse(weight)) + (12.7 * totalInches) - (6.8 * age))
             }
         }
     }, [age, gender, feet, inches, weight, activityLevel]);
