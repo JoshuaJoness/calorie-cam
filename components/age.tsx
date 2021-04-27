@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, TextInput, Animated, Alert, AsyncStorage } from 'react-native';
-import { useFonts } from 'expo-font';
 import Birthday from './svgs/birthday';
 import CustomButton from './button';
 import { styles } from '../styles/global';
@@ -8,53 +7,42 @@ import { styles } from '../styles/global';
 
 const Age = ({ navigation }) => {
 	// AsyncStorage.getItem('age').then(data => setAge(data)) 
-	
 	const [age, setAge] = React.useState(null);
-	const [fadeAnim, setFadeAnim] = React.useState(new Animated.Value(0.1))
-	const [fadeAnimTwo] = React.useState(new Animated.Value(0))
-	const [fadeAnimThree] = React.useState(new Animated.Value(0))
+	// const [fadeAnim, setFadeAnim] = React.useState(new Animated.Value(0.1))
+	// const [fadeAnimTwo] = React.useState(new Animated.Value(0))
+	// const [fadeAnimThree] = React.useState(new Animated.Value(0))
 
-    const [loaded] = useFonts({
-		Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
-		MontserratLight: require('../assets/fonts/Montserrat-Light.ttf'),
-		MontserratMedium: require('../assets/fonts/Montserrat-Medium.ttf'),
-		MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf')
-	})
+	// React.useEffect(() => {
+	// 	Animated.timing(fadeAnim, {
+	// 	  toValue: 1,
+	// 	  duration: 500,
+	// 	  useNativeDriver: false,
+	// 	}).start()
 
-	React.useEffect(() => {
-		Animated.timing(fadeAnim, {
-		  toValue: 1,
-		  duration: 500,
-		  useNativeDriver: false,
-		}).start()
+	// 	setTimeout(() => {
+	// 		setFadeAnim(1)
+	// 	}, 1000)
+	//   }, [])
 
-		setTimeout(() => {
-			setFadeAnim(1)
-		}, 1000)
-	  }, [])
+	// React.useEffect(() => {
+	// 	if (fadeAnim === 1) {
+	// 		Animated.timing(fadeAnimTwo, {
+	// 			toValue: 1,
+	// 			duration: 500,
+	// 			useNativeDriver: false,
+	// 		}).start()
+	// 	};
+	//   }, [fadeAnim])
 
-	React.useEffect(() => {
-		if (fadeAnim === 1) {
-			Animated.timing(fadeAnimTwo, {
-				toValue: 1,
-				duration: 500,
-				useNativeDriver: false,
-			}).start()
-		};
-	  }, [fadeAnim])
-
-	React.useEffect(() => {
-		if (age) {
-			Animated.timing(fadeAnimThree, {
-				toValue: 1,
-				duration: 500,
-				useNativeDriver: false,
-			}).start();
-		}
-	}, [age])
-
-    if (!loaded)
-      return null
+	// React.useEffect(() => {
+	// 	if (age) {
+	// 		Animated.timing(fadeAnimThree, {
+	// 			toValue: 1,
+	// 			duration: 500,
+	// 			useNativeDriver: false,
+	// 		}).start();
+	// 	}
+	// }, [age])
 
 	return (
 		<View style={styles.container}>
@@ -71,7 +59,7 @@ const Age = ({ navigation }) => {
 					maxLength={3}
 					onChangeText={age => {
 						const ageToNumber = Number(age);
-						if (!ageToNumber && age !== '') {
+						if (!ageToNumber && age !== '') { // TODO fix to handle empty edge case
 							Alert.alert('Please enter numbers only.');
 							setAge(null);
 						} else {
@@ -81,9 +69,8 @@ const Age = ({ navigation }) => {
 					placeholder={'24'}
 				/>
 			</View>
-
-			<Animated.View style={{ marginTop: '5%', opacity: fadeAnimThree }}>
-				<CustomButton 
+		
+			{age ? <CustomButton 
 					text='Continue' 
 					disabled={!age}
 					onPress={async () => {
@@ -95,7 +82,7 @@ const Age = ({ navigation }) => {
 						navigation.navigate('Gender');
 					}} 
 				/>
-			</Animated.View> 
+			: null}
 		</View>
 	)
 }
