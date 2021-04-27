@@ -344,6 +344,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffe8d6',
         paddingTop: '5%',
         alignItems: 'center',
+        height: '100%',
     },
     text: {
         fontFamily: 'MontserratMedium',
