@@ -1,4 +1,7 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { AsyncStorage } from 'react-native'
+import { useFonts } from 'expo-font';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Welcome from './components/Welcome';
@@ -13,70 +16,42 @@ import Log from './components/log';
 import Goal from './components/goal';
 import CalorieCam from './components/camera';
 import Micros from './components/micros';
-
 import { StateProvider } from './store.js';
-
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-import { AsyncStorage, TouchableOpacity, Text } from 'react-native'
-
-import { store } from './store';
-import { useFonts } from 'expo-font';
-
-
 
 
 const Tab = createBottomTabNavigator();
-
-
-
-function Home() {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen name="Goal" component={Goal} />
-      <Tab.Screen name="Camera" component={CalorieCam} />
-      <Tab.Screen name="Log" component={Log} />
-      <Tab.Screen name="Micros" component={Micros} />
-    </Tab.Navigator>
-  );
-}
-
 const Stack = createStackNavigator();
 
+function Home() {
+    return (
+        <Tab.Navigator>
+            <Tab.Screen name="Goal" component={Goal} />
+            <Tab.Screen name="Camera" component={CalorieCam} />
+            <Tab.Screen name="Log" component={Log} />
+            <Tab.Screen name="Micros" component={Micros} />
+        </Tab.Navigator>
+    );
+}
+
 function App() {
-  const [loaded] = useFonts({
-    Pacifico: require('./assets/fonts/Pacifico-Regular.ttf'),
-    MontserratLight: require('./assets/fonts/Montserrat-Light.ttf'),
-    MontserratMedium: require('./assets/fonts/Montserrat-Medium.ttf'),
-    MontserratRegular: require('./assets/fonts/Montserrat-Regular.ttf')
-  });
+    const [loaded] = useFonts({
+        Pacifico: require('./assets/fonts/Pacifico-Regular.ttf'),
+        MontserratLight: require('./assets/fonts/Montserrat-Light.ttf'),
+        MontserratMedium: require('./assets/fonts/Montserrat-Medium.ttf'),
+        MontserratRegular: require('./assets/fonts/Montserrat-Regular.ttf')
+    });
 
+    const [goal, setGoal] = useState(null);
 
-  const [goal, setGoal] = useState(null);
-  // AsyncStorage.getItem('goal').then(data => setGoal(data));
-
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     try {
-  //       const goal = await AsyncStorage.getItem('goal');
-  //       if (goal)
-  //         await setGoal(goal);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   } 
-
-  //   getData()
-  // }, []);
-  useEffect(() => {
-    const getData = async () => {
-        await AsyncStorage.getItem('goal').then(data => setGoal(data))
-    }
-    getData();
-}, []);
+    useEffect(() => {
+      const getData = async () => {
+          await AsyncStorage.getItem('goal').then(data => setGoal(data))
+      }
+      getData();
+    }, []);
 
   if (!loaded)
-    return null
+      return null
 
   return (
       <StateProvider>
@@ -146,15 +121,6 @@ function App() {
                           backgroundColor: '#ffe8d6'
                         }
                     }}/>
-                    {/* <Stack.Screen 
-                      name="Log" 
-                      component={Log} 
-                      options={{
-                        title: '',
-                        headerStyle: {
-                          backgroundColor: '#ffe8d6'
-                        }
-                    }}/> */}
                     <Stack.Screen 
                       name="Home" 
                       component={Home} 

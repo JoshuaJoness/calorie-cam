@@ -83,6 +83,19 @@ export const styles = StyleSheet.create ({
         fontSize: 17,
         width: 170
     },
+    ageInput: {
+		backgroundColor: '#ffe8d6',
+		opacity: 1,
+		borderBottomColor: '#6B705C',
+		borderBottomWidth: 2,
+		borderRadius: 4,
+        height: 45,
+        width: 200,
+        marginTop: '5%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+		textAlign: 'center'
+	  },
     microsLabel: {
         color: '#6b705c',
         fontWeight: 'bold',
@@ -104,7 +117,37 @@ export const styles = StyleSheet.create ({
 		marginLeft:'auto',
 		marginRight:'auto',
 	},
+    genderPicker: {
+		backgroundColor: '#ffe8d6',
+		opacity: 1,
+		borderRadius: 4,
+        height: 45,
+        width: 200,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+		textAlign: 'center'
+    },
+    heightInchesPicker: {
+		backgroundColor: '#ffe8d6',
+		opacity: 1,
+		borderRadius: 4,
+        height: 45,
+        width: 200,
+		textAlign: 'center'
+	},
+    weightInput: {
+		backgroundColor: '#ffe8d6',
+		opacity: 1,
+		borderBottomColor: '#6B705C',
+		borderBottomWidth: 2,
+		borderRadius: 4,
+        height: 45,
+        width: 200,
+        marginTop: '5%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+		textAlign: 'center',
+		fontSize: 25,
+		fontFamily: 'MontserratRegular',
+	},
 })
-
-
-

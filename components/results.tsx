@@ -1,17 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Picker, Animated, AsyncStorage } from 'react-native';
-import { useFonts } from 'expo-font';
+import { View, Text, StyleSheet, AsyncStorage } from 'react-native';
 import CustomButton from './button'
 import { store } from '../store';
 
 const Results = ({ navigation }) => {
-    const [loaded] = useFonts({
-		Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
-		MontserratLight: require('../assets/fonts/Montserrat-Light.ttf'),
-		MontserratMedium: require('../assets/fonts/Montserrat-Medium.ttf'),
-		MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf')
-	});
-
     const globalState = useContext(store);
 	const { state, dispatch } = globalState;
 
@@ -22,11 +14,7 @@ const Results = ({ navigation }) => {
     const [weight, setWeight] = useState(null);
     const [activityLevel, setActivityLevel] = useState(null);
     const [bmr, setBmr] = useState(null);
-    const [totalDailyCalorieNeeds, setTotalDailyCalorieNeeds] = useState(null);
-
-    const [refresh, setRefresh] = useState(false);
-
-    
+    const [totalDailyCalorieNeeds, setTotalDailyCalorieNeeds] = useState(null);    
 
     useEffect(() => {
         const getData = async () => {
@@ -39,10 +27,6 @@ const Results = ({ navigation }) => {
         }
         getData();
     }, []);
-
-    useEffect(() =>{
-        console.log(bmr, 'BMR')
-    }, [bmr])
 
     useEffect(() => {        
         if (age && gender && feet && inches && weight && activityLevel) {
@@ -74,9 +58,6 @@ const Results = ({ navigation }) => {
                 data: totalDailyCalorieNeeds
             });
     }, [totalDailyCalorieNeeds]);
-
-    if (!loaded)
-        return null
 
     return (
         <View style={styles.container}>

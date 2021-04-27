@@ -1,11 +1,10 @@
-import React, { useContext } from 'react'
-import { View, Text, Image, StyleSheet, TextInput, Animated, Alert, AsyncStorage } from 'react-native'
-import { useFonts } from 'expo-font'
-import Birthday from './svgs/birthday'
-import CustomButton from './button'
-import { store } from '../store';
-import { TouchableOpacity } from 'react-native-gesture-handler'
-
+import React from 'react';
+import { View, Text, TextInput, Animated, Alert, AsyncStorage } from 'react-native';
+import { useFonts } from 'expo-font';
+import Birthday from './svgs/birthday';
+import CustomButton from './button';
+import { styles } from '../styles/global';
+ 
 
 const Age = ({ navigation }) => {
 	// AsyncStorage.getItem('age').then(data => setAge(data)) 
@@ -59,7 +58,7 @@ const Age = ({ navigation }) => {
 
 	return (
 		<View style={styles.container}>
-				<View style={{marginLeft:'auto', marginRight:'auto'}}>
+			<View style={{marginLeft:'auto', marginRight:'auto'}}>
 				<Birthday />
 			</View>
 			<Text style={{ ...styles.subText, }}>Great! Let's start with your 
@@ -67,7 +66,7 @@ const Age = ({ navigation }) => {
 			</Text>
 			<View style={{marginTop:'10%', marginRight:'auto', alignItems: 'left', width: '100%' }}>
 				<TextInput 
-					style={styles.input} 
+					style={styles.ageInput} 
 					value={age} 	
 					maxLength={3}
 					onChangeText={age => {
@@ -101,58 +100,4 @@ const Age = ({ navigation }) => {
 	)
 }
 
-export default Age
-
-const styles = StyleSheet.create ({
-	container:{
-		backgroundColor: '#ffe8d6',
-		height: '100%',
-		paddingTop: '5%'
-	},
-	image: {
-		height:150,
-		width:150,
-		marginLeft:'auto',
-		marginRight:'auto',
-
-	},
-	text: {
-		fontFamily: 'Pacifico',
-		color: '#6b705c',
-		fontSize: 35,
-		paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-	},
-    subText: {
-		fontFamily: 'MontserratLight',
-		color: '#6b705c',
-		fontSize: 25,
-        marginTop: '5%',
-        paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-	},
-    boldText: {
-        fontFamily: 'MontserratMedium',
-		color: '#6b705c',
-		fontSize: 25,
-        marginTop: '5%',
-        paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-    },
-	input: {
-		backgroundColor: '#ffe8d6',
-		opacity: 1,
-		borderBottomColor: '#6B705C',
-		borderBottomWidth: 2,
-		borderRadius: 4,
-        height: 45,
-        width: 200,
-        marginTop: '5%',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-		textAlign: 'center'
-	  },
-})
+export default Age;

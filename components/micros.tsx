@@ -1,13 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { ScrollView, View, Text, AsyncStorage, Image, StyleSheet, Modal, TextInput } from 'react-native';
-import { useFonts } from 'expo-font';
-import CustomButton from './button';
-import AddItemModal from './addItemModal';
+import { ScrollView, View, Text, AsyncStorage, StyleSheet } from 'react-native';
 import { store } from '../store';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-
-// TODO correct import for AsyncStorage
-
 
 
 const Micros = () => {
@@ -51,27 +44,23 @@ const Micros = () => {
         loggedFoods?.forEach(food => {
           if (food) {
             Object.keys(food)
-              .filter(nutrient => nutrient !== 'Energy' && nutrient !== 'Carbs' && nutrient !== 'Protein' && nutrient !== 'Fat') // TODO eliminate nans
+              .filter(nutrient => nutrient !== 'Energy' && nutrient !== 'Carbs' && nutrient !== 'Protein' && nutrient !== 'Fat')
               .forEach(nutrient => {
                 if (newObj[nutrient]) {
-                  newObj[nutrient].quantity += food[nutrient].quantity;
+                    newObj[nutrient].quantity += food[nutrient].quantity;
                 } else {
-                  newObj[nutrient] = { 
-                    label: food[nutrient]?.label,
-                    quantity: food[nutrient]?.quantity,
-                    unit: food[nutrient]?.unit,    
+                    newObj[nutrient] = { 
+                      label: food[nutrient]?.label,
+                      quantity: food[nutrient]?.quantity,
+                      unit: food[nutrient]?.unit,    
                   }
-                }
+                } 
               })
-          }
-        })
+            }
+          })
 
         setMicrosObj(newObj);
-    }, [loggedFoods]);
-
-  // useEffect(() => {
-  //   console.log(obj, 'OBJ')
-  // }, [obj])    
+    }, [loggedFoods]);    
 
   useEffect(() => {
     if (clearMicros) {
@@ -87,12 +76,11 @@ const Micros = () => {
       <View style= {{ height: '65%' }}>
           <View style={styles.labelsBox}>
             <View style={{ display:'flex', flexDirection:'row', padding:10, borderBottomWidth: 1, borderColor:'#6b705c' }} >
-              <Text style={{ ...styles.label, color:'#ffe8d6', textAlign: 'center' }}>Micronutrient Totals</Text>
+              <Text style={{ ...styles.microsLabel, color:'#ffe8d6', marginLeft: 'auto', marginRight: 'auto' }}>Micronutrient Totals</Text>
             </View>
           </View>
 
         <ScrollView style={styles.box}>
-
             {microsObj ? Object.keys(microsObj)
                 .sort((a, b) => a.localeCompare(b)) // TODO read docs
                 .filter(nutrient => nutrient !== 'label' && nutrient !== 'quantity' && nutrient !== 'measureUnit')
@@ -100,10 +88,10 @@ const Micros = () => {
                     return (
                         <View key={`${nutri}_micro`}>
                             <View style={{ borderWidth: 1, borderColor: 'black', height: 40, display: 'flex', flexDirection: 'row', backgroundColor: '#b7b7a4' }}>
-                                <Text style={{ padding: 10 }}>{nutri}</Text>
+                                <Text style={{ ...styles.microsLabel, padding: 10 }}>{nutri}</Text>
                                 <View style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto', padding: 10 }}>
-                                    <Text style={{ paddingRight: 5 }}>{Math.round(microsObj[nutri].quantity)}</Text>
-                                    <Text >{microsObj[nutri].unit}</Text>
+                                    <Text style={{ ...styles.microsLabel, paddingRight: 5 }}>{Math.round(microsObj[nutri].quantity)}</Text>
+                                    <Text style={styles.microsLabel}>{microsObj[nutri].unit}</Text>
                                 </View>
                             </View>
                         </View>
@@ -113,11 +101,9 @@ const Micros = () => {
             }
           </ScrollView>
             
-
           <View style={styles.totalsBox}>
-
             <View style={{ display:'flex', flexDirection:'row', padding:10, borderTopWidth: 1, borderColor:'black', backgroundColor: '#6b705c' }}>
-                <Text style={{ ...styles.label, color:'#ffe8d6' }} onPress={() => console.log(microsObj, 'newObj')}> CLICK ME </Text>
+                <Text style={{ ...styles.microsLabel, color:'#ffe8d6' }}></Text>
             </View>
         </View>
       </View>
@@ -125,7 +111,7 @@ const Micros = () => {
     )
   }
 
-export default Micros
+export default Micros;
 
 const styles = StyleSheet.create ({
 	container:{
@@ -170,32 +156,8 @@ const styles = StyleSheet.create ({
     marginBottom: 30,
     textAlign: 'center',
   },
-  label: {
-    color: '#cb997e',
-    fontWeight: 'bold',
-    flex: 1,
-  },
-    boldText: {
-        fontFamily: 'MontserratMedium',
-		color: '#6b705c',
-		fontSize: 25,
-        marginTop: '5%',
-        paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-    },
-	input: {
-    borderColor: '#6b705c', 
-    borderBottomWidth: 2,
-    marginLeft: 5,
-    marginRight: 5,
-    textAlign: 'center',
-    fontSize: 17,
-    width: 170
-	},
   microsLabel: {
-    color: '#6b705c',
+    color: '#000',
     fontWeight: 'bold',
-    marginLeft: 2,
   },
 })

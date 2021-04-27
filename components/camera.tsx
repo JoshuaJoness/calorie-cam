@@ -39,38 +39,6 @@ const CalorieCam = ({ navigation }) => {
         setFoodPredictions(foodPredictions);
         return;
     };
-        
-    const getCaloriesFromPrediction = async () => {
-        try {
-            // TODO implement 'exact' match
-            const data = await axios.get(`https://api.edamam.com/api/food-database/parser?app_id=${edamamId}&app_key=${edamamKey}&ingr=${selectedItem}`);
-            // const nutrients = data.data.hints[0].food.nutrients;
-            const foodId = data.data.hints[0].food.foodId;
-            const foodLabel = data.data.hints[0].food.label;
-            setFoodLabel(foodLabel);
-
-            const nutrients = await axios.post(
-                `https://api.edamam.com/api/food-database/v2/nutrients?app_id=${edamamId}&app_key=${edamamKey}`,
-                {
-                    "ingredients": [
-                        {
-                            "quantity": 1,
-                            "measureURI": "http://www.edamam.com/ontologies/edamam.owl#Measure_gram",
-                            "foodId": foodId
-                        }
-                        ]
-                }
-            )
-            const totalDailyPercentages = nutrients.data.totalDaily;
-            const totalNutrients = nutrients.data.totalNutrients;
-            
-            setDailyNutrientReqs(totalDailyPercentages);
-            setTotalNutrients(totalNutrients);
-            // setNutrientKeys(Object.keys(totalNutrients))
-        } catch (err) {
-            console.log(err);
-        }
-    };
 
     const addFoodToLog = async (foodToLog) => {
         try {
@@ -186,32 +154,25 @@ const CalorieCam = ({ navigation }) => {
                             .filter(key => key !== 'ENERC_KCAL' && key !== 'CHOCDF' && key !== 'PROCNT' && key !== 'FAT')
                             .map((key, i) => {
                                 return (
-                                    // <View style={{display:'flex', flexDirection:'row', padding:10, borderTopWidth: '1px', borderColor:'black'}}>
-                                    //     <Text style={{ ...styles.label, color:'#6b705c' }}>Totals:</Text>
-                                    //     <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalCalories)}</Text>
-                                    //     <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalCarbs)} g</Text>
-                                    //     <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalProtein)} g</Text>
-                                    //     <Text style={{ ...styles.label, color:'#6b705c' }}>{Math.round(totalFat)} g</Text>
-                                    // </View>
-                            <View 
-                                style={{
-                                    display:'flex', 
-                                    flexDirection:'row', 
-                                    padding:10, 
-                                    borderWidth: 1,
-                                    borderBottomWidth: i === Object.keys(totalNutrients).length - 1 ? 1 : 0,
-                                    borderColor:'black', 
-                                    backgroundColor: '#ffe8d6', 
-                                    width: '90%', 
-                                    alignSelf: 'center',
-                                }}
-                            >
-                                <Text style={{ ...styles.value, flex: 1.5 }}>{totalNutrients[key].label}</Text>
-                                <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
-                                    <Text style={styles.value}>{(totalNutrients[key]?.quantity * grams).toFixed(2) || 0}</Text>
-                                    <Text style={styles.value}>{totalNutrients[key]?.unit || ''}</Text>
-                                </View>
-                            </View>
+                                    <View 
+                                        style={{
+                                            display:'flex', 
+                                            flexDirection:'row', 
+                                            padding:10, 
+                                            borderWidth: 1,
+                                            borderBottomWidth: i === Object.keys(totalNutrients).length - 1 ? 1 : 0,
+                                            borderColor:'black', 
+                                            backgroundColor: '#ffe8d6', 
+                                            width: '90%', 
+                                            alignSelf: 'center',
+                                        }}
+                                    >
+                                        <Text style={{ ...styles.value, flex: 1.5 }}>{totalNutrients[key].label}</Text>
+                                        <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
+                                            <Text style={styles.value}>{(totalNutrients[key]?.quantity * grams).toFixed(2) || 0}</Text>
+                                            <Text style={styles.value}>{totalNutrients[key]?.unit || ''}</Text>
+                                        </View>
+                                    </View>
                             )
                         })  
                     : null}             
@@ -422,20 +383,3 @@ const styles = StyleSheet.create({
 
 
 export default CalorieCam;
-
-
-// {Object.keys(totalNutrients).map(key => {
-//     if (totalNutrients[key].label === 'Energy' || totalNutrients[key].label === 'Fat' || totalNutrients[key].label === 'Protein' || totalNutrients[key].label === 'Carbs') {
-//         return (
-//             <View></View>
-//             // <View style={{ display: 'flex', flexDirection: 'row' }}  key={totalNutrients[key]}>
-//             //     {/* <Text style={{ ...styles.label, flex: 1.5, color:'#6b705c' }}>{food.label}</Text> */}
-//             //     <Text>{totalNutrients[key].label}</Text>
-//             //     <Text>{Math.round(totalNutrients[key].quantity) * grams}</Text>
-//             //     <Text>{totalNutrients[key].unit}</Text>
-//             // </View>
-//         )
-//     } else {
-//         return null;
-//     }
-// })}

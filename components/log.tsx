@@ -24,34 +24,30 @@ const Log = ({ navigation }) => {
 
   // to get log on initial render
   useEffect(() => {
-    const getData = async () => {
-      const test = await AsyncStorage.getItem('foods');
-      const parse = JSON.parse(test);
-      await setLoggedFoods(parse);
+      const getData = async () => {
+        const test = await AsyncStorage.getItem('foods');
+        const parse = JSON.parse(test);
+        await setLoggedFoods(parse);
 
-      const calorieNeeds = await AsyncStorage.getItem('totalDailyCalorieNeeds');
-      const parsedCalorieNeeds = JSON.parse(calorieNeeds);
-      await setTotalDailyCalorieNeeds(parsedCalorieNeeds);
+        const calorieNeeds = await AsyncStorage.getItem('totalDailyCalorieNeeds');
+        const parsedCalorieNeeds = JSON.parse(calorieNeeds);
+        await setTotalDailyCalorieNeeds(parsedCalorieNeeds);
 
-      const weight = await AsyncStorage.getItem('weight');
-      const parsedWeight = JSON.parse(weight);
-      await setWeight(parsedWeight);
+        const weight = await AsyncStorage.getItem('weight');
+        const parsedWeight = JSON.parse(weight);
+        await setWeight(parsedWeight);
 
-      const reqs = await AsyncStorage.getItem('dailyReqs');
-      const parsedReqs = JSON.parse(reqs);
-      await setReqs(parsedReqs);
+        const reqs = await AsyncStorage.getItem('dailyReqs');
+        const parsedReqs = JSON.parse(reqs);
+        await setReqs(parsedReqs);
 
-      const goal = await AsyncStorage.getItem('goal');
-      // const parsedGoal = JSON.parse(goal);
-      await setGoal(goal);
-    }
+        const goal = await AsyncStorage.getItem('goal');
+        // const parsedGoal = JSON.parse(goal);
+        await setGoal(goal);
+      }
 
-    getData();
+      getData();
   }, []); 
-
-  // useEffect(() => {
-  //   console.log(loggedFoods, 'LOOG FOOD')
-  // }, [loggedFoods])
 
   // to get log when a new food is added to async storage
   useEffect(() => {
@@ -96,18 +92,14 @@ const Log = ({ navigation }) => {
   };  
 
   const calorieGoals = () => {
-    if (goal === 'maintainWeight') {
-      return totalDailyCalorieNeeds;
-    } else if (goal === 'loseWeight') {
-      return Math.round(totalDailyCalorieNeeds - 500);
-    } else {
-      return Math.round(totalDailyCalorieNeeds + 500);
-    }
-  }
-
-  // useEffect(() => {
-  //   console.log(loggedFoods, 'LOOGED FOOD')
-  // }, [loggedFoods])
+      if (goal === 'maintainWeight') {
+          return totalDailyCalorieNeeds;
+      } else if (goal === 'loseWeight') {
+          return Math.round(totalDailyCalorieNeeds - 500);
+      } else {
+          return Math.round(totalDailyCalorieNeeds + 500);
+      }
+  };
 
   return(
     <View style={styles.container}>
@@ -224,28 +216,5 @@ const styles = StyleSheet.create ({
     color: '#cb997e',
     fontWeight: 'bold',
     flex: 1,
-  },
-    boldText: {
-    fontFamily: 'MontserratMedium',
-		color: '#6b705c',
-		fontSize: 25,
-    marginTop: '5%',
-    paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-    },
-	input: {
-    borderColor: '#6b705c', 
-    borderBottomWidth: 2,
-    marginLeft: 5,
-    marginRight: 5,
-    textAlign: 'center',
-    fontSize: 17,
-    width: 170
-	},
-  microsLabel: {
-    color: '#6b705c',
-    fontWeight: 'bold',
-    marginLeft: 2,
   },
 })

@@ -1,73 +1,28 @@
-import React from 'react'
-import { View, Text, StyleSheet, Picker, Animated, AsyncStorage } from 'react-native'
-import { useFonts } from 'expo-font'
-import Girl from './svgs/girl'
-import CustomButton from './button'
+import React from 'react';
+import { View, Text, Picker, Animated, AsyncStorage } from 'react-native';
+import Girl from './svgs/girl';
+import CustomButton from './button';
+import { styles } from '../styles/global';
 
 
 const Gender = ({ navigation }) => {
 	// AsyncStorage.getItem('gender').then(data => setGender(data));
 	const [gender, setGender] = React.useState(null);
-	const [fadeAnim, setFadeAnim] = React.useState(new Animated.Value(0.1))
-	const [fadeAnimTwo] = React.useState(new Animated.Value(0))
-	const [fadeAnimThree] = React.useState(new Animated.Value(0))
-
-    const [loaded] = useFonts({
-		Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
-		MontserratLight: require('../assets/fonts/Montserrat-Light.ttf'),
-		MontserratMedium: require('../assets/fonts/Montserrat-Medium.ttf'),
-		MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf')
-	  })
-
-	React.useEffect(() => {
-		Animated.timing(fadeAnim, {
-		  toValue: 1,
-		  duration: 500,
-		  useNativeDriver: false,
-		}).start()
-
-		setTimeout(() => {
-			setFadeAnim(1)
-		}, 1000)
-	  }, [])
-
-	React.useEffect(() => {
-		if (fadeAnim === 1) {
-			Animated.timing(fadeAnimTwo, {
-				toValue: 1,
-				duration: 500,
-				useNativeDriver: false,
-			}).start()
-		};
-	  }, [fadeAnim])
-
-	React.useEffect(() => {
-		if (gender) {
-			Animated.timing(fadeAnimThree, {
-				toValue: 1,
-				duration: 500,
-				useNativeDriver: false,
-			}).start();
-		}
-	}, [gender])
-
-    if (!loaded)
-      return null
 
 	return (
 		<View style={styles.container}>
-			<View style={{marginLeft:'auto', marginRight:'auto'}}>
+			<View style={{ marginLeft:'auto', marginRight:'auto', marginTop: '15%' }}>
 				<Girl />
 			</View >
 
-			<Animated.Text style={{ ...styles.subText, opacity: fadeAnim }}>Next, please select a 
+			<Animated.Text style={{ ...styles.subText }}>Next, please select a 
 				<Text style={styles.boldText}> gender </Text>
 			</Animated.Text>
 
 			<View style={{ marginRight:'auto', alignItems: 'left', width: '100%' }}>
 				<Picker
 					selectedValue={gender}
-					style={styles.picker}
+					style={styles.genderPicker}
 					onValueChange={(itemValue, itemIndex) => setGender(itemValue)}
 				>
 					<Picker.Item label="Male" value="male" />
@@ -92,55 +47,4 @@ const Gender = ({ navigation }) => {
 	)
 }
 
-export default Gender
-
-const styles = StyleSheet.create ({
-	container:{
-		backgroundColor: '#ffe8d6',
-		height: '100%',
-		paddingTop: '5%'
-	},
-	imgender: {
-		height:150,
-		width:150,
-		marginLeft:'auto',
-		marginRight:'auto',
-
-	},
-	text: {
-		fontFamily: 'Pacifico',
-		color: '#6b705c',
-		fontSize: 35,
-		paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-	},
-    subText: {
-		fontFamily: 'MontserratLight',
-		color: '#6b705c',
-		fontSize: 25,
-        marginTop: '5%',
-        paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-	},
-    boldText: {
-        fontFamily: 'MontserratMedium',
-		color: '#6b705c',
-		fontSize: 25,
-        marginTop: '5%',
-        paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-    },
-	picker: {
-		backgroundColor: '#ffe8d6',
-		opacity: 1,
-		borderRadius: 4,
-        height: 45,
-        width: 200,
-        marginLeft: 'auto',
-        marginRight: 'auto',
-		textAlign: 'center'
-	  },
-})
+export default Gender;

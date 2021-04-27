@@ -1,8 +1,9 @@
-import React from 'react'
-import { View, Text, StyleSheet, Picker, Animated, AsyncStorage } from 'react-native'
-import { useFonts } from 'expo-font'
-import Workout from './svgs/workout'
-import CustomButton from './button'
+import React from 'react';
+import { View, Text, StyleSheet, Picker, Animated, AsyncStorage } from 'react-native';
+import { useFonts } from 'expo-font';
+import Workout from './svgs/workout';
+import CustomButton from './button';
+import { styles } from '../styles/global';
 
 const FEET = [
     { value: '1', label: "1'" },
@@ -85,7 +86,7 @@ const Height = ({ navigation }) => {
 				<Workout />
 			</View >
 
-			<Animated.Text style={{ ...styles.subText, opacity: fadeAnim }}>Almost there! Select your
+			<Animated.Text style={{ ...styles.subText /*, opacity: fadeAnim */ }}>Almost there! Select your
 				<Text style={styles.boldText}> height </Text>
 			</Animated.Text>
             
@@ -127,53 +128,4 @@ const Height = ({ navigation }) => {
 	)
 }
 
-export default Height
-
-const styles = StyleSheet.create ({
-	container:{
-		backgroundColor: '#ffe8d6',
-		height: '100%',
-		paddingTop: '5%'
-	},
-	imgender: {
-		height:150,
-		width:150,
-		marginLeft:'auto',
-		marginRight:'auto',
-
-	},
-	text: {
-		fontFamily: 'Pacifico',
-		color: '#6b705c',
-		fontSize: 35,
-		paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-	},
-    subText: {
-		fontFamily: 'MontserratLight',
-		color: '#6b705c',
-		fontSize: 25,
-        marginTop: '5%',
-        paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-	},
-    boldText: {
-        fontFamily: 'MontserratMedium',
-		color: '#6b705c',
-		fontSize: 25,
-        marginTop: '5%',
-        paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-    },
-	picker: {
-		backgroundColor: '#ffe8d6',
-		opacity: 1,
-		borderRadius: 4,
-        height: 45,
-        width: 200,
-		textAlign: 'center'
-	  },
-})
+export default Height;

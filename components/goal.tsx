@@ -1,15 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, StyleSheet, Picker, Animated, AsyncStorage } from 'react-native';
-import { useFonts } from 'expo-font';
+import { View, Text, StyleSheet, AsyncStorage } from 'react-native';
 import CustomButton from './button'
 import Pilates from './svgs/pilates'
 import { store } from '../store';
 
-const Goal = ({ route, navigation }) => {   
+const Goal = ({ navigation }) => {   
     const globalState = useContext(store);
     const { state, dispatch } = globalState;
     const { totalDailyCalorieNeeds: tdcnFromState, goal: goalFromState } = state;
-
     const [goal, setGoal] = useState(null);
     const [totalDailyCalorieNeeds, setTotalDailyCalorieNeeds] = useState(null);
 
