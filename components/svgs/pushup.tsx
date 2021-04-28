@@ -1,9 +1,12 @@
 import React from 'react';
 import { Svg, G, Path } from 'react-native-svg';
+import { Dimensions } from 'react-native';
+
+const windowHeight = Dimensions.get('window').height;
 
 const Pushup = () => {
     return (
-        <Svg width="250" height="250" viewBox="0 0 773 447" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <Svg width="250" height={windowHeight <= 667 ? "200" :"250"} viewBox="0 0 773 447" fill="none" xmlns="http://www.w3.org/2000/svg">
             <G id="Group 1">
                 <Path id="Vector" d="M505.36 269.76C505.36 269.76 533.9 282.65 547.71 282.65C547.71 282.65 562.44 286.33 570.71 290.02C578.98 293.71 611.22 295.54 611.22 295.54C611.22 295.54 648.97 309.35 653.57 315.8C658.17 322.25 671.98 292.8 671.98 292.8L664.61 274.39L525.61 247.69L505.36 269.76Z" fill="#FFB9B9"/>
                 <Path id="Vector_2" opacity="0.05" d="M505.36 269.76C505.36 269.76 533.9 282.65 547.71 282.65C547.71 282.65 562.44 286.33 570.71 290.02C578.98 293.71 611.22 295.54 611.22 295.54C611.22 295.54 648.97 309.35 653.57 315.8C658.17 322.25 671.98 292.8 671.98 292.8L664.61 274.39L525.61 247.69L505.36 269.76Z" fill="black"/>

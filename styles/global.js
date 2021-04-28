@@ -1,9 +1,14 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
+console.log(windowHeight)
 
 export const styles = StyleSheet.create ({
 	container:{
 		backgroundColor: '#ffe8d6',
-		height: '100%',		
+		height: '100%',
         // paddingTop: '5%'
 	},
     box: {

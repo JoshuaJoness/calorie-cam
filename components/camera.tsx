@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef, useEffect } from 'react'
-import { StyleSheet, Text, Picker, View, Image, ScrollView, TextInput, AsyncStorage, Alert, Modal } from 'react-native'
+import { StyleSheet, Text, Picker, View, Image, ScrollView, TextInput, AsyncStorage, Alert, Modal, Dimensions } from 'react-native'
 import axios from 'axios'
 import moment from 'moment'
 import { Camera } from 'expo-camera';
@@ -8,6 +8,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { store }  from '../store';
 import AddItemModal from './addItemModal';
 
+const windowHeight = Dimensions.get('window').height;
 
 const Clarifai = require('clarifai');
 const app = new Clarifai.App({apiKey: '6e326e5cab504a7bb99b3e622c9d9c8e'});
@@ -34,10 +35,14 @@ const CalorieCam = ({ navigation }) => {
     const cameraRef = useRef(null);
 
     const predictFood = async () =>	{
-        const data = await app.models.predict("bd367be194cf45149e75f01d59f77ba7", {base64:image});
-        const foodPredictions = data.outputs[0].data.concepts;
-        setFoodPredictions(foodPredictions);
-        return;
+        try {
+            const data = await app.models.predict("bd367be194cf45149e75f01d59f77ba7", {base64:image});
+            const foodPredictions = data.outputs[0].data.concepts;
+            setFoodPredictions(foodPredictions);
+            return;
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     const addFoodToLog = async (foodToLog) => {
@@ -87,7 +92,7 @@ const CalorieCam = ({ navigation }) => {
 	return(
 		<View style={styles.container}>
             <Text style={styles.title}>Calorie Cam</Text>
-            <View style={{ backgroundColor:'#ddbea9', width: '90%', height: 400, paddingBottom: totalNutrients ? '7%' : 0 }}>
+            <View style={{ backgroundColor:'#ddbea9', width: '90%', height: windowHeight <= 667 ? 300 : 400, paddingBottom: totalNutrients ? '7%' : 0 }}>
                 {
                 totalNutrients ? 
                 <ScrollView>
@@ -317,7 +322,7 @@ const styles = StyleSheet.create({
       alignItems: 'flex-end',
       marginLeft: 'auto', 
       marginRight: 'auto',
-      marginTop: 25,
+      marginTop: windowHeight <= 667 ? 5 : 25,
       paddingBottom: 50, // TODO this is a temp fix for white space at bottom
     },
     title: {
@@ -326,12 +331,12 @@ const styles = StyleSheet.create({
 		fontSize: 35,
 		paddingLeft: '10%',
 		paddingRight: '10%',
-        marginBottom: 30,
+        marginBottom: windowHeight <= 667 ? 15 : 30,
 		textAlign: 'center',
     },
     image: { 
         width: '100%', 
-        height: 400, 
+        height: windowHeight <= 667 ? 300 : 400, 
         marginLeft: 'auto',
         marginRight: 'auto',
         backgroundColor: '#ECECEC', 

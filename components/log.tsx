@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { ScrollView, View, Text, AsyncStorage, Image, StyleSheet, Modal, TextInput } from 'react-native';
+import { ScrollView, View, Text, AsyncStorage, StyleSheet, Modal, Dimensions } from 'react-native';
 import CustomButton from './button';
 import AddItemModal from './addItemModal';
 import { store } from '../store';
+
+const windowHeight = Dimensions.get('window').height;
 
 const Log = ({ navigation }) => {
   const [totalCalories, setTotalCalories] = useState(0);
@@ -160,7 +162,7 @@ const Log = ({ navigation }) => {
           />
         </Modal>
 
-        <View style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto', marginRight: 'auto', padding: 10, marginTop: 30  }}>
+        <View style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto', marginRight: 'auto', padding: 10, marginTop: windowHeight <= 667 ? 10 : 30  }}>
             <CustomButton text='LOG ITEM' onPress={() => setModalVisible(!modalVisible)} style={{ width: 150, backgroundColor: '#6b705c', marginRight: 5 }} />
             <CustomButton text='CLEAR LOG' onPress={clearLog} style={{ width: 150, marginLeft: 5 }} />
         </View>

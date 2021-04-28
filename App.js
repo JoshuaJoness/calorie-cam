@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AsyncStorage } from 'react-native'
+import { AsyncStorage, Dimensions } from 'react-native'
 import { useFonts } from 'expo-font';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
@@ -18,13 +18,18 @@ import CalorieCam from './components/camera';
 import Micros from './components/micros';
 import { StateProvider } from './store.js';
 
+const windowHeight = Dimensions.get('window').height;
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 function Home() {
     return (
-        <Tab.Navigator>
+        <Tab.Navigator
+        tabBarOptions={{
+          style: windowHeight <= 667 ? { paddingBottom: 15 } : { marginBottom: 5}
+        }}
+        >
             <Tab.Screen name="Goal" component={Goal} />
             <Tab.Screen name="Camera" component={CalorieCam} />
             <Tab.Screen name="Log" component={Log} />
@@ -45,7 +50,12 @@ function App() {
 
     useEffect(() => {
       const getData = async () => {
-          await AsyncStorage.getItem('goal').then(data => setGoal(data))
+          try {
+            const goal = await AsyncStorage.getItem('goal');
+            await setGoal(goal);
+          } catch (err) {
+            console.log(err);
+          }
       }
       getData();
     }, []);

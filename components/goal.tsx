@@ -1,8 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, StyleSheet, AsyncStorage } from 'react-native';
+import { View, Text, StyleSheet, AsyncStorage, Dimensions } from 'react-native';
 import CustomButton from './button'
 import Pilates from './svgs/pilates'
 import { store } from '../store';
+import { ScrollView } from 'react-native-gesture-handler';
+
+const windowHeight = Dimensions.get('window').height;
 
 const Goal = ({ navigation }) => {   
     const globalState = useContext(store);
@@ -29,47 +32,47 @@ const Goal = ({ navigation }) => {
     }, [tdcnFromState, goalFromState]);
 
     return (
-        <View style={styles.container}>
-        <Text style={styles.title}>Your Goals</Text>
+        <ScrollView style={styles.container}>
+            <Text style={styles.title}>Your Goals</Text>
 
-        {goal === 'loseWeight' ? (
-            <View>
-                <Text style={styles.boldText}>{Math.round(Number(totalDailyCalorieNeeds)) - 500} 
-                    <Text style={styles.text}> calories is the amount of calories that we recommend you eat daily to lose weight.</Text>
-                </Text>
-                <Text style={{ ...styles.text, marginTop: 35 }}>We arrived at this number by subtracting <Text style={styles.boldText}>500 calories</Text> from your maintenance calories.</Text>
-            </View>
-        ) : goal === 'maintainWeight' ? (
-            <View>
-                <Text style={styles.text}><Text style={styles.boldText}>{Math.round(Number(totalDailyCalorieNeeds))}</Text> calories is the amount of calories that we recommend you eat daily to maintain your current weight.</Text>
-                <Text style={{ ...styles.text, marginTop: 35 }}>We arrived at this number by calculating your daily energy expenditure using the information you provided.</Text>
-            </View>
-        ) : goal === 'gainWeight' ? (
-            <View>
-                <Text style={styles.boldText}>{Math.round(Number(totalDailyCalorieNeeds)) + 500} 
-                    <Text style={styles.text}> calories is the amount of calories that we recommend you eat daily to gain weight.</Text>
-                </Text>
-                <Text style={{ ...styles.text, marginTop: 35 }}>We arrived at this number by adding <Text style={styles.boldText}>500 calories</Text> to your maintenance calories.</Text>
-            </View>
-        ) : null}
+            {goal === 'loseWeight' ? (
+                <View>
+                    <Text style={styles.boldText}>{Math.round(Number(totalDailyCalorieNeeds)) - 500} 
+                        <Text style={styles.text}> calories is the amount of calories that we recommend you eat daily to lose weight.</Text>
+                    </Text>
+                    <Text style={{ ...styles.text, marginTop: 35 }}>We arrived at this number by subtracting <Text style={styles.boldText}>500 calories</Text> from your maintenance calories.</Text>
+                </View>
+            ) : goal === 'maintainWeight' ? (
+                <View>
+                    <Text style={styles.text}><Text style={styles.boldText}>{Math.round(Number(totalDailyCalorieNeeds))}</Text> calories is the amount of calories that we recommend you eat daily to maintain your current weight.</Text>
+                    <Text style={{ ...styles.text, marginTop: 35 }}>We arrived at this number by calculating your daily energy expenditure using the information you provided.</Text>
+                </View>
+            ) : goal === 'gainWeight' ? (
+                <View>
+                    <Text style={styles.boldText}>{Math.round(Number(totalDailyCalorieNeeds)) + 500} 
+                        <Text style={styles.text}> calories is the amount of calories that we recommend you eat daily to gain weight.</Text>
+                    </Text>
+                    <Text style={{ ...styles.text, marginTop: 35 }}>We arrived at this number by adding <Text style={styles.boldText}>500 calories</Text> to your maintenance calories.</Text>
+                </View>
+            ) : null}
 
-        <Text style={{ ...styles.text, marginTop: 35 }}>
-            This is known as <Text style={styles.boldText}>{ goal === 'loseWeight' ? 'a caloric deficit' : goal === 'maintainWeight' ? 'your maintenance calories' : goal === 'gainWeight' ? 'a caloric surplus' : null }</Text>
-        </Text>
+            <Text style={{ ...styles.text, marginTop: 35 }}>
+                This is known as <Text style={styles.boldText}>{ goal === 'loseWeight' ? 'a caloric deficit' : goal === 'maintainWeight' ? 'your maintenance calories' : goal === 'gainWeight' ? 'a caloric surplus' : null }</Text>
+            </Text>
 
-        <CustomButton
-            style={{ marginTop: '10%' }}
-            text="Update Your Goals" 
-            onPress={async () => {
-                await AsyncStorage.removeItem('goal')
-                dispatch({ type: 'REMOVE_GOAL' })
-                navigation.navigate('GetStarted');
-            }} 
-        />
-              <View style={{ marginLeft:'auto', marginRight:'auto' }}>
-            <Pilates />
-        </View >
-    </View>
+            <CustomButton
+                style={{ marginTop: '10%' }}
+                text="Update Your Goals" 
+                onPress={async () => {
+                    await AsyncStorage.removeItem('goal')
+                    dispatch({ type: 'REMOVE_GOAL' })
+                    navigation.navigate('GetStarted');
+                }} 
+            />
+                <View style={{ marginLeft:'auto', marginRight:'auto' }}>
+                <Pilates />
+            </View >
+        </ScrollView>
     )
 }
 
@@ -101,24 +104,15 @@ const styles = StyleSheet.create ({
 	text: {
 		fontFamily: 'MontserratLight',
 		color: '#6b705c',
-		fontSize: 22,
+		fontSize: windowHeight <= 667 ? 22 : 22,
 		paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-	},
-    subText: {
-		fontFamily: 'MontserratLight',
-		color: '#6b705c',
-		fontSize: 25,
-        marginTop: '5%',
-        paddingLeft: '10%',
 		paddingRight: '10%',
 		textAlign: 'center',
 	},
     boldText: {
         fontFamily: 'MontserratMedium',
 		color: '#6b705c',
-		fontSize: 25,
+		fontSize: windowHeight <= 667 ? 22 : 25,
         // marginTop: '5%',
         paddingLeft: '10%',
 		paddingRight: '10%',

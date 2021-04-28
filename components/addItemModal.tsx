@@ -1,9 +1,12 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, AsyncStorage, StyleSheet, Modal, TextInput, Alert, Picker } from 'react-native';
+import { View, Text, AsyncStorage, StyleSheet, Modal, TextInput, Alert, Picker, Dimensions } from 'react-native';
 import CustomButton from './button';
 import axios from 'axios';
 import { store }  from '../store';
 import UserInputResults from './userInputResults';
+import { ScrollView } from 'react-native-gesture-handler';
+
+const windowHeight = Dimensions.get('window').height;
 
 const edamamId = '7ff1ee7e';
 const edamamKey = 'aa4824adda205d7ff601301c08816573';
@@ -98,14 +101,23 @@ const AddItemModal = ({ setModalVisible, modalVisible, cameraPrediction }) => {
 	}, [cameraPrediction]);
 
     return (
-		<View style={styles.container}>	
-			<View style={{ backgroundColor:'#ddbea9', width: '95%', height: 650, marginTop: 5, alignItems: 'center', paddingTop: 20 }}>
+		<ScrollView style={styles.container}>	
+			<View style={{ 
+				backgroundColor:'#ddbea9', 
+				width: '95%', 
+				height: windowHeight <= 667 ? 500 : 650, 
+				marginTop: windowHeight <= 667 ? 5 : 25, 
+				alignItems: 'center', 
+				paddingTop: 20, 
+				marginLeft: 'auto', 
+				marginRight: 'auto' }}
+			>
 			{
 			!submitted ?
 			<>
 				<Text style={styles.formText}>Enter food below</Text>
 				<TextInput 
-					style={{ ...styles.input, marginTop: 50, fontSize: 25 }} 
+					style={{ ...styles.input, marginTop: 50, fontSize: windowHeight <= 667 ? 20 : 25 }} 
 					value={userInput || cameraPrediction} 	
 					placeholder={'Banana'}
 					onChangeText={(label) => {
@@ -152,48 +164,46 @@ const AddItemModal = ({ setModalVisible, modalVisible, cameraPrediction }) => {
 				</View> : null}			
 			</>
 			:
-			result ?
-			<UserInputResults foodQty={foodQty} setFoodQty={setFoodQty} result={result} totalNutrients={totalNutrients} /> : null
+			result ? <UserInputResults foodQty={foodQty} setFoodQty={setFoodQty} result={result} totalNutrients={totalNutrients} /> : null
 			}
-		</View>
-			
-		<View style={{ display: 'flex', flexDirection: 'row', marginTop: 20 }}>
-			<CustomButton 
-				text="CANCEL" 
-				onPress={() => {
-					setModalVisible(!modalVisible)
-				}} 
-				style={{ backgroundColor: '#cb997e', padding: 10, width: 150, marginRight: 5 }}
-			/>
-			{!submitted ? 
-			<CustomButton 
-				text="SUBMIT" 
-				onPress={() => {
-					if (!selectedItem) {
-						Alert.alert('Please select an item from the picker');
-					} else if (!measurementUri) {
-						Alert.alert('Please select a unit of measurement');
-					} else {
-						getSelectedItemsNutrients();
-					}
-				}} 
-				style={{ backgroundColor: '#6b705c', padding: 10, width: 150, marginLeft: 5 }}
-				// disabled={!selectedItem && !measurementUri}
-			/>
-			:
-			<CustomButton 
-				text="LOG ITEM" 
-				onPress={() => {
-					addFoodToLog();
-					setModalVisible(!modalVisible);
-				}} 
-				style={{ backgroundColor: '#6b705c', padding: 10, width: 150, marginLeft: 5 }}
-			/>
-			}
-		</View>
-		{selectedItem && measurementUri && !submitted ? <Text style={{ ...styles.formText, position: 'absolute', bottom: 50 }}>Looks good, submit</Text> : null} 
-		</View>
-
+			</View>
+				
+			<View style={{ display: 'flex', flexDirection: 'row', marginTop: 20, alignSelf: 'center' }}>
+				<CustomButton 
+					text="CANCEL" 
+					onPress={() => {
+						setModalVisible(!modalVisible)
+					}} 
+					style={{ backgroundColor: '#cb997e', padding: 10, width: 150, marginRight: 5 }}
+				/>
+				{!submitted ? 
+				<CustomButton 
+					text="SUBMIT" 
+					onPress={() => {
+						if (!selectedItem) {
+							Alert.alert('Please select an item from the picker');
+						} else if (!measurementUri) {
+							Alert.alert('Please select a unit of measurement');
+						} else {
+							getSelectedItemsNutrients();
+						}
+					}} 
+					style={{ backgroundColor: '#6b705c', padding: 10, width: 150, marginLeft: 5 }}
+					// disabled={!selectedItem && !measurementUri}
+				/>
+				:
+				<CustomButton 
+					text="LOG ITEM" 
+					onPress={() => {
+						addFoodToLog();
+						setModalVisible(!modalVisible);
+					}} 
+					style={{ backgroundColor: '#6b705c', padding: 10, width: 150, marginLeft: 5 }}
+				/>
+				}
+			</View>
+			{/* {selectedItem && measurementUri && !submitted ? <Text style={{ ...styles.formText, position: 'absolute', bottom: 50 }}>Looks good, submit</Text> : null}  */}
+		</ScrollView>
 	)
 }
 
@@ -203,9 +213,10 @@ const styles = StyleSheet.create ({
 	container:{
 		backgroundColor: '#ffe8d6',
 		height: '100%',
+		width: '100%',
 		paddingTop: 50,
 		display:'flex', 
-		alignItems: 'center'
+		// alignItems: 'center'
 		// flexDirection:'column', 
 		// alignItems: 'flex-end',
 		// marginLeft: 'auto', 
@@ -216,7 +227,7 @@ const styles = StyleSheet.create ({
 	formText: {
         fontFamily: 'MontserratMedium',
         color: '#6b705c',
-        fontSize: 25,
+        fontSize: windowHeight <= 667 ? 20 : 25,
         paddingLeft: '10%',
         paddingRight: '10%',
         textAlign: 'center',
@@ -245,24 +256,15 @@ const styles = StyleSheet.create ({
     fontWeight: 'bold',
     flex: 1,
   },
-    boldText: {
-        fontFamily: 'MontserratMedium',
-		color: '#6b705c',
-		fontSize: 25,
-        marginTop: '5%',
-        paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-    },
 	input: {
-    borderColor: '#6b705c', 
-	fontFamily: 'MontserratMedium',
-    borderBottomWidth: 2,
-    marginLeft: 5,
-    marginRight: 5,
-    textAlign: 'center',
-    fontSize: 17,
-    width: 170
+		borderColor: '#6b705c', 
+		fontFamily: 'MontserratMedium',
+		borderBottomWidth: 2,
+		marginLeft: 5,
+		marginRight: 5,
+		textAlign: 'center',
+		fontSize: 17,
+		width: 170
 	},
 	value: {
         color: '#6b705c',

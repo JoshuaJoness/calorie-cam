@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Svg, { Path, G, LinearGradient, Stop, Rect, Defs, ClipPath } from 'react-native-svg'
-import { Animated, Text, View, StyleSheet, Button } from 'react-native'
+import { Animated, Text, View, StyleSheet, Button, Dimensions } from 'react-native'
+
+const windowHeight = Dimensions.get('window').height;
 
 const EatingImage = (props) => {
   const [fadeAnim, setFadeAnim] = useState(new Animated.Value(0.1))
@@ -14,7 +16,7 @@ const EatingImage = (props) => {
 	  }, [])
 
   return (
-    <Svg width="300vw" height="300vh" viewBox="0 0 904 658" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <Svg width="300vw" height={windowHeight <= 667 ? "200vh" : "300vh"} viewBox="0 0 904 658" fill="none" xmlns="http://www.w3.org/2000/svg">
         <G id="customEating" clip-path="url(#clip0)">
           {/* <Path id="background" d="M532.89 18.43C464.41 44.88 390.18 46.11 321.23 21.21C223.51 -14.07 95.89 -23.1 48.6 138.57C-32.11 414.78 133.01 513.37 133.01 513.37C133.01 513.37 248.29 539.21 312.12 585.9C402.79 652.22 513.83 674.39 618.43 643.29C685.32 623.4 742.65 590.77 759.04 537.38C804.88 388.06 775.78 298.31 858.74 258.94C941.7 219.57 895.54 73.72 836.54 70.41C777.54 67.1 638.54 100.93 595.54 33.64C580.21 9.75002 556.76 9.20001 532.89 18.43Z" fill="url(#paint0_linear)"/> */}
           {/* <Animated.View

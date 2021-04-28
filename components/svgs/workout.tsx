@@ -1,9 +1,13 @@
 import React from 'react';
 import { Svg, G, Path, Defs, ClipPath, Rect } from 'react-native-svg';
+import { Dimensions } from 'react-native';
+
+const windowHeight = Dimensions.get('window').height;
+
 
 const Workout = () => {
     return (
-        <Svg width="250" height="250" viewBox="0 0 883 625" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <Svg width="250" height={windowHeight <= 667 ? "150" : "250"} viewBox="0 0 883 625" fill="none" xmlns="http://www.w3.org/2000/svg">
             <G id="undraw_personal_training_0dqn 1" clip-Path="url(#clip0)">
                 <Path id="Vector" d="M469.975 275.342L465.737 281.903L522.322 318.453L526.56 311.892L469.975 275.342Z" fill="#2F2E41"/>
                 <Path id="Vector_2" d="M529.363 318.35C536.384 307.481 539.873 297.246 537.156 295.491C534.438 293.735 526.543 301.124 519.522 311.994C512.501 322.864 509.012 333.099 511.729 334.854C514.447 336.609 522.342 329.22 529.363 318.35Z" fill="#2F2E41"/>

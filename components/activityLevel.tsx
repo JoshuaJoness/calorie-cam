@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, Text, Picker, Animated, AsyncStorage } from 'react-native';
+import { View, Text, Picker, Animated, AsyncStorage, Dimensions } from 'react-native';
 import Pilates from './svgs/pilates';
 import CustomButton from './button';
 import { styles } from '../styles/global';
+
+const windowHeight = Dimensions.get('window').height;
 
 
 const ACTIVITY_LEVELS = [
@@ -38,7 +40,7 @@ const ActivityLevel = ({ navigation }) => {
 
             </View>
 
-            {activityLevel ? <View style={{ marginTop: 200 }}>
+            {activityLevel ? <View style={{ marginTop: windowHeight <= 667 ? 150 : 200 }}>
                 <CustomButton 
                     text='Continue' 
                     onPress={async() => {

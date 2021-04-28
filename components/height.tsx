@@ -1,9 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, Picker, Animated, AsyncStorage } from 'react-native';
+import { View, Text, StyleSheet, Picker, Animated, AsyncStorage, Dimensions } from 'react-native';
 import { useFonts } from 'expo-font';
 import Workout from './svgs/workout';
 import CustomButton from './button';
 import { styles } from '../styles/global';
+
+const windowHeight = Dimensions.get('window').height;
+
 
 const FEET = [
     { value: '1', label: "1'" },
@@ -36,57 +39,15 @@ const Height = ({ navigation }) => {
 	
 	const [feet, setFeet] = React.useState(null);
 	const [inches, setInches] = React.useState(null);
-	const [fadeAnim, setFadeAnim] = React.useState(new Animated.Value(0.1))
-	const [fadeAnimTwo] = React.useState(new Animated.Value(0))
-	const [fadeAnimThree] = React.useState(new Animated.Value(0))
 
-    const [loaded] = useFonts({
-		Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
-		MontserratLight: require('../assets/fonts/Montserrat-Light.ttf'),
-		MontserratMedium: require('../assets/fonts/Montserrat-Medium.ttf'),
-		MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf')
-	  })
-
-	React.useEffect(() => {
-		Animated.timing(fadeAnim, {
-		  toValue: 1,
-		  duration: 500,
-		  useNativeDriver: false,
-		}).start()
-
-		setTimeout(() => {
-			setFadeAnim(1)
-		}, 1000)
-	  }, [])
-
-	// React.useEffect(() => {
-	// 	if (fadeAnim === 1) {
-	// 		Animated.timing(fadeAnimTwo, {
-	// 			toValue: 1,
-	// 			duration: 500,
-	// 		}).start()
-	// 	};
-	//   }, [fadeAnim])
-
-	// React.useEffect(() => {
-	// 	if (gender) {
-	// 		Animated.timing(fadeAnimThree, {
-	// 			toValue: 1,
-	// 			duration: 500,
-	// 		}).start();
-	// 	}
-	// }, [gender])
- 
-    if (!loaded)
-      return null
 
 	return (
 		<View style={styles.container}>
-			<View style={{marginLeft:'auto', marginRight:'auto'}}>
+			<View style={{ marginLeft:'auto', marginRight:'auto', marginTop: windowHeight <= 667 ? 20 : null }}>
 				<Workout />
 			</View >
 
-			<Animated.Text style={{ ...styles.subText /*, opacity: fadeAnim */ }}>Almost there! Select your
+			<Animated.Text style={{ ...styles.subText }}>Almost there! Select your
 				<Text style={styles.boldText}> height </Text>
 			</Animated.Text>
             

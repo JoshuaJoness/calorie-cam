@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, AsyncStorage } from 'react-native';
+import { View, Text, StyleSheet, AsyncStorage, Dimensions } from 'react-native';
 import CustomButton from './button'
 import { store } from '../store';
+import { ScrollView } from 'react-native-gesture-handler';
+
+const windowHeight = Dimensions.get('window').height;
+
 
 const Results = ({ navigation }) => {
     const globalState = useContext(store);
@@ -59,16 +63,18 @@ const Results = ({ navigation }) => {
             });
     }, [totalDailyCalorieNeeds]);
 
+    console.log(windowHeight,)
+
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Text style={styles.title}>Results</Text>
             <Text style={styles.boldText}>{Math.round(Number(totalDailyCalorieNeeds))} 
                 <Text style={styles.text}> calories is the amount of calories that your body needs for it's daily energy expenditure.</Text>
             </Text>
-            <Text style={{ ...styles.text, marginTop: 50 }}>
+            <Text style={{ ...styles.text, marginTop: windowHeight <= 667 ? 20 : 50 }}>
                 This is known as your <Text style={styles.boldText}>maintenance</Text> calories
             </Text>
-            <Text style={{ ...styles.text, marginTop: 50 }}>
+            <Text style={{ ...styles.text, marginTop: windowHeight <= 667 ? 20 :  50 }}>
                 Would you like to
             </Text>
             <View style={{display:'flex', flexDirection: 'column' }}>
@@ -84,6 +90,7 @@ const Results = ({ navigation }) => {
                         }
                         navigation.navigate('Home');
                     }}
+                    style={{ height: windowHeight <= 667 ? 35 : 45, width: windowHeight <= 667 ? 200 : 250 }}
                 />
                 <CustomButton 
                     text={'Maintain Weight'}
@@ -98,6 +105,7 @@ const Results = ({ navigation }) => {
                         }
                         navigation.navigate('Home');
                     }}
+                    style={{ height: windowHeight <= 667 ? 35 : 45, width: windowHeight <= 667 ? 200 : 250 }}
                     />
                 <CustomButton 
                     text={'Gain Weight'} 
@@ -112,9 +120,10 @@ const Results = ({ navigation }) => {
                         }
                         navigation.navigate('Home');
                     }}
+                    style={{ height: windowHeight <= 667 ? 35 : 45, width: windowHeight <= 667 ? 200 : 250 }}
                 />
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
@@ -139,7 +148,7 @@ const styles = StyleSheet.create ({
 		fontSize: 35,
 		paddingLeft: '10%',
 		paddingRight: '10%',
-        marginBottom: 30,
+        marginBottom: windowHeight <= 667 ? 5 : 30,
 		textAlign: 'center',
     },
 	text: {
@@ -150,20 +159,11 @@ const styles = StyleSheet.create ({
 		paddingRight: '10%',
 		textAlign: 'center',
 	},
-    subText: {
-		fontFamily: 'MontserratLight',
-		color: '#6b705c',
-		fontSize: 25,
-        marginTop: '5%',
-        paddingLeft: '10%',
-		paddingRight: '10%',
-		textAlign: 'center',
-	},
     boldText: {
         fontFamily: 'MontserratMedium',
 		color: '#6b705c',
 		fontSize: 25,
-        marginTop: '5%',
+        marginTop: windowHeight <= 667 ? '2%' : '5%',
         paddingLeft: '10%',
 		paddingRight: '10%',
 		textAlign: 'center',
