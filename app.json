@@ -26,7 +26,9 @@
     "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/iosIcon.png",
-    "android.adaptiveIcon.foregroundImage": "./assets/androidIcon.png",
+    "adaptiveIcon": {
+      "foregroundImage": "./assets/androidIcon.png"
+    },
     "splash": {
       "image": "./assets/customEatingPNG.png",
       "resizeMode": "contain",
