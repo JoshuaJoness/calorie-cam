@@ -50,8 +50,6 @@ const AddItemModal = ({ setModalVisible, modalVisible, cameraPrediction }) => {
         }
     };
 
-	console.log(obj, 'obj')
-
 	const getSelectedItemsNutrients = async () => {
 		setSubmitted(true);
 

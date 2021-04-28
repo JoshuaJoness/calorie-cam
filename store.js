@@ -12,7 +12,6 @@ const StateProvider = ( { children } ) => {
         return { ...state, goal: action.data }
       } 
       case 'REMOVE_GOAL': {
-        console.log('REMOVE_GOAL called')
         return { ...state, goal: null }
       }
       case 'ADD_FOOD_TO_LOG': {

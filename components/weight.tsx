@@ -54,7 +54,6 @@ const Weight = ({ navigation }) => {
                                 setWeight(null);
                             } else {
 								const lbsToKgs = kgs ? Number(weight) * 2.20462 : null;
-								console.log(typeof weight)
                                 setWeight(lbsToKgs || weight);
                             }
                         }}

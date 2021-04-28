@@ -117,7 +117,7 @@ const styles = StyleSheet.create ({
 	container:{
 		backgroundColor: '#ffe8d6',
 		height: '100%',
-		// paddingTop: '5%'
+		paddingTop: '5%'
 	},
   box: {
     width: '90%',

@@ -27,7 +27,7 @@
     "orientation": "portrait",
     "icon": "./assets/icn.png",
     "splash": {
-      "image": "./assets/images/customEatingPNG.png",
+      "image": "./assets/customEatingPNG.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffe8d6"
     },

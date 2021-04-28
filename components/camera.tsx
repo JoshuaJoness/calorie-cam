@@ -45,7 +45,6 @@ const CalorieCam = ({ navigation }) => {
             let foods = await AsyncStorage.getItem('foods') || '[]';
             foods = JSON.parse(foods);
             foodToLog.grams = grams,
-            console.log(foodToLog, 'CAM LOG')
             foods.push(foodToLog);
             await AsyncStorage.setItem('foods', JSON.stringify(foods));
             await AsyncStorage.setItem('dailyReqs', JSON.stringify(dailyNutrientReqs));
