@@ -27,7 +27,6 @@
     "orientation": "portrait",
     "icon": "./assets/iosIcon.png",
     "android.adaptiveIcon.foregroundImage": "./assets/androidIcon.png",
-    "android.icon": "./assets/androidIcon.png",
     "splash": {
       "image": "./assets/customEatingPNG.png",
       "resizeMode": "contain",
