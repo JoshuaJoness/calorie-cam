@@ -56,6 +56,7 @@ const Height = ({ navigation }) => {
 					selectedValue={feet}
 					style={{ height: 45, width: 100, flex: 1, marginLeft: 100 }}
 					onValueChange={(itemValue, itemIndex) => setFeet(itemValue)}
+					mode="dropdown"
 				>
                     { FEET.map(({value,label}) => <Picker.Item value={value} label={label} key={value} />) }
 				</Picker>

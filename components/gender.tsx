@@ -19,18 +19,20 @@ const Gender = ({ navigation }) => {
 				<Text style={styles.boldText}> gender </Text>
 			</Animated.Text>
 
-			<View style={{ marginRight:'auto', alignItems: 'left', width: '100%' }}>
+			<View style={{ /* marginRight:'auto', alignItems: 'left', */}}>
 				<Picker
 					selectedValue={gender}
 					style={styles.genderPicker}
+					mode="dropdown"
 					onValueChange={(itemValue, itemIndex) => setGender(itemValue)}
 				>
 					<Picker.Item label="Male" value="male" />
 					<Picker.Item label="Female" value="female" />
 				</Picker>
 			</View>
+			{/* <CustomButton text="TEST"/> */}
 
-			{gender ? <View style={{ marginTop: '35%' }}>
+			{gender ? <View>
 				<CustomButton 
 					text='Continue'
 					onPress={async() => {

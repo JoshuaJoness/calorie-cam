@@ -127,9 +127,13 @@ export const styles = StyleSheet.create ({
 		opacity: 1,
 		borderRadius: 4,
         height: 45,
-        width: 200,
-        marginLeft: 'auto',
-        marginRight: 'auto',
+        width: 80,
+        marginTop: 50,
+        fontSize: 30,
+        fontFamily: 'Pacifico',
+        alignSelf: 'center',
+        // marginLeft: 'auto',
+        // marginRight: 'auto',
 		textAlign: 'center'
     },
     heightInchesPicker: {

@@ -52,7 +52,7 @@ const Age = ({ navigation }) => {
 			<Text style={{ ...styles.subText, }}>Great! Let's start with your 
 				<Text style={styles.boldText}> age </Text>
 			</Text>
-			<View style={{marginTop:'10%', marginRight:'auto', alignItems: 'left', width: '100%' }}>
+			<View style={{marginTop:'10%', marginRight:'auto'/*, alignItems: 'left'*/, width: '100%' }}>
 				<TextInput 
 					style={styles.ageInput} 
 					value={age} 	
