@@ -54,16 +54,16 @@ const Height = ({ navigation }) => {
             <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>  
                 <Picker
 					selectedValue={feet}
-					style={{ height: 45, width: 100, flex: 1, marginLeft: 100 }}
+					// style={{ height: 45, width: 100, flex: 1, marginLeft: 100 }}
 					onValueChange={(itemValue, itemIndex) => setFeet(itemValue)}
-					mode="dropdown"
+					// mode="dropdown"
 				>
                     { FEET.map(({value,label}) => <Picker.Item value={value} label={label} key={value} />) }
 				</Picker>
 
                 <Picker
 					selectedValue={inches}
-					style={{ height: 45, width: 100, flex: 1, marginLeft: 200 }}
+					// style={{ height: 45, width: 100, flex: 1, marginLeft: 200 }}
 					onValueChange={(itemValue, itemIndex) => setInches(itemValue)}
 				>
                     { INCHES.map(({value,label}) => <Picker.Item value={value} label={label} key={value} />) }
@@ -71,7 +71,7 @@ const Height = ({ navigation }) => {
 
             </View>
 
-            {feet && inches ? <View style={{ marginTop: 250 }}>
+            {feet && inches ? <View>
                 <CustomButton 
 					text='Continue' 
 					onPress={async () => {

@@ -32,6 +32,8 @@ const Results = ({ navigation }) => {
         getData();
     }, []);
 
+    console.log(gender, 'gender in res')
+
     useEffect(() => {        
         if (age && gender && feet && inches && weight && activityLevel) {
             const feetToInches = feet * 12;

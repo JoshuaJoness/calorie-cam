@@ -40,7 +40,7 @@ const ActivityLevel = ({ navigation }) => {
 
             </View>
 
-            {activityLevel ? <View style={{ marginTop: windowHeight <= 667 ? 150 : 200 }}>
+            {activityLevel ? <View>
                 <CustomButton 
                     text='Continue' 
                     onPress={async() => {

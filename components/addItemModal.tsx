@@ -99,6 +99,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, cameraPrediction }) => {
 	useEffect(() => {
 		getInitialFoodOptions(null)
 	}, [cameraPrediction]);
+	
 
     return (
 		<ScrollView style={styles.container}>	
@@ -134,7 +135,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, cameraPrediction }) => {
 					<Picker
 						selectedValue={selectedItem}
 						// style={{ height: 40 }}
-						itemStyle={{ height: 105, width: '100%', alignSelf: 'center' }}
+						// itemStyle={{ height: 105, width: '100%', alignSelf: 'center' }}
 						onValueChange={(itemValue, itemIndex) => {
 							setSelectedItem(itemValue);
 							setSelectedItemIndex(itemIndex);
@@ -152,7 +153,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, cameraPrediction }) => {
 					<Picker
 							selectedValue={measurementUri}
 							// style={{ height: 40}}
-							itemStyle={{ height: 105, width: '90%', alignSelf: 'center' }}
+							// itemStyle={{ height: 105, width: '90%', alignSelf: 'center' }}
 							onValueChange={(itemValue, itemIndex) => setMeasurementUri(itemValue)}
 						>
 							{Object
@@ -168,13 +169,13 @@ const AddItemModal = ({ setModalVisible, modalVisible, cameraPrediction }) => {
 			}
 			</View>
 				
-			<View style={{ display: 'flex', flexDirection: 'row', marginTop: 20, alignSelf: 'center' }}>
+			<View>
 				<CustomButton 
 					text="CANCEL" 
 					onPress={() => {
 						setModalVisible(!modalVisible)
 					}} 
-					style={{ backgroundColor: '#cb997e', padding: 10, width: 150, marginRight: 5 }}
+					// style={{ backgroundColor: '#cb997e', padding: 10, width: 150, marginRight: 5 }}
 				/>
 				{!submitted ? 
 				<CustomButton 
@@ -188,7 +189,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, cameraPrediction }) => {
 							getSelectedItemsNutrients();
 						}
 					}} 
-					style={{ backgroundColor: '#6b705c', padding: 10, width: 150, marginLeft: 5 }}
+					// style={{ backgroundColor: '#6b705c', padding: 10, width: 150, marginLeft: 5 }}
 					// disabled={!selectedItem && !measurementUri}
 				/>
 				:
@@ -198,7 +199,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, cameraPrediction }) => {
 						addFoodToLog();
 						setModalVisible(!modalVisible);
 					}} 
-					style={{ backgroundColor: '#6b705c', padding: 10, width: 150, marginLeft: 5 }}
+					// style={{ backgroundColor: '#6b705c', padding: 10, width: 150, marginLeft: 5 }}
 				/>
 				}
 			</View>

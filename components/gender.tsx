@@ -7,7 +7,7 @@ import { styles } from '../styles/global';
 
 const Gender = ({ navigation }) => {
 	// AsyncStorage.getItem('gender').then(data => setGender(data));
-	const [gender, setGender] = React.useState(null);
+	const [gender, setGender] = React.useState("male");
 
 	return (
 		<View style={styles.container}>
