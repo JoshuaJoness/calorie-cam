@@ -54,9 +54,13 @@ const Welcome = () => {
 	const [sound, setSound] = React.useState()
 
 	const playSound = async () => {
-		const { sound } = await Audio.Sound.createAsync(require('../assets/sounds/mns.m4a'))
-		setSound(sound)
-		await sound.playAsync() 
+		try {
+			const { sound } = await Audio.Sound.createAsync(require('../assets/sounds/mns.m4a'))
+			setSound(sound)
+			await sound.playAsync() 
+		} catch (err) {
+			console.log(err);
+		}
 	}
 
 	useEffect(() => {

@@ -27,25 +27,29 @@ const Log = ({ navigation }) => {
   // to get log on initial render
   useEffect(() => {
       const getData = async () => {
-        const test = await AsyncStorage.getItem('foods');
-        const parse = JSON.parse(test);
-        await setLoggedFoods(parse);
-
-        const calorieNeeds = await AsyncStorage.getItem('totalDailyCalorieNeeds');
-        const parsedCalorieNeeds = JSON.parse(calorieNeeds);
-        await setTotalDailyCalorieNeeds(parsedCalorieNeeds);
-
-        const weight = await AsyncStorage.getItem('weight');
-        const parsedWeight = JSON.parse(weight);
-        await setWeight(parsedWeight);
-
-        const reqs = await AsyncStorage.getItem('dailyReqs');
-        const parsedReqs = JSON.parse(reqs);
-        await setReqs(parsedReqs);
-
-        const goal = await AsyncStorage.getItem('goal');
-        // const parsedGoal = JSON.parse(goal);
-        await setGoal(goal);
+        try {
+          const test = await AsyncStorage.getItem('foods');
+          const parse = JSON.parse(test);
+          await setLoggedFoods(parse);
+  
+          const calorieNeeds = await AsyncStorage.getItem('totalDailyCalorieNeeds');
+          const parsedCalorieNeeds = JSON.parse(calorieNeeds);
+          await setTotalDailyCalorieNeeds(parsedCalorieNeeds);
+  
+          const weight = await AsyncStorage.getItem('weight');
+          const parsedWeight = JSON.parse(weight);
+          await setWeight(parsedWeight);
+  
+          const reqs = await AsyncStorage.getItem('dailyReqs');
+          const parsedReqs = JSON.parse(reqs);
+          await setReqs(parsedReqs);
+  
+          const goal = await AsyncStorage.getItem('goal');
+          // const parsedGoal = JSON.parse(goal);
+          await setGoal(goal);
+        } catch (err) {
+          console.log(err);
+        }
       }
 
       getData();
@@ -54,9 +58,13 @@ const Log = ({ navigation }) => {
   // to get log when a new food is added to async storage
   useEffect(() => {
     const getData = async () => {
-      const test = await AsyncStorage.getItem('foods');
-      const parse = JSON.parse(test);
-      await setLoggedFoods(parse);
+      try {
+        const test = await AsyncStorage.getItem('foods');
+        const parse = JSON.parse(test);
+        await setLoggedFoods(parse);
+      } catch (err) {
+        console.log(err);
+      }
     }
 
     getData();

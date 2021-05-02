@@ -75,8 +75,12 @@ const CalorieCam = ({ navigation }) => {
     // request camera permissions
     useEffect(() => {
         (async () => {
-            const { status } = await Camera.requestPermissionsAsync();
-        setHasPermission(status === 'granted');
+            try {
+                const { status } = await Camera.requestPermissionsAsync();
+                setHasPermission(status === 'granted');
+            } catch (err) {
+                console.log(err);
+            }
         })();
     }, []);
 

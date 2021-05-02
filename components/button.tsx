@@ -14,12 +14,16 @@ interface IProps {
 }
 
 const CustomButton = ({ text, onPress, disabled, style } : IProps) => {
-    const [sound, setSound] = useState()
+    const [sound, setSound] = useState();
 
 	const playSound = async () => {
-		const { sound } = await Audio.Sound.createAsync(require('../assets/sounds/click1.wav'))
-		// setSound(sound)
-		await sound.playAsync() 
+        try {
+            const { sound } = await Audio.Sound.createAsync(require('../assets/sounds/click1.wav'))
+            // setSound(sound)
+            await sound.playAsync();
+        } catch (err) {
+            console.log(err);
+        }
 	}
 
     // if (disabled) {

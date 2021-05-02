@@ -14,13 +14,17 @@ const Micros = () => {
     // to get log on initial render
     useEffect(() => {
         const getData = async () => {
-          const test = await AsyncStorage.getItem('foods');
-          const parse = JSON.parse(test);
-          await setLoggedFoods(parse);
-
-          const reqs = await AsyncStorage.getItem('dailyReqs');
-          const parsedReqs = JSON.parse(reqs);
-          await setReqs(parsedReqs);
+          try {
+            const test = await AsyncStorage.getItem('foods');
+            const parse = JSON.parse(test);
+            await setLoggedFoods(parse);
+  
+            const reqs = await AsyncStorage.getItem('dailyReqs');
+            const parsedReqs = JSON.parse(reqs);
+            await setReqs(parsedReqs);
+          } catch (err) {
+            console.log(err);
+          }
         }
 
         getData();

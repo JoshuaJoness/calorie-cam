@@ -22,12 +22,16 @@ const Results = ({ navigation }) => {
 
     useEffect(() => {
         const getData = async () => {
-            await AsyncStorage.getItem('age').then(data => setAge(data))
-            await AsyncStorage.getItem('gender').then(data => setGender(data))
-            await AsyncStorage.getItem('feet').then(data => setFeet(data))
-            await AsyncStorage.getItem('inches').then(data => setInches(data))
-            await AsyncStorage.getItem('weight').then(data => setWeight(data))
-            await AsyncStorage.getItem('activityLevel').then(data => setActivityLevel(data))
+            try {
+                await AsyncStorage.getItem('age').then(data => setAge(data))
+                await AsyncStorage.getItem('gender').then(data => setGender(data))
+                await AsyncStorage.getItem('feet').then(data => setFeet(data))
+                await AsyncStorage.getItem('inches').then(data => setInches(data))
+                await AsyncStorage.getItem('weight').then(data => setWeight(data))
+                await AsyncStorage.getItem('activityLevel').then(data => setActivityLevel(data))
+            } catch (err) {
+                console.log(err);
+            }
         }
         getData();
     }, []);
@@ -96,7 +100,6 @@ const Results = ({ navigation }) => {
                     text={'Maintain Weight'}
                     onPress={async () => {
                         try {
-
                             await AsyncStorage.setItem('goal', 'maintainWeight');
                             await AsyncStorage.setItem('totalDailyCalorieNeeds', JSON.stringify(totalDailyCalorieNeeds));     
                             dispatch({ type: 'SET_GOAL', data: 'maintainWeight' });
@@ -111,7 +114,6 @@ const Results = ({ navigation }) => {
                     text={'Gain Weight'} 
                     onPress={async () => {
                         try {
-            
                             await AsyncStorage.setItem('goal', 'gainWeight');
                             await AsyncStorage.setItem('totalDailyCalorieNeeds', JSON.stringify(totalDailyCalorieNeeds));     
                             dispatch({ type: 'SET_GOAL', data: 'gainWeight' });

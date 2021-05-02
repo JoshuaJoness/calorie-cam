@@ -16,8 +16,12 @@ const Goal = ({ navigation }) => {
 
     useEffect(() => {
         const getData = async () => {
-            await AsyncStorage.getItem('goal').then(data => setGoal(data))
-            await AsyncStorage.getItem('totalDailyCalorieNeeds').then(data => setTotalDailyCalorieNeeds(data))
+            try {
+                await AsyncStorage.getItem('goal').then(data => setGoal(data))
+                await AsyncStorage.getItem('totalDailyCalorieNeeds').then(data => setTotalDailyCalorieNeeds(data))
+            } catch (err) {
+                console.log(err);
+            }
         }
         getData();
     }, []);
@@ -64,9 +68,13 @@ const Goal = ({ navigation }) => {
                 style={{ marginTop: '10%' }}
                 text="Update Your Goals" 
                 onPress={async () => {
-                    await AsyncStorage.removeItem('goal')
-                    dispatch({ type: 'REMOVE_GOAL' })
-                    navigation.navigate('GetStarted');
+                    try {
+                        await AsyncStorage.removeItem('goal')
+                        dispatch({ type: 'REMOVE_GOAL' })
+                        navigation.navigate('GetStarted');
+                    } catch (err) {
+                        console.log(err);
+                    }
                 }} 
             />
                 <View style={{ marginLeft:'auto', marginRight:'auto' }}>
