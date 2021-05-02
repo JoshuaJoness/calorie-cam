@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, TextInput, Animated, AsyncStorage, Alert, Switch } from 'react-native'
 import Pushup from './svgs/pushup'
 import CustomButton from './button'
@@ -18,6 +18,10 @@ const Weight = ({ navigation }) => {
 		setWeight(null);
 		setIsEnabled(previousState => !previousState);
 	};
+
+	useEffect(() => {
+		console.log(weight, 'weight')
+	}, [weight])
 
 	return (
 		<View style={styles.container}>
@@ -60,19 +64,23 @@ const Weight = ({ navigation }) => {
                         placeholder={lbs ? '180lbs' : '60kg'}
                     />
                 </View>
-            {weight ? <View style={{ marginTop: 50 }}>
+            <View style={{ marginTop: 50 }}>
                 <CustomButton 
                     text='Continue' 
                     onPress={async () => {
-                        try {
-                            await AsyncStorage.setItem('weight', JSON.stringify(weight));
-                        } catch (err) {
-                            console.log(err)
-                        }
-                        navigation.navigate('ActivityLevel');
+						if (!weight) {
+							Alert.alert('Please enter your weight.')
+						} else {
+							try {
+								await AsyncStorage.setItem('weight', JSON.stringify(weight));
+							} catch (err) {
+								console.log(err)
+							}
+							navigation.navigate('ActivityLevel');
+						}
                     }} 
                     disabled={!weight}/>
-            </View> : null}
+            </View>
  
 		</View>
 	)

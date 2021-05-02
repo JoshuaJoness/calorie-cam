@@ -67,8 +67,6 @@ const Results = ({ navigation }) => {
             });
     }, [totalDailyCalorieNeeds]);
 
-    console.log(windowHeight,)
-
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.title}>Results</Text>

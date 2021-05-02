@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Picker, Animated, AsyncStorage, Dimensions } from 'react-native';
 import Pilates from './svgs/pilates';
 import CustomButton from './button';
@@ -17,7 +17,11 @@ const ACTIVITY_LEVELS = [
 
 const ActivityLevel = ({ navigation }) => {
 	// AsyncStorage.getItem('activityLevel').then(data => setActivityLevel(data));  
-	const [activityLevel, setActivityLevel] = React.useState(null);
+	const [activityLevel, setActivityLevel] = React.useState('notVeryActive');
+
+    useEffect(() => {
+        console.log(activityLevel, 'AL')
+    }, [activityLevel])
 
 	return (
 		<View style={styles.container}>

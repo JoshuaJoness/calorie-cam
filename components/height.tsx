@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Picker, Animated, AsyncStorage, Dimensions } from 'react-native';
 import { useFonts } from 'expo-font';
 import Workout from './svgs/workout';
@@ -9,27 +9,27 @@ const windowHeight = Dimensions.get('window').height;
 
 
 const FEET = [
-    { value: '1', label: "1'" },
-    { value: '2', label: "2'" },
-    { value: '3', label: "3'" },
-    { value: '4', label: "4'" },
-    { value: '5', label: "5'" },
-    { value: '6', label: "6'" },
-    { value: '7', label: "7'" },
+    { value: 1, label: "1'" },
+    { value: 2, label: "2'" },
+    { value: 3, label: "3'" },
+    { value: 4, label: "4'" },
+    { value: 5, label: "5'" },
+    { value: 6, label: "6'" },
+    { value: 7, label: "7'" },
 ]
 
 const INCHES = [
-    { value: '1', label: '1"' },
-    { value: '2', label: '2"' },
-    { value: '3', label: '3"' },
-    { value: '4', label: '4"' },
-    { value: '5', label: '5"' },
-    { value: '6', label: '6"' },
-    { value: '7', label: '7"' },
-    { value: '8', label: '8"' },
-    { value: '9', label: '9"' },
-    { value: '10', label: '10"' },
-    { value: '11', label: '11"' },
+    { value: 1, label: '1"' },
+    { value: 2, label: '2"' },
+    { value: 3, label: '3"' },
+    { value: 4, label: '4"' },
+    { value: 5, label: '5"' },
+    { value: 6, label: '6"' },
+    { value: 7, label: '7"' },
+    { value: 8, label: '8"' },
+    { value: 9, label: '9"' },
+    { value: 10, label: '10"' },
+    { value: 11, label: '11"' },
 ]
 
 
@@ -37,8 +37,12 @@ const Height = ({ navigation }) => {
 	// AsyncStorage.getItem('feet').then(data => setFeet(data)) 
 	// AsyncStorage.getItem('inches').then(data => setInches(data))  
 	
-	const [feet, setFeet] = React.useState(null);
-	const [inches, setInches] = React.useState(null);
+	const [feet, setFeet] = React.useState('1');
+	const [inches, setInches] = React.useState('1');
+
+	useEffect(() => {
+		console.log(feet, inches, 'feet inches')
+	}, [feet, inches])
 
 
 	return (
@@ -75,8 +79,8 @@ const Height = ({ navigation }) => {
 					text='Continue' 
 					onPress={async () => {
 						try {
-							await AsyncStorage.setItem('feet', feet);
-							await AsyncStorage.setItem('inches', inches);
+							await AsyncStorage.setItem('feet', JSON.stringify(feet));
+							await AsyncStorage.setItem('inches', JSON.stringify(inches));
 						} catch (err) {
 							console.log(err)
 						}
