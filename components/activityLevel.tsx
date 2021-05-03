@@ -39,6 +39,7 @@ const ActivityLevel = ({ navigation }) => {
 					// onValueChange={async (itemValue, itemIndex) => await setActivityLevel(itemValue)}
                     onValueChange={(itemValue ) => setTimeout(() => setActivityLevel(itemValue))}
 				>
+                    <Picker.Item label='Please select an option...' value={null} />
                     { ACTIVITY_LEVELS.map(({value,label}) => <Picker.Item value={value} label={label} key={value} />) }
 				</Picker>
 
@@ -57,6 +58,7 @@ const ActivityLevel = ({ navigation }) => {
                             } catch (err) {
                                 console.log(err)
                             } finally {
+                                setActivityLevel(null);
                                 navigation.navigate('Results');
                             }
                         }

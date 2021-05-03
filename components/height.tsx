@@ -90,6 +90,8 @@ const Height = ({ navigation }) => {
 							} catch (err) {
 								console.log(err)
 							} finally {
+								setFeet(null)
+								setInches(null)
 								navigation.navigate('Weight')	
 							}
 						}
