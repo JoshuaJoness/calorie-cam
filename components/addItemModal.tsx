@@ -56,8 +56,10 @@ const AddItemModal = ({ setModalVisible, modalVisible, cameraPrediction }) => {
 
 	// default selected item to first in list
 	useEffect(() => {
-		if (obj)
+		if (obj) {
 			setSelectedItem(obj[Object.keys(obj)[0]]?.foodId);
+			setSelectedItemIndex(0);
+		}
 	}, [obj]);
 
 	// default unit of measurment
@@ -98,7 +100,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, cameraPrediction }) => {
 	};
 
 	useEffect(() => {
-		const label = obj ? Object.keys(obj)[selectedItemIndex] : null;
+		const label = obj ? Object.keys(obj)[selectedItemIndex] : cameraPrediction ? cameraPrediction : null;
 		const measureUnit = measurementUri?.split('_')[1];
 		const mappedNutrients = {};
 
