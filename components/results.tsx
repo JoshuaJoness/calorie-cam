@@ -65,7 +65,7 @@ const Results = ({ navigation }) => {
 
     useEffect(() => {        
         if (age && gender && feet && inches && weight && activityLevel) {
-            console.log(activityLevel, age, feet, inches, gender, weight, 'activityLevel, age, feet, inches, gender, weight')
+            // console.log(activityLevel, age, feet, inches, gender, weight, 'activityLevel, age, feet, inches, gender, weight') // for debugging
             const feetToInches = feet * 12;
             const totalInches = Number(inches) + Number(feetToInches);     
 

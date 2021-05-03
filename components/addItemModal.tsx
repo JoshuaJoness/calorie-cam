@@ -6,6 +6,7 @@ import { store }  from '../store';
 import UserInputResults from './userInputResults';
 import { ScrollView } from 'react-native-gesture-handler';
 
+
 const windowHeight = Dimensions.get('window').height;
 
 const edamamId = '7ff1ee7e';
@@ -52,6 +53,23 @@ const AddItemModal = ({ setModalVisible, modalVisible, cameraPrediction }) => {
             console.log(err);
         }
     };
+
+	// default selected item to first in list
+	useEffect(() => {
+		if (obj)
+			setSelectedItem(obj[Object.keys(obj)[0]]?.foodId);
+	}, [obj]);
+
+	// default unit of measurment
+	useEffect(() => {
+		if (selectedItem) {
+			const measurmentUri = Object
+				.keys(obj)
+				.map(key => obj[key])
+				.find(item => item.foodId === selectedItem)?.measures[0]?.uri;
+			setMeasurementUri(measurmentUri);		
+		}
+	}, [selectedItem]);
 
 	const getSelectedItemsNutrients = async () => {
 		setSubmitted(true);
@@ -100,14 +118,6 @@ const AddItemModal = ({ setModalVisible, modalVisible, cameraPrediction }) => {
 		getInitialFoodOptions(null)
 	}, [cameraPrediction]);
 
-	useEffect(() => {
-		// HERE TRYING TO ADD DEFAULT
-		if (obj)
-			console.log(obj[Object.keys(obj)[0]]?.foodId)
-			
-		// {obj ? Object.keys(obj)?.map(key => <Picker.Item label={key} value={obj[key].foodId} key={key} />) : null}
-	}, [obj])
-
     return (
 		<ScrollView style={styles.container}>	
 			<View style={{ 
@@ -141,8 +151,8 @@ const AddItemModal = ({ setModalVisible, modalVisible, cameraPrediction }) => {
 					<Text style={styles.formText}>Select best match</Text>
 					<Picker
 						selectedValue={selectedItem}
-						// style={{ height: 40 }}
-						itemStyle={{ height: 105, width: '100%', alignSelf: 'center' }}
+						// style={styles.picker}
+						itemStyle={{ height: 105, width: '120%', alignSelf: 'center' }}
 						onValueChange={(itemValue, itemIndex) => {
 							setSelectedItem(itemValue);
 							setSelectedItemIndex(itemIndex);
@@ -241,6 +251,16 @@ const styles = StyleSheet.create ({
         textAlign: 'center',
         fontWeight: 'bold',
 		width: '100%'
+    },
+	picker: {
+		backgroundColor: '#ffe8d6',
+		opacity: 1,
+        height: 45,
+        width: '100%',
+        marginTop: '5%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+		textAlign: 'center'
     },
   box: {
     width: '90%',

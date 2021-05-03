@@ -5,8 +5,8 @@ import CustomButton from './button';
 import { styles } from '../styles/global';
 import { store } from '../store';
 
-const windowHeight = Dimensions.get('window').height;
 
+const windowHeight = Dimensions.get('window').height;
 
 const ACTIVITY_LEVELS = [
     { value: 'noExercise', label: 'Little/no exercise' },

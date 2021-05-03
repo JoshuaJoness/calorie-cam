@@ -43,10 +43,6 @@ const Height = ({ navigation }) => {
 	const [feet, setFeet] = useState(null);
 	const [inches, setInches] = useState(null);
 
-	useEffect(() => {
-		console.log(inches,' INCHES')
-	}, [inches])
-
 	return (
 		<View style={styles.container}>
 			<View style={{ marginLeft:'auto', marginRight:'auto', marginTop: windowHeight <= 667 ? 20 : null }}>
@@ -92,7 +88,7 @@ const Height = ({ navigation }) => {
 							} finally {
 								setFeet(null)
 								setInches(null)
-								navigation.navigate('Weight')	
+								navigation.navigate('Weight')
 							}
 						}
 					}} 
