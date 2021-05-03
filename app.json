@@ -5,7 +5,7 @@
     "privacy": "public",
     "ios": {
       "bundleIdentifier": "com.heroku.caloriecam",
-      "buildNumber": "1.0.1",
+      "buildNumber": "1.0.2",
       "supportsTablet": false,
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to scan food items in order to recoginze and retrieve their respective nutritional information."
