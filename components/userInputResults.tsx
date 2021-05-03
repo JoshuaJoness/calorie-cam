@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, View, Text, TextInput, Alert, TouchableOpacity, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, TextInput, Alert, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 
 const UserInputResults = ({ foodQty, setFoodQty, result, totalNutrients }) => {
     
@@ -7,7 +7,7 @@ const UserInputResults = ({ foodQty, setFoodQty, result, totalNutrients }) => {
 
     const hidePlural = foodQty === '1' || !foodQty || result?.measure === 'whole';
 
-    return (
+    return !result ? <ActivityIndicator color="#6b705c" size="large"/> : (
         <View>
             <View style={{ display: 'flex', flexDirection: 'row', marginTop: 20, width: '80%', alignSelf: 'center' }}>
                 <Text style={styles.formTextDisplay}>Per </Text>

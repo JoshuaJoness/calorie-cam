@@ -31,7 +31,6 @@ const StateProvider = ( { children } ) => {
       }
       case 'SET_HEIGHT': {
         const { feet, inches } = action.data;
-        console.log(inches, 'inches STORE')
         return { ...state, feet, inches }
       }
       case 'SET_AGE': {

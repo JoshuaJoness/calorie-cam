@@ -87,7 +87,7 @@ const AddItemModal = ({ setModalVisible, modalVisible, cameraPrediction }) => {
 			}
 		);
 
-		const result = nutrients.data.ingredients[0].parsed.map(({ food, foodContentsLabel, measure, quantity }) => ({ food, foodContentsLabel, measure, quantity }))[0];
+		const result = await nutrients.data.ingredients[0].parsed.map(({ food, foodContentsLabel, measure, quantity }) => ({ food, foodContentsLabel, measure, quantity }))[0];
 		setResult(result);
 		setFoodQty(result.quantity);
 
@@ -117,6 +117,10 @@ const AddItemModal = ({ setModalVisible, modalVisible, cameraPrediction }) => {
 	useEffect(() => {
 		getInitialFoodOptions(null)
 	}, [cameraPrediction]);
+
+	// useEffect(() => {
+	// 	console.log(obj, 'OBJ')
+	// }, [obj])
 
     return (
 		<ScrollView style={styles.container}>	
