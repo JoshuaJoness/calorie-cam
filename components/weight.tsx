@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { View, Text, TextInput, Animated, AsyncStorage, Alert, Switch } from 'react-native'
 import Pushup from './svgs/pushup'
 import CustomButton from './button'
 import { styles } from '../styles/global';
+import { store } from '../store';
 
 
 const Weight = ({ navigation }) => {
 	// AsyncStorage.getItem('weight').then(data => setWeight(data)) 
+	const globalState = useContext(store);
+	const { state, dispatch } = globalState;
+
 	const [weight, setWeight] = React.useState(null);
 	const [lbs, setLbs] = useState(true);
 	const [kgs, setKgs] = useState(false);
@@ -18,10 +22,6 @@ const Weight = ({ navigation }) => {
 		setWeight(null);
 		setIsEnabled(previousState => !previousState);
 	};
-
-	useEffect(() => {
-		console.log(weight, 'weight')
-	}, [weight])
 
 	return (
 		<View style={styles.container}>
@@ -72,7 +72,8 @@ const Weight = ({ navigation }) => {
 							Alert.alert('Please enter your weight.')
 						} else {
 							try {
-								await AsyncStorage.setItem('weight', JSON.stringify(weight));
+								// await AsyncStorage.setItem('weight', JSON.stringify(weight));
+								dispatch({ type: 'SET_WEIGHT', data: Number(weight) })
 							} catch (err) {
 								console.log(err)
 							}

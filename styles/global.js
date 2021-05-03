@@ -110,7 +110,7 @@ export const styles = StyleSheet.create ({
 		backgroundColor: '#ffe8d6',
 		opacity: 1,
         height: 45,
-        width: 200,
+        width: '100%',
         marginTop: '5%',
         marginLeft: 'auto',
         marginRight: 'auto',

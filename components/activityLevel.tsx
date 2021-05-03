@@ -1,27 +1,26 @@
-import React, { useEffect } from 'react';
-import { View, Text, Picker, Animated, AsyncStorage, Dimensions } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, Picker, Animated, AsyncStorage, Dimensions, Alert } from 'react-native';
 import Pilates from './svgs/pilates';
 import CustomButton from './button';
 import { styles } from '../styles/global';
+import { store } from '../store';
 
 const windowHeight = Dimensions.get('window').height;
 
 
 const ACTIVITY_LEVELS = [
-    { value: 'notVeryActive', label: 'Not very active' },
-    { value: 'moderatelyActive', label: 'Moderately active' },
-    { value: 'veryActive', label: 'Very active' },
-    // { value: , label: },
-    // { value: , label: },
+    { value: 'noExercise', label: 'Little/no exercise' },
+    { value: 'lightExercise', label: 'Light exercise' },
+    { value: 'moderatelyActive', label: 'Moderate exercise (3-5 days/wk)' },
+    { value: 'veryActive', label: 'Very active (6-7 days/wk)' },
+    { value: 'extraActive', label: 'Extra active (very active & physical job)' },
 ]
 
 const ActivityLevel = ({ navigation }) => {
 	// AsyncStorage.getItem('activityLevel').then(data => setActivityLevel(data));  
-	const [activityLevel, setActivityLevel] = React.useState('notVeryActive');
-
-    useEffect(() => {
-        console.log(activityLevel, 'AL')
-    }, [activityLevel])
+    const globalState = useContext(store);
+    const { state, dispatch } = globalState;
+	const [activityLevel, setActivityLevel] = useState(null);
 
 	return (
 		<View style={styles.container}>
@@ -37,27 +36,34 @@ const ActivityLevel = ({ navigation }) => {
                 <Picker
 					selectedValue={activityLevel}
 					style={styles.picker}
-					onValueChange={(itemValue, itemIndex) => setActivityLevel(itemValue)}
+					// onValueChange={async (itemValue, itemIndex) => await setActivityLevel(itemValue)}
+                    onValueChange={(itemValue ) => setTimeout(() => setActivityLevel(itemValue))}
 				>
                     { ACTIVITY_LEVELS.map(({value,label}) => <Picker.Item value={value} label={label} key={value} />) }
 				</Picker>
 
             </View>
 
-            {activityLevel ? <View style={{ marginTop: windowHeight <= 667 ? 150 : 200 }}>
+            <View style={{ marginTop: windowHeight <= 667 ? 150 : 200 }}>
                 <CustomButton 
                     text='Continue' 
                     onPress={async() => {
-                        try {
-                            await AsyncStorage.setItem('activityLevel', activityLevel);
-                        } catch (err) {
-                            console.log(err)
+                        if (!activityLevel) {
+                            Alert.alert('Please select an activity level')
+                        } else {
+                            try {
+                                // await AsyncStorage.setItem('activityLevel', activityLevel);
+                                dispatch({ type: 'SET_ACTIVITY_LEVEL', data: activityLevel })
+                            } catch (err) {
+                                console.log(err)
+                            } finally {
+                                navigation.navigate('Results');
+                            }
                         }
-                        navigation.navigate('Results');
                     }} 
                     disabled={!activityLevel}
                     />
-            </View> : null}
+            </View>
  
 		</View>
 	)

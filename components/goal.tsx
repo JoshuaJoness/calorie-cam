@@ -70,10 +70,20 @@ const Goal = ({ navigation }) => {
                 onPress={async () => {
                     try {
                         await AsyncStorage.removeItem('goal')
+                        // HERE trying to debug, goal TDEE not updating correctly
+                        // await AsyncStorage.removeItem('age')
+                        // await AsyncStorage.removeItem('gender')
+                        // await AsyncStorage.removeItem('feet')
+                        // await AsyncStorage.removeItem('inches')
+                        // await AsyncStorage.removeItem('weight')
+                        // await AsyncStorage.removeItem('activityLevel')
+                        
                         dispatch({ type: 'REMOVE_GOAL' })
-                        navigation.navigate('GetStarted');
+                        
                     } catch (err) {
                         console.log(err);
+                    } finally {
+                        navigation.navigate('GetStarted');
                     }
                 }} 
             />

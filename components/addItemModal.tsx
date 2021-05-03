@@ -100,6 +100,14 @@ const AddItemModal = ({ setModalVisible, modalVisible, cameraPrediction }) => {
 		getInitialFoodOptions(null)
 	}, [cameraPrediction]);
 
+	useEffect(() => {
+		// HERE TRYING TO ADD DEFAULT
+		if (obj)
+			console.log(obj[Object.keys(obj)[0]]?.foodId)
+			
+		// {obj ? Object.keys(obj)?.map(key => <Picker.Item label={key} value={obj[key].foodId} key={key} />) : null}
+	}, [obj])
+
     return (
 		<ScrollView style={styles.container}>	
 			<View style={{ 

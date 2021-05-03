@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, TextInput, Animated, Alert, AsyncStorage } from 'react-native';
 import Birthday from './svgs/birthday';
 import CustomButton from './button';
 import { styles } from '../styles/global';
+import { store } from '../store';
  
 
 const Age = ({ navigation }) => {
 	// AsyncStorage.getItem('age').then(data => setAge(data)) 
+ 
+	const globalState = useContext(store);
+	const { state, dispatch } = globalState;
 	const [age, setAge] = React.useState(null);
 	// const [fadeAnim, setFadeAnim] = React.useState(new Animated.Value(0.1))
 	// const [fadeAnimTwo] = React.useState(new Animated.Value(0))
@@ -70,19 +74,23 @@ const Age = ({ navigation }) => {
 				/>
 			</View>
 		
-			{age ? <CustomButton 
+			<CustomButton 
 					text='Continue' 
 					disabled={!age}
 					onPress={async () => {
-						try {
-							await AsyncStorage.setItem('age', age)
-						} catch (err) {
-							console.log(err)
+						if (!age) {
+							Alert.alert('Please enter your age.')
+						} else {
+							try {
+								// await AsyncStorage.setItem('age', age)
+								dispatch({ type: 'SET_AGE', data: age })
+							} catch (err) {
+								console.log(err)
+							}
+							navigation.navigate('Gender');
 						}
-						navigation.navigate('Gender');
 					}} 
 				/>
-			: null}
 		</View>
 	)
 }

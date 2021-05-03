@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Picker, Animated, AsyncStorage, Dimensions } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Picker, Animated, AsyncStorage, Dimensions, Alert } from 'react-native';
 import { useFonts } from 'expo-font';
 import Workout from './svgs/workout';
 import CustomButton from './button';
 import { styles } from '../styles/global';
+import { store } from '../store';
 
 const windowHeight = Dimensions.get('window').height;
 
@@ -36,14 +37,15 @@ const INCHES = [
 const Height = ({ navigation }) => {
 	// AsyncStorage.getItem('feet').then(data => setFeet(data)) 
 	// AsyncStorage.getItem('inches').then(data => setInches(data))  
+	const globalState = useContext(store);
+    const { state, dispatch } = globalState;
 	
-	const [feet, setFeet] = React.useState('1');
-	const [inches, setInches] = React.useState('1');
+	const [feet, setFeet] = useState(null);
+	const [inches, setInches] = useState(null);
 
 	useEffect(() => {
-		console.log(feet, inches, 'feet inches')
-	}, [feet, inches])
-
+		console.log(inches,' INCHES')
+	}, [inches])
 
 	return (
 		<View style={styles.container}>
@@ -74,20 +76,26 @@ const Height = ({ navigation }) => {
 
             </View>
 
-            {feet && inches ? <View style={{ marginTop: 250 }}>
+            <View style={{ marginTop: 250 }}>
                 <CustomButton 
 					text='Continue' 
 					onPress={async () => {
-						try {
-							await AsyncStorage.setItem('feet', JSON.stringify(feet));
-							await AsyncStorage.setItem('inches', JSON.stringify(inches));
-						} catch (err) {
-							console.log(err)
+						if (!feet || !inches) {
+							Alert.alert('Please select both feet and inches above.')
+						} else {
+							try {
+								// await AsyncStorage.setItem('feet', JSON.stringify(feet));
+								// await AsyncStorage.setItem('inches', JSON.stringify(inches));
+								dispatch({ type: 'SET_HEIGHT', data: { feet, inches }})
+							} catch (err) {
+								console.log(err)
+							} finally {
+								navigation.navigate('Weight')	
+							}
 						}
-						navigation.navigate('Weight')	
 					}} 
-					disabled={!feet && !inches}/>
-            </View> : null}
+				/>
+            </View>
  
 		</View>
 	)

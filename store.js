@@ -12,7 +12,8 @@ const StateProvider = ( { children } ) => {
         return { ...state, goal: action.data }
       } 
       case 'REMOVE_GOAL': {
-        return { ...state, goal: null }
+        // return { ...state, goal: null }
+        return {}
       }
       case 'ADD_FOOD_TO_LOG': {
         const foods = initialState.foods || [];
@@ -27,6 +28,23 @@ const StateProvider = ( { children } ) => {
       }
       case 'ADD_MICROS': {
         return { ...state, clearMicros: false }
+      }
+      case 'SET_HEIGHT': {
+        const { feet, inches } = action.data;
+        console.log(inches, 'inches STORE')
+        return { ...state, feet, inches }
+      }
+      case 'SET_AGE': {
+        return { ...state, age: action.data }
+      }
+      case 'SET_GENDER': {
+        return { ...state, gender: action.data }
+      }
+      case 'SET_WEIGHT': {
+        return { ...state, weight: action.data }
+      }
+      case 'SET_ACTIVITY_LEVEL': {
+        return { ...state, activityLevel: action.data }
       }
       default:
         break;

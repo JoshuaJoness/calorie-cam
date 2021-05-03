@@ -36,7 +36,7 @@ const CalorieCam = ({ navigation }) => {
 
     const predictFood = async () =>	{
         try {
-            const data = await app.models.predict("bd367be194cf45149e75f01d59f77ba7", {base64:image});
+            const data = await app.models.predict("bd367be194cf45149e75f01d59f77ba7", { base64:image });
             const foodPredictions = data.outputs[0].data.concepts;
             setFoodPredictions(foodPredictions);
             return;
@@ -44,6 +44,10 @@ const CalorieCam = ({ navigation }) => {
             console.log(err);
         }
     };
+
+    useEffect(() => {
+        setSelectedItem(foodPredictions[0]?.name)
+    }, [foodPredictions])
 
     const addFoodToLog = async (foodToLog) => {
         try {

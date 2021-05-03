@@ -1,12 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { View, Text, Picker, Animated, AsyncStorage } from 'react-native';
 import Girl from './svgs/girl';
 import CustomButton from './button';
 import { styles } from '../styles/global';
+import { store } from '../store';
 
 
 const Gender = ({ navigation }) => {
 	// AsyncStorage.getItem('gender').then(data => setGender(data));
+	const globalState = useContext(store);
+	const { state, dispatch } = globalState;
 	const [gender, setGender] = React.useState('male');
 
 	return (
@@ -35,7 +38,8 @@ const Gender = ({ navigation }) => {
 					text='Continue'
 					onPress={async() => {
 						try {
-							await AsyncStorage.setItem('gender', gender)
+							// await AsyncStorage.setItem('gender', gender)
+							dispatch({ type: 'SET_GENDER', data: gender })
 						} catch (err) {
 							console.log(err)
 						}
